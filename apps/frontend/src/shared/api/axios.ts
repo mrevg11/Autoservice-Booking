@@ -1,0 +1,62 @@
+import axios, { AxiosRequestConfig } from 'axios';
+import { useAuthStore } from '../store/auth.store';
+
+const api = axios.create({
+  baseURL: (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:3000/api/v1',
+  timeout: 10000,
+  headers: { 'Content-Type': 'application/json' },
+});
+
+api.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().accessToken;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: (v: unknown) => void; reject: (e: unknown) => void }> = [];
+
+const processQueue = (error: unknown) => {
+  failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve(null)));
+  failedQueue = [];
+};
+
+api.interceptors.response.use(
+  (res) => res,
+  async (error: unknown) => {
+    if (!axios.isAxiosError(error)) return Promise.reject(error);
+
+    const original = error.config as AxiosRequestConfig & { _retry?: boolean };
+    if (error.response?.status !== 401 || original._retry) {
+      return Promise.reject(error);
+    }
+
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => failedQueue.push({ resolve, reject }))
+        .then(() => api(original))
+        .catch((e) => Promise.reject(e));
+    }
+
+    original._retry = true;
+    isRefreshing = true;
+
+    try {
+      const refreshToken = useAuthStore.getState().refreshToken;
+      if (!refreshToken) throw new Error('No refresh token');
+
+      const { data } = await api.post<{ accessToken: string }>('/auth/refresh', { refreshToken });
+      useAuthStore.getState().setAccessToken(data.accessToken);
+      processQueue(null);
+      return api(original);
+    } catch (err) {
+      processQueue(err);
+      useAuthStore.getState().logout();
+      window.location.href = '/login';
+      return Promise.reject(err);
+    } finally {
+      isRefreshing = false;
+    }
+  },
+);
+
+export default api;

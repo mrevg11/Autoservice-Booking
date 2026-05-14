@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+build/
+apps/backend/dist/
+apps/frontend/dist/
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.*.local
+apps/backend/.env
+apps/frontend/.env
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Test coverage
+coverage/
+docs/coverage/
+*.lcov
+apps/backend/coverage/
+apps/frontend/coverage/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# IDE
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+
+# Playwright test artifacts
+apps/frontend/test-results/
+apps/frontend/playwright-report/
+apps/frontend/blob-report/
+apps/frontend/e2e/screenshots/
+
+# k6 results
+apps/backend/load-tests/results/
+
+# MySQL data (if using local Docker volume)
+mysql-data/

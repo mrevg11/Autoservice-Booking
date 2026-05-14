@@ -1,0 +1,59 @@
+services:
+  - type: web
+    name: autoservice-api
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: apps/backend
+    buildCommand: npm ci && npm run build
+    startCommand: node dist/main.js
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DB_HOST
+        fromDatabase:
+          name: autoservice-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: autoservice-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: autoservice-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: autoservice-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: autoservice-db
+          property: database
+      - key: DB_SYNC
+        value: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+
+databases:
+  - name: autoservice-db
+    databaseName: autoservice
+    region: oregon
+    plan: free

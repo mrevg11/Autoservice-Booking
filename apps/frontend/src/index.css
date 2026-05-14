@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-brand: #1a2744;
+    --color-accent: #f97316;
+    --color-accent-hover: #ea6c0a;
+    --color-surface: #f8fafc;
+    --color-border: #e2e8f0;
+    --color-text: #0f172a;
+    --color-muted: #64748b;
+    --color-success: #22c55e;
+    --color-error: #ef4444;
+    --color-warning: #f59e0b;
+    --radius: 0.75rem;
+    --shadow-card: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--color-text);
+    background: var(--color-surface);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Custom scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+  *::-webkit-scrollbar { width: 6px; height: 6px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  *::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+}
+
+/* react-phone-input-2 overrides */
+.phone-lib-container { width: 100% !important; }
+
+.phone-lib-input {
+  width: 100% !important;
+  height: 2.5rem !important;
+  font-size: 0.875rem !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  padding-left: 3rem !important;
+  color: #0f172a !important;
+  background: #fff !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+.phone-lib-input:focus {
+  outline: none !important;
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 3px rgba(249,115,22,0.15) !important;
+}
+.phone-lib-input--error {
+  border-color: #ef4444 !important;
+}
+.phone-lib-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.15) !important;
+}
+
+.phone-lib-button {
+  border: 1px solid #e2e8f0 !important;
+  border-right: none !important;
+  border-radius: 0.75rem 0 0 0.75rem !important;
+  background: #f8fafc !important;
+  padding: 0 0.5rem !important;
+}
+.phone-lib-button:hover { background: #f1f5f9 !important; }
+
+.phone-lib-dropdown {
+  border-radius: 0.75rem !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.875rem !important;
+  z-index: 9999 !important;
+}

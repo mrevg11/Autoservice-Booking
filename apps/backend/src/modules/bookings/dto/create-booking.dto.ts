@@ -1,0 +1,40 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsInt,
+  IsPositive,
+  IsDateString,
+  IsArray,
+  ArrayMinSize,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+
+export class CreateBookingDto {
+  @ApiProperty({ description: 'ID майстра' })
+  @IsInt()
+  @IsPositive()
+  masterId: number;
+
+  @ApiProperty({ description: 'ID автомобіля клієнта' })
+  @IsInt()
+  @IsPositive()
+  vehicleId: number;
+
+  @ApiProperty({ description: 'Дата і час запису', example: '2026-06-01T10:00:00' })
+  @IsDateString()
+  scheduledAt: string;
+
+  @ApiProperty({ description: 'ID послуг', type: [Number] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
+  serviceIds: number[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  notes?: string;
+}

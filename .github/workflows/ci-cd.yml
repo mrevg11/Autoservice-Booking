@@ -1,0 +1,193 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: apps/backend
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: apps/frontend
+
+      - name: Lint backend
+        run: npm run lint
+        working-directory: apps/backend
+
+      - name: Lint frontend
+        run: npm run lint
+        working-directory: apps/frontend
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: autoservice_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: autoservice_test
+      DB_SYNC: true
+      JWT_SECRET: ci-test-secret-at-least-32-characters-long
+      JWT_REFRESH_SECRET: ci-test-refresh-secret-32-chars-long
+      MAIL_HOST: localhost
+      MAIL_PORT: 1025
+      MAIL_USER: test
+      MAIL_PASS: test
+      MAIL_FROM: noreply@test.com
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: apps/backend
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: apps/frontend
+
+      - name: Run backend unit tests with coverage
+        run: npm test -- --coverage --coverageDirectory=../../docs/coverage/backend --forceExit
+        working-directory: apps/backend
+
+      - name: Run frontend unit tests with coverage
+        run: npm test -- --coverage --reporter=verbose
+        working-directory: apps/frontend
+
+      - name: Upload backend coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: docs/coverage/backend/
+          retention-days: 7
+
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: apps/frontend/coverage/
+          retention-days: 7
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: apps/backend
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: apps/frontend
+
+      - name: Build backend
+        run: npm run build
+        working-directory: apps/backend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: apps/frontend
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+
+      - name: Upload backend build
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist
+          path: apps/backend/dist/
+          retention-days: 1
+
+      - name: Upload frontend build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: apps/frontend/dist/
+          retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Trigger backend deploy on Render
+        run: |
+          curl -fsS -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}" \
+            -o /dev/null -w "Backend deploy triggered: HTTP %{http_code}\n"
+
+      - name: Trigger frontend deploy on Render
+        run: |
+          curl -fsS -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}" \
+            -o /dev/null -w "Frontend deploy triggered: HTTP %{http_code}\n"
+
+      - name: Wait for backend to become healthy
+        run: |
+          echo "Waiting 90s for Render to deploy..."
+          sleep 90
+          for i in $(seq 1 10); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ secrets.RENDER_BACKEND_URL }}/api/v1/health")
+            echo "Attempt $i: HTTP $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "Backend is healthy!"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "Backend health check failed after 10 attempts"
+          exit 1
