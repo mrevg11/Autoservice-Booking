@@ -45,8 +45,11 @@ export default function RegisterSection() {
     onSuccess: () => {
       setTimeout(() => navigate('/login'), 3000);
     },
-    onError: () => {
-      setServerError('Не вдалося зареєструватися. Можливо, email вже зайнятий.');
+    onError: (error: unknown) => {
+      console.log('Registration error:', error);
+      const msg =
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setServerError(msg ?? 'Не вдалося зареєструватися. Можливо, email вже зайнятий.');
     },
   });
 
