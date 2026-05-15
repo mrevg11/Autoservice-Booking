@@ -14,6 +14,6 @@ export class ServiceCategory {
   @Column({ type: 'varchar', length: 100, nullable: true })
   icon: string | null;
 
-  @Column({ default: true })
+  @Column({ type: 'boolean', default: true })
   isActive: boolean;
 }

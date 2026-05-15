@@ -42,7 +42,7 @@ export class Booking {
   @Column({ type: 'datetime' })
   scheduledAt: Date;
 
-  @Column()
+  @Column({ type: 'int' })
   estimatedDurationMinutes: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })

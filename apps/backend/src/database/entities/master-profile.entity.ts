@@ -19,7 +19,7 @@ export class MasterProfile {
   @Column({ type: 'varchar', length: 200, nullable: true })
   specialization: string | null;
 
-  @Column({ default: 0 })
+  @Column({ type: 'int', default: 0 })
   experienceYears: number;
 
   @Column({ type: 'decimal', precision: 3, scale: 2, default: '0.00' })

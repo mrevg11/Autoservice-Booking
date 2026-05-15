@@ -32,7 +32,7 @@ export class User {
   @Column({ type: 'varchar', length: 20, nullable: true })
   phone: string | null;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   emailVerified: boolean;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
@@ -47,7 +47,7 @@ export class User {
   @Column({ type: 'varchar', length: 500, nullable: true })
   refreshTokenHash: string | null;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   isBlocked: boolean;
 
   @CreateDateColumn()

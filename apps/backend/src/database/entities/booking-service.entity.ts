@@ -24,6 +24,6 @@ export class BookingService {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   actualPrice: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
   actualDurationMinutes: number | null;
 }

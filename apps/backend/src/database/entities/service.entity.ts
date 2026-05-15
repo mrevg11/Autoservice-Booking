@@ -27,9 +27,9 @@ export class Service {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   basePrice: number;
 
-  @Column()
+  @Column({ type: 'int' })
   baseDurationMinutes: number;
 
-  @Column({ default: true })
+  @Column({ type: 'boolean', default: true })
   isActive: boolean;
 }
