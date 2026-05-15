@@ -72,7 +72,7 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
+        <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-4" noValidate>
           <div className="grid grid-cols-2 gap-3">
             <Input label="Ім'я" placeholder="Іван" error={errors.firstName?.message} {...register('firstName')} />
             <Input label="Прізвище" placeholder="Коваль" error={errors.lastName?.message} {...register('lastName')} />

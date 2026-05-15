@@ -78,7 +78,7 @@ export default function RegisterSection() {
           <>
             {serverError && <InlineMessage type="error">{serverError}</InlineMessage>}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4" noValidate>
               <div className="grid grid-cols-2 gap-3">
                 <Input label="Ім'я" placeholder="Іван" error={errors.firstName?.message} {...register('firstName')} />
                 <Input label="Прізвище" placeholder="Коваль" error={errors.lastName?.message} {...register('lastName')} />
