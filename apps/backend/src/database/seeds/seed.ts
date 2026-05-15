@@ -28,7 +28,7 @@ const AppDataSource = new DataSource({
   username: process.env['DB_USER'] ?? 'root',
   password: process.env['DB_PASSWORD'] ?? '',
   database: process.env['DB_NAME'] ?? 'autoservice',
-  synchronize: true,
+  synchronize: process.env['DB_SYNC'] !== 'false',
   logging: false,
   charset: 'utf8mb4',
   entities: [
