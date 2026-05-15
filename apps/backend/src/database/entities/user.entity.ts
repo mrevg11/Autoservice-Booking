@@ -29,7 +29,7 @@ export class User {
   @Column({ length: 100 })
   lastName: string;
 
-  @Column({ length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 20, nullable: true })
   phone: string | null;
 
   @Column({ default: false })
