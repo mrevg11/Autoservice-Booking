@@ -52,6 +52,8 @@ export default function RegisterSection() {
 
   const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
   });
 
   const onSubmit = (data: FormData) => {

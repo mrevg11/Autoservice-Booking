@@ -37,6 +37,8 @@ export default function RegisterPage() {
 
   const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
   });
 
   if (done) {
