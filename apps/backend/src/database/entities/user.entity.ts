@@ -14,19 +14,19 @@ export class User {
   id: number;
 
   @Index()
-  @Column({ unique: true, length: 255 })
+  @Column({ type: 'varchar', unique: true, length: 255 })
   email: string;
 
-  @Column({ length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   passwordHash: string;
 
   @Column({ type: 'enum', enum: Role, default: Role.CLIENT })
   role: Role;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   firstName: string;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   lastName: string;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
@@ -35,16 +35,16 @@ export class User {
   @Column({ default: false })
   emailVerified: boolean;
 
-  @Column({ length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   emailVerificationToken: string | null;
 
-  @Column({ length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   passwordResetToken: string | null;
 
   @Column({ type: 'datetime', nullable: true })
   passwordResetExpires: Date | null;
 
-  @Column({ length: 500, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   refreshTokenHash: string | null;
 
   @Column({ default: false })

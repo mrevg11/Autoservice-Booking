@@ -19,6 +19,6 @@ export class ClientProfile {
   @Column({ type: 'date', nullable: true })
   dateOfBirth: string | null;
 
-  @Column({ length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   preferredContactMethod: string | null;
 }

@@ -18,7 +18,7 @@ export class Service {
   @JoinColumn()
   category: ServiceCategory | null;
 
-  @Column({ length: 200 })
+  @Column({ type: 'varchar', length: 200 })
   name: string;
 
   @Column({ type: 'text', nullable: true })

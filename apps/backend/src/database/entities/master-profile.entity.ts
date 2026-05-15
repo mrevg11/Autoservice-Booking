@@ -16,7 +16,7 @@ export class MasterProfile {
   @JoinColumn()
   user: User;
 
-  @Column({ length: 200, nullable: true })
+  @Column({ type: 'varchar', length: 200, nullable: true })
   specialization: string | null;
 
   @Column({ default: 0 })
@@ -25,7 +25,7 @@ export class MasterProfile {
   @Column({ type: 'decimal', precision: 3, scale: 2, default: '0.00' })
   rating: number;
 
-  @Column({ length: 500, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   photo: string | null;
 
   @Column({ type: 'text', nullable: true })
