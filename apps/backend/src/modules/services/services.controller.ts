@@ -14,14 +14,13 @@ import {
   ApiTags,
   ApiOperation,
   ApiBearerAuth,
-  ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
 import { ServicesService } from './services.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { FilterServicesDto } from './dto/filter-services.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -76,21 +75,9 @@ export class ServicesController {
 
   @Get()
   @ApiOperation({ summary: 'Список послуг з фільтрами' })
-  @ApiQuery({ name: 'categoryId', required: false, type: Number })
-  @ApiQuery({ name: 'isActive', required: false, type: Boolean })
-  @ApiQuery({ name: 'search', required: false, type: String })
-  findAll(
-    @Query('categoryId') categoryId?: string,
-    @Query('isActive') isActive?: string,
-    @Query('search') search?: string,
-    @Query() pagination?: PaginationDto,
-  ) {
-    const filters = {
-      categoryId: categoryId !== undefined ? parseInt(categoryId, 10) : undefined,
-      isActive: isActive !== undefined ? isActive === 'true' : undefined,
-      search,
-    };
-    return this.servicesService.findAllServices(filters, pagination ?? {});
+  findAll(@Query() query: FilterServicesDto) {
+    const { categoryId, isActive, search, ...pagination } = query;
+    return this.servicesService.findAllServices({ categoryId, isActive, search }, pagination);
   }
 
   @Get(':id')
