@@ -27,7 +27,7 @@ function VehicleForm({
       <div className="grid grid-cols-2 gap-3">
         <Input label="Марка" error={errors.make?.message} {...register('make', { required: 'Обов\'язково' })} />
         <Input label="Модель" error={errors.model?.message} {...register('model', { required: 'Обов\'язково' })} />
-        <Input label="Рік" type="number" error={errors.year?.message} {...register('year', { required: 'Обов\'язково', valueAsNumber: true })} />
+        <Input label="Рік" type="number" min={1900} max={new Date().getFullYear()} error={errors.year?.message} {...register('year', { required: 'Обов\'язково', valueAsNumber: true, min: { value: 1900, message: 'Не раніше 1900' }, max: { value: new Date().getFullYear(), message: `Не пізніше ${new Date().getFullYear()}` } })} />
         <Input label="Держ. номер" error={errors.plateNumber?.message} {...register('plateNumber', { required: 'Обов\'язково' })} />
       </div>
       <Input

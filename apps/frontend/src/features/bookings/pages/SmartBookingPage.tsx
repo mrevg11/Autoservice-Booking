@@ -152,6 +152,7 @@ export default function SmartBookingPage() {
         label="Бажана дата (необов'язково)"
         value={preferredDate}
         onChange={(e) => setPreferredDate(e.target.value)}
+        min={new Date().toISOString().split('T')[0]}
         max={new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0]}
       />
 

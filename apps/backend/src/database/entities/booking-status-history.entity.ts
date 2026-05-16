@@ -28,9 +28,9 @@ export class BookingStatusHistory {
   @Column({ type: 'enum', enum: BookingStatus })
   newStatus: BookingStatus;
 
-  @ManyToOne(() => User, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
-  changedBy: User;
+  changedBy: User | null;
 
   @CreateDateColumn()
   changedAt: Date;

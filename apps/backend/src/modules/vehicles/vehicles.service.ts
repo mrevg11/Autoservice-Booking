@@ -2,9 +2,10 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Not } from 'typeorm';
 import { Vehicle } from '../../database/entities/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
@@ -17,6 +18,14 @@ export class VehiclesService {
   ) {}
 
   async create(clientId: number, dto: CreateVehicleDto): Promise<Vehicle> {
+    if (dto.vin) {
+      const existing = await this.vehiclesRepo.findOne({ where: { vin: dto.vin } });
+      if (existing) throw new ConflictException('Автомобіль з таким VIN вже зареєстровано');
+    }
+    if (dto.plateNumber) {
+      const existing = await this.vehiclesRepo.findOne({ where: { plateNumber: dto.plateNumber } });
+      if (existing) throw new ConflictException('Автомобіль з таким держ. номером вже зареєстровано');
+    }
     const vehicle = this.vehiclesRepo.create({
       ...dto,
       vin: dto.vin ?? null,
@@ -46,6 +55,14 @@ export class VehiclesService {
 
   async update(id: number, clientId: number, dto: UpdateVehicleDto): Promise<Vehicle> {
     const vehicle = await this.findOne(id, clientId);
+    if (dto.vin) {
+      const existing = await this.vehiclesRepo.findOne({ where: { vin: dto.vin, id: Not(id) } });
+      if (existing) throw new ConflictException('Автомобіль з таким VIN вже зареєстровано');
+    }
+    if (dto.plateNumber) {
+      const existing = await this.vehiclesRepo.findOne({ where: { plateNumber: dto.plateNumber, id: Not(id) } });
+      if (existing) throw new ConflictException('Автомобіль з таким держ. номером вже зареєстровано');
+    }
     Object.assign(vehicle, dto);
     return this.vehiclesRepo.save(vehicle);
   }

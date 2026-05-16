@@ -7,8 +7,9 @@ import {
   Optional,
   Inject,
 } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, Between } from 'typeorm';
+import { Repository, DataSource, Between, LessThan } from 'typeorm';
 import { Booking } from '../../database/entities/booking.entity';
 import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 import { BookingStatusHistory } from '../../database/entities/booking-status-history.entity';
@@ -337,6 +338,29 @@ export class BookingsService {
     await this.historyRepo.save(history);
 
     return booking;
+  }
+
+  @Cron('0 * * * *')
+  async cancelExpiredBookings(): Promise<void> {
+    const now = new Date();
+    const expired = await this.bookingsRepo.find({
+      where: [
+        { status: BookingStatus.PENDING, scheduledAt: LessThan(now) },
+        { status: BookingStatus.CONFIRMED, scheduledAt: LessThan(now) },
+      ],
+    });
+    for (const booking of expired) {
+      const oldStatus = booking.status;
+      booking.status = BookingStatus.CANCELLED;
+      await this.bookingsRepo.save(booking);
+      await this.historyRepo.save(
+        this.historyRepo.create({
+          booking,
+          oldStatus,
+          newStatus: BookingStatus.CANCELLED,
+        }),
+      );
+    }
   }
 
   async getHistory(id: number, user: User): Promise<BookingStatusHistory[]> {

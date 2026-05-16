@@ -12,7 +12,10 @@ import { toast } from '../../../shared/store/toast.store';
 const profileSchema = z.object({
   firstName: z.string().min(2, 'Мінімум 2 символи'),
   lastName: z.string().min(2, 'Мінімум 2 символи'),
-  phone: z.string().optional(),
+  phone: z.string().optional().refine(
+    (v) => !v || /^\+380\d{9}$/.test(v),
+    { message: 'Формат: +380XXXXXXXXX' },
+  ),
 });
 
 type ProfileData = z.infer<typeof profileSchema>;
@@ -77,7 +80,7 @@ export default function ClientProfilePage() {
             <Input label="Ім'я" placeholder="Іван" error={errors.firstName?.message} {...register('firstName')} />
             <Input label="Прізвище" placeholder="Коваль" error={errors.lastName?.message} {...register('lastName')} />
           </div>
-          <Input label="Телефон" type="tel" placeholder="+380XXXXXXXXX" {...register('phone')} />
+          <Input label="Телефон" type="tel" placeholder="+380XXXXXXXXX" error={errors.phone?.message} {...register('phone')} />
           <Button type="submit" isLoading={updateMutation.isPending}>Зберегти зміни</Button>
         </form>
       </div>

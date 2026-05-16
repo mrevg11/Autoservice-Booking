@@ -57,7 +57,7 @@ function VehicleForm({ onDone }: { onDone: () => void }) {
       <div className="grid grid-cols-2 gap-3">
         <Input label="Марка" placeholder="Toyota" error={errors.make?.message} {...register('make', { required: 'Обов\'язково' })} />
         <Input label="Модель" placeholder="Camry" error={errors.model?.message} {...register('model', { required: 'Обов\'язково' })} />
-        <Input label="Рік" type="number" placeholder="2020" error={errors.year?.message} {...register('year', { required: 'Обов\'язково' })} />
+        <Input label="Рік" type="number" placeholder="2020" min={1900} max={new Date().getFullYear()} error={errors.year?.message} {...register('year', { required: 'Обов\'язково', min: { value: 1900, message: 'Не раніше 1900' }, max: { value: new Date().getFullYear(), message: `Не пізніше ${new Date().getFullYear()}` } })} />
         <Input label="Держ. номер" placeholder="AA1234BB" error={errors.plateNumber?.message} {...register('plateNumber', { required: 'Обов\'язково' })} />
       </div>
       <Input label="VIN (необов'язково)" placeholder="1HGCM82633..." {...register('vin')} />
@@ -79,7 +79,8 @@ export default function BookingWizardPage() {
   const prefilledDate = searchParams.get('date') ?? '';
   const prefilledSlot = searchParams.get('slot') ?? null;
   const prefilledServiceIdsStr = searchParams.get('serviceIds') ?? '';
-  const prefilledStep = prefilledMasterId ? 3 : 0;
+  const hasFullSmartBookingParams = !!prefilledMasterId && !!prefilledDate && !!prefilledSlot && !!prefilledServiceIdsStr;
+  const prefilledStep = hasFullSmartBookingParams ? 3 : 0;
 
   const [step, setStep] = useState(prefilledStep);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
@@ -113,11 +114,6 @@ export default function BookingWizardPage() {
     if (matched.length > 0) setSelectedServices(matched);
   }, [servicesData, prefilledServiceIdsStr]);
 
-  useEffect(() => {
-    if (step === 3) {
-      console.log('Wizard step 3 state:', { selectedVehicle, selectedServices, selectedMasterId, selectedDate, selectedSlot });
-    }
-  }, [step]);
 
   const totalDuration = selectedServices.reduce((s, sv) => s + sv.baseDurationMinutes, 0);
   const { data: slots, isLoading: slotsLoading } = useMasterSlots(
@@ -132,16 +128,17 @@ export default function BookingWizardPage() {
 
   const createBooking = useCreateBooking();
 
-  const totalPrice = selectedServices.reduce((s, sv) => s + parseFloat(sv.price), 0);
+  const totalPrice = selectedServices.reduce((s, sv) => s + Number(sv.price ?? 0), 0);
 
   const maxDate = new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0];
 
+  const today = new Date().toISOString().split('T')[0];
+
   const handleConfirm = () => {
-    console.log('Confirm data:', { selectedVehicle, selectedMasterId, selectedSlot, selectedDate, selectedServices });
-    if (!selectedVehicle || !selectedMasterId || !selectedSlot || !selectedDate || selectedServices.length === 0) {
-      toast('Заповніть всі обов\'язкові поля', 'error');
-      return;
-    }
+    if (!selectedVehicle) { toast('Оберіть автомобіль', 'error'); setStep(0); return; }
+    if (selectedServices.length === 0) { toast('Оберіть послугу', 'error'); setStep(1); return; }
+    if (!selectedMasterId) { toast('Оберіть майстра', 'error'); setStep(2); return; }
+    if (!selectedDate || !selectedSlot) { toast('Оберіть дату та час', 'error'); setStep(2); return; }
     if (new Date(`${selectedDate}T${selectedSlot}`) < new Date()) {
       toast('Оберіть майбутню дату', 'error');
       return;
@@ -326,7 +323,7 @@ export default function BookingWizardPage() {
                     </div>
                     <div>
                       <p className="font-medium text-sm text-slate-900">{master.user.firstName} {master.user.lastName}</p>
-                      <p className="text-xs text-slate-500">⭐ {master.rating.toFixed(1)} · {master.experienceYears} р. досвіду</p>
+                      <p className="text-xs text-slate-500">⭐ {Number(master.rating ?? 0).toFixed(1)} · {master.experienceYears} р. досвіду</p>
                     </div>
                   </div>
                 </button>
@@ -340,6 +337,7 @@ export default function BookingWizardPage() {
                 label="Дата"
                 value={selectedDate}
                 onChange={(e) => { setSelectedDate(e.target.value); setSelectedSlot(null); }}
+                min={today}
                 max={maxDate}
               />
               {selectedDate && (
@@ -413,7 +411,7 @@ export default function BookingWizardPage() {
       <div className="flex justify-between pt-2">
         <Button
           variant="ghost"
-          onClick={() => step > 0 ? setStep(step - 1) : navigate(-1)}
+          onClick={() => { try { step > 0 ? setStep(step - 1) : navigate(-1); } catch { navigate(-1); } }}
         >
           ← Назад
         </Button>

@@ -26,7 +26,7 @@ export class CreateVehicleDto {
   @ApiProperty({ example: 2020 })
   @IsInt()
   @Min(1900)
-  @Max(new Date().getFullYear() + 1)
+  @Max(new Date().getFullYear())
   year: number;
 
   @ApiPropertyOptional({ example: 'JT2BF22K1W0123456' })

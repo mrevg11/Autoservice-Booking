@@ -102,7 +102,7 @@ export default function RecommendationsPage() {
                     ))}
                   </div>
 
-                  <Link to={`/client/bookings/new?masterId=${rec.masterId}&serviceId=${selectedServiceId}`}>
+                  <Link to={`/client/bookings/new?masterId=${rec.masterId}&serviceIds=${selectedServiceId}`}>
                     <Button size="sm" className="w-full">Записатися до цього майстра</Button>
                   </Link>
                 </div>
