@@ -19,6 +19,7 @@ export class NotificationsService {
   ) {}
 
   async notifyBookingConfirmed(booking: Booking): Promise<void> {
+    if (!booking.client) return;
     await this.sendAndLog(
       booking.client,
       NotificationType.BOOKING_CONFIRMED,
@@ -26,7 +27,7 @@ export class NotificationsService {
       `Ваш запис #${booking.id} підтверджено майстром`,
       async () => {
         await this.mailService.sendBookingConfirmed(
-          booking.client.email,
+          booking.client!.email,
           this.buildBookingContext(booking),
         );
       },
@@ -34,6 +35,7 @@ export class NotificationsService {
   }
 
   async notifyStatusChanged(booking: Booking, newStatus: BookingStatus): Promise<void> {
+    if (!booking.client) return;
     const statusLabels: Record<BookingStatus, string> = {
       [BookingStatus.PENDING]: 'Очікує',
       [BookingStatus.CONFIRMED]: 'Підтверджено',
@@ -47,9 +49,9 @@ export class NotificationsService {
       'Статус запису змінено',
       `Запис #${booking.id}: ${statusLabels[newStatus]}`,
       async () => {
-        await this.mailService.sendStatusChanged(booking.client.email, {
+        await this.mailService.sendStatusChanged(booking.client!.email, {
           bookingId: booking.id,
-          clientName: `${booking.client.firstName} ${booking.client.lastName}`,
+          clientName: `${booking.client!.firstName} ${booking.client!.lastName}`,
           newStatus: statusLabels[newStatus],
           scheduledAt: this.formatDate(booking.scheduledAt),
           bookingUrl: `${process.env['FRONTEND_URL'] ?? 'http://localhost:5173'}/client/bookings/${booking.id}`,
@@ -59,13 +61,14 @@ export class NotificationsService {
   }
 
   async notifyBookingCancelled(booking: Booking, reason = 'Скасовано користувачем'): Promise<void> {
+    if (!booking.client) return;
     await this.sendAndLog(
       booking.client,
       NotificationType.BOOKING_CANCELLED,
       'Запис скасовано',
       `Запис #${booking.id} скасовано`,
       async () => {
-        await this.mailService.sendBookingCancelled(booking.client.email, {
+        await this.mailService.sendBookingCancelled(booking.client!.email, {
           ...this.buildBookingContext(booking),
           reason,
         });
@@ -93,6 +96,7 @@ export class NotificationsService {
 
     let sent = 0;
     for (const booking of tomorrowBookings) {
+      if (!booking.client) continue;
       const alreadySent = await this.notifRepo.findOne({
         where: { user: { id: booking.client.id }, type: NotificationType.BOOKING_REMINDER_24H },
       });
@@ -106,7 +110,7 @@ export class NotificationsService {
         'Нагадування: запис завтра',
         `Запис #${booking.id} — ${this.formatDate(booking.scheduledAt)}`,
         async () => {
-          await this.mailService.sendBookingReminder24h(booking.client.email, this.buildBookingContext(booking));
+          await this.mailService.sendBookingReminder24h(booking.client!.email, this.buildBookingContext(booking));
         },
       );
       sent++;
@@ -132,6 +136,7 @@ export class NotificationsService {
     });
 
     for (const booking of upcoming) {
+      if (!booking.client) continue;
       const alreadySent = await this.notifRepo.findOne({
         where: { user: { id: booking.client.id }, type: NotificationType.BOOKING_REMINDER_2H },
       });
@@ -142,7 +147,7 @@ export class NotificationsService {
         'Запис через 2 години',
         `Запис #${booking.id} — ${this.formatDate(booking.scheduledAt)}`,
         async () => {
-          await this.mailService.sendBookingReminder2h(booking.client.email, this.buildBookingContext(booking));
+          await this.mailService.sendBookingReminder2h(booking.client!.email, this.buildBookingContext(booking));
         },
       );
     }
@@ -191,7 +196,7 @@ export class NotificationsService {
       .join(', ') ?? '';
     return {
       bookingId: booking.id,
-      clientName: `${booking.client.firstName} ${booking.client.lastName}`,
+      clientName: booking.client ? `${booking.client.firstName} ${booking.client.lastName}` : 'Клієнт',
       masterName: booking.master?.user
         ? `${booking.master.user.firstName} ${booking.master.user.lastName}`
         : 'Майстер',

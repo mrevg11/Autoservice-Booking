@@ -33,7 +33,7 @@ export class ReviewsService {
 
     if (!booking) throw new NotFoundException(`Booking #${dto.bookingId} not found`);
 
-    if (booking.client.id !== clientId) {
+    if (!booking.client || booking.client.id !== clientId) {
       throw new ForbiddenException('This booking does not belong to you');
     }
 
