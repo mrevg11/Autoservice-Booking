@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -20,6 +20,7 @@ type ProfileData = z.infer<typeof profileSchema>;
 export default function ClientProfilePage() {
   const { user, setAuth } = useAuthStore();
   const refreshToken = useAuthStore((s) => s.refreshToken);
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ['me'],
@@ -29,6 +30,7 @@ export default function ClientProfilePage() {
   const updateMutation = useMutation({
     mutationFn: (d: ProfileData) => usersApi.updateMe(d),
     onSuccess: ({ data: updated }) => {
+      void queryClient.invalidateQueries({ queryKey: ['me'] });
       if (user && refreshToken) {
         setAuth(
           { ...user, firstName: updated.firstName, lastName: updated.lastName },

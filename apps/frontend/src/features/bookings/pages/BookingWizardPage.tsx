@@ -87,7 +87,8 @@ export default function BookingWizardPage() {
   const [notes, setNotes] = useState('');
   const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
 
-  const { data: vehicles, isLoading: vehiclesLoading } = useVehicles();
+  const { data: vehicles, isLoading: vehiclesLoading, isError: vehiclesError, error: vehiclesErr } = useVehicles();
+  if (vehiclesErr) console.log('Vehicles fetch error:', vehiclesErr);
   const { data: categories } = useCategories();
   const { data: servicesData, isLoading: servicesLoading } = useServices({
     categoryId: activeCategoryId, isActive: true, limit: 50,
@@ -164,6 +165,8 @@ export default function BookingWizardPage() {
           <h2 className="font-semibold text-slate-900">Оберіть автомобіль</h2>
           {vehiclesLoading ? (
             <div className="flex justify-center py-8"><Spinner /></div>
+          ) : vehiclesError ? (
+            <p className="text-sm text-red-500 py-4">Не вдалося завантажити автомобілі. Спробуйте оновити сторінку.</p>
           ) : (
             <div className="space-y-2">
               {(vehicles ?? []).map((v) => (

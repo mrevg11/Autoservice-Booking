@@ -72,7 +72,12 @@ export default function VehiclesPage() {
   const handleCreate = (data: CreateVehiclePayload) => {
     createVehicle.mutate(data, {
       onSuccess: () => { toast('Автомобіль додано', 'success'); setShowForm(false); },
-      onError: () => toast('Помилка', 'error'),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onError: (error: any) => {
+        console.error('Vehicle create error:', error?.response?.data);
+        const msg = error?.response?.data?.message ?? 'Помилка додавання авто';
+        toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
+      },
     });
   };
 
@@ -82,7 +87,12 @@ export default function VehiclesPage() {
       { id: editingVehicle.id, data },
       {
         onSuccess: () => { toast('Збережено', 'success'); setEditingVehicle(null); },
-        onError: () => toast('Помилка', 'error'),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (error: any) => {
+          console.error('Vehicle update error:', error?.response?.data);
+          const msg = error?.response?.data?.message ?? 'Помилка збереження';
+          toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
+        },
       },
     );
   };
