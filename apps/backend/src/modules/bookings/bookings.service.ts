@@ -305,7 +305,7 @@ export class BookingsService {
     });
     if (!booking) throw new NotFoundException(`Booking #${id} not found`);
 
-    if (booking.client.id !== client.id) {
+    if (booking.client?.id !== client.id) {
       throw new ForbiddenException('You can only cancel your own bookings');
     }
 
@@ -380,7 +380,7 @@ export class BookingsService {
 
   private checkBookingAccess(booking: Booking, user: User): void {
     if (user.role === Role.ADMIN) return;
-    if (user.role === Role.CLIENT && booking.client.id !== user.id) {
+    if (user.role === Role.CLIENT && booking.client?.id !== user.id) {
       throw new ForbiddenException('Access denied');
     }
     if (

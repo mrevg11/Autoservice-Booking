@@ -109,7 +109,12 @@ export default function VehiclesPage() {
     if (!deleteId) return;
     deleteVehicle.mutate(deleteId, {
       onSuccess: () => { toast('Автомобіль видалено', 'success'); setDeleteId(null); },
-      onError: () => { toast('Помилка', 'error'); setDeleteId(null); },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onError: (error: any) => {
+        const msg = error?.response?.data?.message ?? 'Помилка видалення';
+        toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
+        setDeleteId(null);
+      },
     });
   };
 

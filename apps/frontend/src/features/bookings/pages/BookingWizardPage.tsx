@@ -14,6 +14,13 @@ import Spinner from '../../../shared/components/ui/Spinner';
 import { toast } from '../../../shared/store/toast.store';
 import type { ServiceItem, Vehicle } from '../../../shared/api/endpoints';
 
+const KYIV_OFFSET_MINUTES = 3 * 60; // UTC+3
+
+function toKyivUTC(date: string, time: string): string {
+  const local = new Date(`${date}T${time}:00`);
+  return new Date(local.getTime() - KYIV_OFFSET_MINUTES * 60 * 1000).toISOString();
+}
+
 const STEPS = ['Авто', 'Послуги', 'Майстер і час', 'Підтвердження', 'Готово'];
 
 function StepProgress({ current }: { current: number }) {
@@ -139,7 +146,8 @@ export default function BookingWizardPage() {
     if (selectedServices.length === 0) { toast('Оберіть послугу', 'error'); setStep(1); return; }
     if (!selectedMasterId) { toast('Оберіть майстра', 'error'); setStep(2); return; }
     if (!selectedDate || !selectedSlot) { toast('Оберіть дату та час', 'error'); setStep(2); return; }
-    if (new Date(`${selectedDate}T${selectedSlot}`) < new Date()) {
+    const scheduledAt = toKyivUTC(selectedDate, selectedSlot);
+    if (new Date(scheduledAt) < new Date()) {
       toast('Оберіть майбутню дату', 'error');
       return;
     }
@@ -149,7 +157,7 @@ export default function BookingWizardPage() {
         masterId: selectedMasterId,
         vehicleId: selectedVehicle.id,
         serviceIds: selectedServices.map((s) => s.id),
-        scheduledAt: new Date(`${selectedDate}T${selectedSlot}`).toISOString(),
+        scheduledAt,
         notes: notes || undefined,
       },
       {

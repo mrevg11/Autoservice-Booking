@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../../database/entities/user.entity';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
+import { MasterSchedule } from '../../database/entities/master-schedule.entity';
+import { Booking } from '../../database/entities/booking.entity';
+import { Vehicle } from '../../database/entities/vehicle.entity';
+import { BookingStatus } from '../../common/enums/booking-status.enum';
 import { Role } from '../../common/enums/role.enum';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
@@ -18,6 +22,9 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepo: Repository<User>,
     @InjectRepository(MasterProfile) private masterProfilesRepo: Repository<MasterProfile>,
+    @InjectRepository(MasterSchedule) private schedulesRepo: Repository<MasterSchedule>,
+    @InjectRepository(Booking) private bookingsRepo: Repository<Booking>,
+    @InjectRepository(Vehicle) private vehiclesRepo: Repository<Vehicle>,
   ) {}
 
   async getMe(userId: number): Promise<UserResponseDto> {
@@ -56,6 +63,25 @@ export class UsersService {
 
   async remove(id: number): Promise<{ message: string }> {
     const user = await this.findOneOrFail(id);
+
+    // Cancel active bookings so the DB cascade can proceed
+    await this.bookingsRepo.update(
+      { client: { id }, status: In([BookingStatus.PENDING, BookingStatus.CONFIRMED]) },
+      { status: BookingStatus.CANCELLED },
+    );
+
+    // Nullify vehicle ref on all this user's bookings (covers vehicles being deleted by CASCADE below)
+    const vehicles = await this.vehiclesRepo.find({ where: { client: { id } } });
+    if (vehicles.length > 0) {
+      const vehicleIds = vehicles.map((v) => v.id);
+      await this.bookingsRepo
+        .createQueryBuilder()
+        .update(Booking)
+        .set({ vehicle: null })
+        .where('vehicleId IN (:...ids)', { ids: vehicleIds })
+        .execute();
+    }
+
     await this.usersRepo.remove(user);
     return { message: `User ${id} deleted` };
   }
@@ -77,7 +103,21 @@ export class UsersService {
     });
     await this.usersRepo.save(user);
 
-    await this.masterProfilesRepo.save(this.masterProfilesRepo.create({ user }));
+    const masterProfile = await this.masterProfilesRepo.save(
+      this.masterProfilesRepo.create({ user }),
+    );
+
+    // Default schedule: Mon–Fri 09:00–18:00 active, Sat–Sun inactive
+    const defaultSchedule = Array.from({ length: 7 }, (_, weekday) =>
+      this.schedulesRepo.create({
+        master: masterProfile,
+        weekday,
+        startTime: '09:00',
+        endTime: '18:00',
+        isActive: weekday < 5,
+      }),
+    );
+    await this.schedulesRepo.save(defaultSchedule);
 
     return { message: 'Master account created successfully.' };
   }

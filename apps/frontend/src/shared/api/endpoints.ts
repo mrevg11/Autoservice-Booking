@@ -102,7 +102,7 @@ export const mastersApi = {
   getSchedule: (id: number) => api.get<ScheduleEntry[]>(`/masters/${id}/schedule`),
   updateMyProfile: (data: UpdateMasterPayload) => api.patch<MasterDto>('/masters/me', data),
   getMySchedule: () => api.get<ScheduleEntry[]>('/masters/me/schedule'),
-  setSchedule: (data: ScheduleEntry[]) => api.put<ScheduleEntry[]>('/masters/me/schedule', { entries: data }),
+  setSchedule: (data: ScheduleEntry[]) => api.put<ScheduleEntry[]>('/masters/me/schedule', { schedule: data }),
   addDayOff: (date: string, reason?: string) =>
     api.post('/masters/me/days-off', { date, reason }),
   deleteDayOff: (id: number) => api.delete(`/masters/me/days-off/${id}`),

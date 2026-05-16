@@ -21,18 +21,18 @@ export class Booking {
   id: number;
 
   @Index()
-  @ManyToOne(() => User, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
-  client: User;
+  client: User | null;
 
   @Index()
   @ManyToOne(() => MasterProfile, { onDelete: 'RESTRICT' })
   @JoinColumn()
   master: MasterProfile;
 
-  @ManyToOne(() => Vehicle, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Vehicle, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
-  vehicle: Vehicle;
+  vehicle: Vehicle | null;
 
   @Index()
   @Column({ type: 'enum', enum: BookingStatus, default: BookingStatus.PENDING })

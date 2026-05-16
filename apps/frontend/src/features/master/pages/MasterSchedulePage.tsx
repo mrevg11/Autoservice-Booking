@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { mastersApi, ScheduleEntry } from '../../../shared/api/endpoints';
 import Button from '../../../shared/components/ui/Button';
@@ -24,13 +24,27 @@ export default function MasterSchedulePage() {
 
   const [entries, setEntries] = useState<ScheduleEntry[]>(DEFAULT_ENTRIES);
 
+  useEffect(() => {
+    if (schedule && schedule.length > 0) {
+      const full = Array.from({ length: 7 }, (_, i) => {
+        const found = schedule.find((e) => e.weekday === i);
+        return found ?? { weekday: i, startTime: '09:00', endTime: '18:00', isActive: false };
+      });
+      setEntries(full);
+    }
+  }, [schedule]);
+
   const saveMutation = useMutation({
     mutationFn: (data: ScheduleEntry[]) => mastersApi.setSchedule(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['mySchedule'] });
       toast('Розклад збережено', 'success');
     },
-    onError: () => toast('Помилка збереження', 'error'),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      const msg = error?.response?.data?.message ?? 'Помилка збереження розкладу';
+      toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
+    },
   });
 
   const addDayOffMutation = useMutation({
@@ -41,8 +55,6 @@ export default function MasterSchedulePage() {
   });
 
   const [dayOffDate, setDayOffDate] = useState('');
-
-  const effectiveEntries = schedule && schedule.length > 0 ? schedule : entries;
 
   const updateEntry = (weekday: number, field: keyof ScheduleEntry, value: string | boolean) => {
     setEntries((prev) => prev.map((e) => e.weekday === weekday ? { ...e, [field]: value } : e));
@@ -58,7 +70,7 @@ export default function MasterSchedulePage() {
         <h2 className="font-semibold text-slate-900 mb-4">Робочі дні і години</h2>
         <div className="space-y-3">
           {Array.from({ length: 7 }, (_, i) => {
-            const entry = effectiveEntries.find((e) => e.weekday === i);
+            const entry = entries.find((e) => e.weekday === i);
             const isActive = entry?.isActive ?? false;
 
             return (
@@ -98,7 +110,7 @@ export default function MasterSchedulePage() {
         </div>
         <div className="mt-4">
           <Button
-            onClick={() => saveMutation.mutate(entries.filter((e) => e.isActive))}
+            onClick={() => saveMutation.mutate(entries)}
             isLoading={saveMutation.isPending}
           >
             Зберегти розклад

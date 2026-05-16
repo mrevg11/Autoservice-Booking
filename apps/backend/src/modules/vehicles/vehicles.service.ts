@@ -5,8 +5,10 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Not } from 'typeorm';
+import { Repository, Not, In } from 'typeorm';
 import { Vehicle } from '../../database/entities/vehicle.entity';
+import { Booking } from '../../database/entities/booking.entity';
+import { BookingStatus } from '../../common/enums/booking-status.enum';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
@@ -15,6 +17,8 @@ export class VehiclesService {
   constructor(
     @InjectRepository(Vehicle)
     private vehiclesRepo: Repository<Vehicle>,
+    @InjectRepository(Booking)
+    private bookingsRepo: Repository<Booking>,
   ) {}
 
   async create(clientId: number, dto: CreateVehicleDto): Promise<Vehicle> {
@@ -69,6 +73,15 @@ export class VehiclesService {
 
   async remove(id: number, clientId: number): Promise<{ message: string }> {
     const vehicle = await this.findOne(id, clientId);
+    const activeCount = await this.bookingsRepo.count({
+      where: {
+        vehicle: { id },
+        status: In([BookingStatus.PENDING, BookingStatus.CONFIRMED]),
+      },
+    });
+    if (activeCount > 0) {
+      throw new ConflictException('Неможливо видалити авто з активними записами');
+    }
     await this.vehiclesRepo.remove(vehicle);
     return { message: `Vehicle #${id} deleted` };
   }

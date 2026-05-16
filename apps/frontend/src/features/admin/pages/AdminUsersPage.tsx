@@ -52,7 +52,12 @@ export default function AdminUsersPage() {
   const deleteMutation = useMutation({
     mutationFn: (id: number) => adminUsersApi.remove(id),
     onSuccess: () => { toast('Видалено', 'success'); setDeleteId(null); qc.invalidateQueries({ queryKey: ['admin-users'] }); },
-    onError: () => toast('Помилка', 'error'),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      const msg = error?.response?.data?.message ?? 'Помилка видалення';
+      toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
+      setDeleteId(null);
+    },
   });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateMasterPayload>();
