@@ -43,7 +43,7 @@ export default function AdminMastersPage() {
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-bold text-brand">⭐ {m.rating.toFixed(1)}</p>
+                  <p className="text-sm font-bold text-brand">⭐ {Number(m.rating ?? 0).toFixed(1)}</p>
                   <p className="text-xs text-slate-400">{m.experienceYears} р.</p>
                 </div>
               </div>
