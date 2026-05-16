@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { servicesApi } from '../shared/api/endpoints';
+import { useAuthStore } from '../shared/store/auth.store';
 import Spinner from '../shared/components/ui/Spinner';
 import RegisterSection from '../features/landing/components/RegisterSection';
 
@@ -8,7 +9,27 @@ function scrollToRegister() {
   document.getElementById('register')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+function getCategoryIcon(name: string): string {
+  const n = name.toLowerCase();
+  if (n.includes('обслугов') || n.includes('то')) return '🔧';
+  if (n.includes('діагност')) return '🔍';
+  if (n.includes('кузов')) return '🚗';
+  if (n.includes('двигун') || n.includes('мотор')) return '⚙️';
+  if (n.includes('гальм')) return '🛑';
+  if (n.includes('шин') || n.includes('колес')) return '🏎️';
+  if (n.includes('електр')) return '⚡';
+  return '🔧';
+}
+
 export default function LandingPage() {
+  const { isAuthenticated, user } = useAuthStore();
+
+  if (isAuthenticated() && user) {
+    if (user.role === 'CLIENT') return <Navigate to="/client/dashboard" replace />;
+    if (user.role === 'MASTER') return <Navigate to="/master/dashboard" replace />;
+    if (user.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
+  }
+
   const { data: categories, isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: () => servicesApi.getCategories().then((r) => r.data),
@@ -60,7 +81,7 @@ export default function LandingPage() {
                 className="bg-white rounded-xl p-5 shadow-card border border-slate-100 hover:border-accent/30 hover:-translate-y-0.5 transition-all group"
               >
                 <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-3 text-accent text-xl group-hover:bg-accent group-hover:text-white transition-colors">
-                  🔧
+                  {getCategoryIcon(cat.name)}
                 </div>
                 <h3 className="font-semibold text-slate-900">{cat.name}</h3>
                 {cat.description && <p className="text-sm text-slate-500 mt-1 line-clamp-2">{cat.description}</p>}

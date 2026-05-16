@@ -148,7 +148,12 @@ export default function SmartBookingPage() {
       </div>
 
       {/* Date */}
-      <DatePicker label="Бажана дата (необов'язково)" value={preferredDate} onChange={(e) => setPreferredDate(e.target.value)} />
+      <DatePicker
+        label="Бажана дата (необов'язково)"
+        value={preferredDate}
+        onChange={(e) => setPreferredDate(e.target.value)}
+        max={new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0]}
+      />
 
       <Button
         onClick={handleSearch}

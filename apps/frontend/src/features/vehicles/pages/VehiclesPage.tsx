@@ -90,8 +90,9 @@ export default function VehiclesPage() {
 
   const handleUpdate = (data: CreateVehiclePayload) => {
     if (!editingVehicle) return;
+    const { make, model, year, plateNumber, vin } = data;
     updateVehicle.mutate(
-      { id: editingVehicle.id, data },
+      { id: editingVehicle.id, data: { make, model, year, plateNumber, vin } },
       {
         onSuccess: () => { toast('Збережено', 'success'); setEditingVehicle(null); },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

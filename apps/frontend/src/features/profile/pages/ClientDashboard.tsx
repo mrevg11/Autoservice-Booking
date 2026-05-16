@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../shared/hooks/useAuth';
 import { useMyBookings } from '../../bookings/hooks/useBookings';
+import { useVehicles } from '../../vehicles/hooks/useVehicles';
 import Badge from '../../../shared/components/ui/Badge';
 import Spinner from '../../../shared/components/ui/Spinner';
 import EmptyState from '../../../shared/components/ui/EmptyState';
@@ -9,6 +10,7 @@ import Button from '../../../shared/components/ui/Button';
 export default function ClientDashboard() {
   const { user } = useAuth();
   const { data, isLoading } = useMyBookings({ limit: 3, page: 1 });
+  const { data: vehicles } = useVehicles();
 
   const activeBookings = data?.data.filter((b) =>
     ['PENDING', 'CONFIRMED', 'IN_PROGRESS'].includes(b.status),
@@ -43,7 +45,7 @@ export default function ClientDashboard() {
         {[
           { label: 'Активних записів', value: activeBookings.length, to: '/client/bookings' },
           { label: 'Завершених', value: data?.data.filter((b) => b.status === 'COMPLETED').length ?? 0, to: '/client/bookings?status=COMPLETED' },
-          { label: 'Автомобілів', value: '—', to: '/client/vehicles' },
+          { label: 'Автомобілів', value: vehicles?.length ?? 0, to: '/client/vehicles' },
         ].map(({ label, value, to }) => (
           <Link
             key={label}

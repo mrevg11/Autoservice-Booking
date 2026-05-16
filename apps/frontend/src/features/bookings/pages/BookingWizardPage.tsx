@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useVehicles, useCreateVehicle } from '../../vehicles/hooks/useVehicles';
@@ -75,6 +75,10 @@ export default function BookingWizardPage() {
   const [showVehicleForm, setShowVehicleForm] = useState(false);
 
   const prefilledMasterId = searchParams.get('masterId') ? Number(searchParams.get('masterId')) : undefined;
+  const prefilledVehicleId = searchParams.get('vehicleId') ? Number(searchParams.get('vehicleId')) : undefined;
+  const prefilledDate = searchParams.get('date') ?? '';
+  const prefilledSlot = searchParams.get('slot') ?? null;
+  const prefilledServiceIdsStr = searchParams.get('serviceIds') ?? '';
   const prefilledStep = prefilledMasterId ? 3 : 0;
 
   const [step, setStep] = useState(prefilledStep);
@@ -82,8 +86,8 @@ export default function BookingWizardPage() {
   const [selectedServices, setSelectedServices] = useState<ServiceItem[]>([]);
   const [activeCategoryId, setActiveCategoryId] = useState<number | undefined>();
   const [selectedMasterId, setSelectedMasterId] = useState<number | undefined>(prefilledMasterId);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState(prefilledDate);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(prefilledSlot);
   const [notes, setNotes] = useState('');
   const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
 
@@ -94,6 +98,26 @@ export default function BookingWizardPage() {
     categoryId: activeCategoryId, isActive: true, limit: 50,
   });
   const { data: mastersData, isLoading: mastersLoading } = useMasters({ limit: 50 });
+
+  useEffect(() => {
+    if (prefilledVehicleId && vehicles && !selectedVehicle) {
+      const v = vehicles.find((v) => v.id === prefilledVehicleId);
+      if (v) setSelectedVehicle(v);
+    }
+  }, [vehicles, prefilledVehicleId]);
+
+  useEffect(() => {
+    if (!prefilledServiceIdsStr || selectedServices.length > 0 || !servicesData) return;
+    const ids = prefilledServiceIdsStr.split(',').map(Number).filter(Boolean);
+    const matched = servicesData.data.filter((s) => ids.includes(s.id));
+    if (matched.length > 0) setSelectedServices(matched);
+  }, [servicesData, prefilledServiceIdsStr]);
+
+  useEffect(() => {
+    if (step === 3) {
+      console.log('Wizard step 3 state:', { selectedVehicle, selectedServices, selectedMasterId, selectedDate, selectedSlot });
+    }
+  }, [step]);
 
   const totalDuration = selectedServices.reduce((s, sv) => s + sv.baseDurationMinutes, 0);
   const { data: slots, isLoading: slotsLoading } = useMasterSlots(
@@ -110,10 +134,16 @@ export default function BookingWizardPage() {
 
   const totalPrice = selectedServices.reduce((s, sv) => s + parseFloat(sv.price), 0);
 
+  const maxDate = new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0];
+
   const handleConfirm = () => {
     console.log('Confirm data:', { selectedVehicle, selectedMasterId, selectedSlot, selectedDate, selectedServices });
-    if (!selectedVehicle || !selectedMasterId || !selectedSlot) {
+    if (!selectedVehicle || !selectedMasterId || !selectedSlot || !selectedDate || selectedServices.length === 0) {
       toast('Заповніть всі обов\'язкові поля', 'error');
+      return;
+    }
+    if (new Date(`${selectedDate}T${selectedSlot}`) < new Date()) {
+      toast('Оберіть майбутню дату', 'error');
       return;
     }
 
@@ -310,6 +340,7 @@ export default function BookingWizardPage() {
                 label="Дата"
                 value={selectedDate}
                 onChange={(e) => { setSelectedDate(e.target.value); setSelectedSlot(null); }}
+                max={maxDate}
               />
               {selectedDate && (
                 <div>
