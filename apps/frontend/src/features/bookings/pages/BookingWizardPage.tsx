@@ -111,7 +111,11 @@ export default function BookingWizardPage() {
   const totalPrice = selectedServices.reduce((s, sv) => s + parseFloat(sv.price), 0);
 
   const handleConfirm = () => {
-    if (!selectedVehicle || !selectedMasterId || !selectedSlot) return;
+    console.log('Confirm data:', { selectedVehicle, selectedMasterId, selectedSlot, selectedDate, selectedServices });
+    if (!selectedVehicle || !selectedMasterId || !selectedSlot) {
+      toast('Заповніть всі обов\'язкові поля', 'error');
+      return;
+    }
 
     createBooking.mutate(
       {
@@ -123,7 +127,12 @@ export default function BookingWizardPage() {
       },
       {
         onSuccess: ({ data }) => { setCreatedBookingId(data.id); setStep(4); },
-        onError: () => toast('Помилка при створенні запису', 'error'),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (err: any) => {
+          console.error('Booking error:', err?.response?.data);
+          const msg = err?.response?.data?.message ?? 'Помилка при створенні запису';
+          toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
+        },
       },
     );
   };

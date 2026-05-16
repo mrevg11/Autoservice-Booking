@@ -31,10 +31,11 @@ export default function ClientProfilePage() {
     mutationFn: (d: ProfileData) => usersApi.updateMe(d),
     onSuccess: ({ data: updated }) => {
       void queryClient.invalidateQueries({ queryKey: ['me'] });
+      const accessToken = useAuthStore.getState().accessToken ?? '';
       if (user && refreshToken) {
         setAuth(
-          { ...user, firstName: updated.firstName, lastName: updated.lastName },
-          useAuthStore.getState().accessToken ?? '',
+          { ...user, firstName: updated.firstName, lastName: updated.lastName, emailVerified: updated.emailVerified },
+          accessToken,
           refreshToken,
         );
       }
@@ -71,12 +72,12 @@ export default function ClientProfilePage() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit((d) => updateMutation.mutate(d))} className="space-y-4">
+        <form onSubmit={handleSubmit((d) => updateMutation.mutate(d))} className="space-y-4" noValidate>
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Ім'я" error={errors.firstName?.message} {...register('firstName')} />
-            <Input label="Прізвище" error={errors.lastName?.message} {...register('lastName')} />
+            <Input label="Ім'я" placeholder="Іван" error={errors.firstName?.message} {...register('firstName')} />
+            <Input label="Прізвище" placeholder="Коваль" error={errors.lastName?.message} {...register('lastName')} />
           </div>
-          <Input label="Телефон" type="tel" {...register('phone')} />
+          <Input label="Телефон" type="tel" placeholder="+380XXXXXXXXX" {...register('phone')} />
           <Button type="submit" isLoading={updateMutation.isPending}>Зберегти зміни</Button>
         </form>
       </div>

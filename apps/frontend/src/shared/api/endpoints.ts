@@ -129,7 +129,6 @@ export interface CreateVehiclePayload {
   year: number;
   plateNumber: string;
   vin?: string;
-  mileage?: number;
 }
 
 export const vehiclesApi = {

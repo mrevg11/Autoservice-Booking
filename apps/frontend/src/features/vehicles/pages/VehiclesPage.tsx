@@ -30,8 +30,15 @@ function VehicleForm({
         <Input label="Рік" type="number" error={errors.year?.message} {...register('year', { required: 'Обов\'язково', valueAsNumber: true })} />
         <Input label="Держ. номер" error={errors.plateNumber?.message} {...register('plateNumber', { required: 'Обов\'язково' })} />
       </div>
-      <Input label="VIN (необов'язково)" {...register('vin')} />
-      <Input label="Пробіг (км)" type="number" {...register('mileage', { valueAsNumber: true })} />
+      <Input
+        label="VIN (необов'язково)"
+        placeholder="1HGCM82633A123456"
+        error={errors.vin?.message}
+        {...register('vin', {
+          validate: (v) =>
+            !v || /^[A-HJ-NPR-Z0-9]{17}$/.test(v) || 'VIN має бути 17 символів',
+        })}
+      />
       <div className="flex gap-2">
         <Button type="submit" size="sm" isLoading={isLoading}>Зберегти</Button>
         <Button type="button" variant="ghost" size="sm" onClick={onCancel}>Скасувати</Button>
@@ -135,7 +142,7 @@ export default function VehiclesPage() {
             editingVehicle?.id === v.id ? (
               <VehicleForm
                 key={v.id}
-                defaultValues={{ ...v, vin: v.vin ?? undefined, mileage: v.mileage ?? undefined }}
+                defaultValues={{ ...v, vin: v.vin ?? undefined }}
                 onSave={handleUpdate}
                 onCancel={() => setEditingVehicle(null)}
                 isLoading={updateVehicle.isPending}
