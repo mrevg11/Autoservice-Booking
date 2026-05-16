@@ -89,8 +89,8 @@ export default function RecommendationsPage() {
                       </div>
                     </div>
                     <div className="text-right text-sm">
-                      <p className="font-bold text-brand">⭐ {(rec.rating ?? 0).toFixed(1)}</p>
-                      <p className="text-xs text-slate-500">{rec.experienceYears} р. досвіду</p>
+                      <p className="font-bold text-brand">⭐ {Number(rec.rating ?? 0).toFixed(1)}</p>
+                      <p className="text-xs text-slate-500">{Number(rec.experienceYears ?? 0)} р. досвіду</p>
                     </div>
                   </div>
 

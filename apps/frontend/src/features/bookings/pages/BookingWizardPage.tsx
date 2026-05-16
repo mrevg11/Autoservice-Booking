@@ -122,7 +122,7 @@ export default function BookingWizardPage() {
   }, [servicesData, prefilledServiceIdsStr]);
 
 
-  const totalDuration = selectedServices.reduce((s, sv) => s + sv.baseDurationMinutes, 0);
+  const totalDuration = selectedServices.reduce((s, sv) => s + Number(sv.baseDurationMinutes ?? 0), 0);
   const { data: slots, isLoading: slotsLoading } = useMasterSlots(
     selectedMasterId, selectedDate, totalDuration,
   );

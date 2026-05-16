@@ -10,6 +10,15 @@ export class MasterRecommendationDto {
   @ApiProperty({ minimum: 0, maximum: 1, example: 0.82 })
   score!: number;
 
+  @ApiProperty({ example: 4.7 })
+  rating!: number;
+
+  @ApiProperty({ example: 5 })
+  experienceYears!: number;
+
+  @ApiProperty({ example: 'Двигуни, ходова' })
+  specialization!: string;
+
   @ApiProperty({
     type: [String],
     example: [

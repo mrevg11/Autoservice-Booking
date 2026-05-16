@@ -164,7 +164,7 @@ export default function BookingDetailPage() {
               </div>
               <div>
                 <p className="font-medium text-sm">{booking.master?.user.firstName} {booking.master?.user.lastName}</p>
-                <p className="text-xs text-slate-500">⭐ {booking.master?.rating?.toFixed(1)}</p>
+                <p className="text-xs text-slate-500">⭐ {Number(booking.master?.rating ?? 0).toFixed(1)}</p>
               </div>
             </div>
             {booking.master?.specialization && (

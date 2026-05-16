@@ -144,6 +144,9 @@ export class RecommendationsService {
         masterId: master.id,
         masterName: `${master.user?.firstName ?? ''} ${master.user?.lastName ?? ''}`.trim(),
         score: Math.round(score * 1000) / 1000,
+        rating: Number(master.rating ?? 0),
+        experienceYears: Number(master.experienceYears ?? 0),
+        specialization: master.specialization ?? '',
         reasons: [
           `Рейтинг: ${Math.round(ratingScore * 100)}%`,
           `Особистий досвід: ${Math.round(collaborativeScore * 100)}%`,

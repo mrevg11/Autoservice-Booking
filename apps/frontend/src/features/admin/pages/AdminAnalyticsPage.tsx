@@ -211,7 +211,7 @@ export default function AdminAnalyticsPage() {
               { label: 'Нові (< 30 днів)', value: retention.newClients, color: 'text-green-600' },
               { label: 'Постійні (2+ записи)', value: retention.returningClients, color: 'text-accent' },
               { label: 'Відтік (> 90 днів)', value: retention.churnedClients, color: 'text-red-500' },
-              { label: 'Серед. записів/клієнт', value: retention.avgBookingsPerClient.toFixed(1), color: 'text-brand' },
+              { label: 'Серед. записів/клієнт', value: Number(retention.avgBookingsPerClient ?? 0).toFixed(1), color: 'text-brand' },
             ].map(({ label, value, color }) => (
               <div key={label} className="text-center p-4 bg-slate-50 rounded-xl">
                 <p className={`text-2xl font-extrabold ${color}`}>{value}</p>

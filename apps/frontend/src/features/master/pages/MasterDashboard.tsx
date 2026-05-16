@@ -7,11 +7,11 @@ import Spinner from '../../../shared/components/ui/Spinner';
 export default function MasterDashboard() {
   const { user } = useAuth();
 
-  const today = new Date().toISOString().slice(0, 10);
-  const { data, isLoading } = useMyBookings({ limit: 20, page: 1 });
+  const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local tz
+  const { data, isLoading } = useMyBookings({ limit: 50, page: 1 });
 
   const todayBookings = (data?.data ?? []).filter((b) =>
-    b.scheduledAt.startsWith(today),
+    new Date(b.scheduledAt).toLocaleDateString('en-CA') === todayStr,
   ).sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime());
 
   const confirmed = todayBookings.filter((b) => b.status === 'CONFIRMED').length;

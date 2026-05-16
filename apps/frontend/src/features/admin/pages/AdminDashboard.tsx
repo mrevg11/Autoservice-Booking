@@ -29,7 +29,7 @@ export default function AdminDashboard() {
     { label: 'Всього клієнтів', value: summary.totalClients, sub: `${summary.totalMasters} майстрів` },
     { label: 'Записів сьогодні', value: summary.bookingsToday, sub: `${summary.pendingBookings} очікують` },
     { label: 'Дохід цього місяця', value: `${summary.revenueThisMonth.toLocaleString('uk-UA')} ₴`, sub: `Всього: ${summary.totalRevenue.toLocaleString('uk-UA')} ₴` },
-    { label: 'Середній рейтинг', value: summary.avgRating.toFixed(1), sub: '⭐ по всіх майстрах' },
+    { label: 'Середній рейтинг', value: Number(summary.avgRating ?? 0).toFixed(1), sub: '⭐ по всіх майстрах' },
   ] : [];
 
   return (

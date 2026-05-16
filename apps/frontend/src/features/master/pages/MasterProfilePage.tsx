@@ -57,7 +57,7 @@ export default function MasterProfilePage() {
           </div>
           <div>
             <p className="font-semibold">{userMe?.firstName} {userMe?.lastName}</p>
-            {me && <p className="text-sm text-slate-500">⭐ {me.rating.toFixed(1)}</p>}
+            {me && <p className="text-sm text-slate-500">⭐ {Number(me.rating ?? 0).toFixed(1)}</p>}
           </div>
         </div>
 
