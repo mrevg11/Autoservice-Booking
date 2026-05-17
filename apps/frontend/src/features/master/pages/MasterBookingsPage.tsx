@@ -90,7 +90,7 @@ export default function MasterBookingsPage() {
                     </p>
                     <p className="text-xs text-slate-500">
                       {new Date(booking.scheduledAt).toLocaleDateString('uk-UA', {
-                        day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
+                        day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev',
                       })}
                     </p>
                     <p className="text-xs text-slate-400 mt-0.5">

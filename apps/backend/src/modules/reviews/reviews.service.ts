@@ -34,17 +34,17 @@ export class ReviewsService {
     if (!booking) throw new NotFoundException(`Booking #${dto.bookingId} not found`);
 
     if (!booking.client || booking.client.id !== clientId) {
-      throw new ForbiddenException('This booking does not belong to you');
+      throw new ForbiddenException('Цей запис не належить вам');
     }
 
     if (booking.status !== BookingStatus.COMPLETED) {
-      throw new BadRequestException('Booking is not completed');
+      throw new BadRequestException('Відгук можна залишити лише для завершеного запису');
     }
 
     const existing = await this.reviewsRepo.findOne({
       where: { booking: { id: dto.bookingId } },
     });
-    if (existing) throw new ConflictException('Review for this booking already exists');
+    if (existing) throw new ConflictException('Відгук для цього запису вже існує');
 
     const review = this.reviewsRepo.create({
       booking,

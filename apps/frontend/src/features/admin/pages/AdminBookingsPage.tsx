@@ -118,9 +118,9 @@ export default function AdminBookingsPage() {
                     {b.master.user.firstName} {b.master.user.lastName}
                   </td>
                   <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
-                    {new Date(b.scheduledAt).toLocaleDateString('uk-UA', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    {new Date(b.scheduledAt).toLocaleDateString('uk-UA', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Europe/Kiev' })}
                     {' '}
-                    {new Date(b.scheduledAt).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(b.scheduledAt).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}
                   </td>
                   <td className="px-4 py-3"><Badge status={b.status} /></td>
                   <td className="px-4 py-3 font-medium whitespace-nowrap">{b.totalPrice} ₴</td>

@@ -58,7 +58,7 @@ export default function MasterBookingDetailPage() {
                 <p className="font-medium">{booking.client?.firstName} {booking.client?.lastName}</p>
               </div>
               <div><p className="text-slate-500">Дата та час</p>
-                <p className="font-medium">{new Date(booking.scheduledAt).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
+                <p className="font-medium">{new Date(booking.scheduledAt).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}</p>
               </div>
               <div><p className="text-slate-500">Автомобіль</p>
                 <p className="font-medium">{booking.vehicle?.make} {booking.vehicle?.model} ({booking.vehicle?.year})</p>
@@ -112,7 +112,7 @@ export default function MasterBookingDetailPage() {
                     <div className="ml-3">
                       <p className="text-sm font-medium">{h.newStatus}</p>
                       <p className="text-xs text-slate-500">
-                        {new Date(h.changedAt).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        {new Date(h.changedAt).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}
                       </p>
                     </div>
                   </div>

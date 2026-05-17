@@ -39,7 +39,7 @@ export class AuthService {
 
   async register(dto: RegisterDto): Promise<{ message: string }> {
     const existing = await this.usersRepo.findOne({ where: { email: dto.email } });
-    if (existing) throw new ConflictException('Email already registered');
+    if (existing) throw new ConflictException('Цей email вже зареєстровано');
 
     const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
     const emailVerificationToken = crypto.randomBytes(32).toString('hex');
@@ -67,7 +67,7 @@ export class AuthService {
 
   async registerMaster(dto: RegisterDto): Promise<{ message: string }> {
     const existing = await this.usersRepo.findOne({ where: { email: dto.email } });
-    if (existing) throw new ConflictException('Email already registered');
+    if (existing) throw new ConflictException('Цей email вже зареєстровано');
 
     const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
 
@@ -92,7 +92,7 @@ export class AuthService {
     const user = await this.usersRepo.findOne({
       where: { emailVerificationToken: token },
     });
-    if (!user) throw new BadRequestException('Invalid or expired verification token');
+    if (!user) throw new BadRequestException('Недійсний або прострочений токен підтвердження');
 
     user.emailVerified = true;
     user.emailVerificationToken = null;
@@ -106,9 +106,9 @@ export class AuthService {
 
     // Однакова помилка для "не знайдено" і "неправильний пароль" — захист від enumeration
     const isValid = user && (await bcrypt.compare(dto.password, user.passwordHash));
-    if (!isValid) throw new UnauthorizedException('Invalid credentials');
+    if (!isValid) throw new UnauthorizedException('Невірний email або пароль');
 
-    if (user.isBlocked) throw new UnauthorizedException('Account is blocked');
+    if (user.isBlocked) throw new UnauthorizedException('Обліковий запис заблоковано');
 
     const tokens = await this.generateTokens(user);
 
@@ -131,10 +131,10 @@ export class AuthService {
 
   async refresh(userId: number, refreshToken: string): Promise<{ accessToken: string }> {
     const user = await this.usersRepo.findOne({ where: { id: userId } });
-    if (!user?.refreshTokenHash) throw new UnauthorizedException('Access denied');
+    if (!user?.refreshTokenHash) throw new UnauthorizedException('Доступ заборонено');
 
     const isMatch = await bcrypt.compare(refreshToken, user.refreshTokenHash);
-    if (!isMatch) throw new UnauthorizedException('Invalid refresh token');
+    if (!isMatch) throw new UnauthorizedException('Недійсний токен оновлення');
 
     const payload: JwtPayload = { sub: user.id, email: user.email, role: user.role };
     const accessToken = this.jwtService.sign(payload, {
@@ -179,7 +179,7 @@ export class AuthService {
       !user.passwordResetExpires ||
       user.passwordResetExpires < new Date()
     ) {
-      throw new BadRequestException('Invalid or expired reset token');
+      throw new BadRequestException('Недійсний або прострочений токен скидання паролю');
     }
 
     user.passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);

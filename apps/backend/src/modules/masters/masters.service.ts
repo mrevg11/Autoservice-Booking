@@ -134,7 +134,7 @@ export class MastersService {
     const existing = await this.masterServicesRepo.findOne({
       where: { master: { id: master.id }, service: { id: service.id } },
     });
-    if (existing) throw new ConflictException('Service already assigned to this master');
+    if (existing) throw new ConflictException('Ця послуга вже закріплена за майстром');
 
     const masterService = this.masterServicesRepo.create({
       master,
@@ -228,7 +228,7 @@ export class MastersService {
       where: { user: { id: userId } },
       relations: ['user'],
     });
-    if (!master) throw new NotFoundException('Master profile not found for this user');
+    if (!master) throw new NotFoundException('Профіль майстра не знайдено');
     return master;
   }
 

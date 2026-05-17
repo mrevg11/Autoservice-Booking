@@ -88,7 +88,7 @@ export class UsersService {
 
   async createMasterAccount(dto: RegisterDto): Promise<{ message: string }> {
     const existing = await this.usersRepo.findOne({ where: { email: dto.email } });
-    if (existing) throw new ConflictException('Email already registered');
+    if (existing) throw new ConflictException('Цей email вже зареєстровано');
 
     const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
 

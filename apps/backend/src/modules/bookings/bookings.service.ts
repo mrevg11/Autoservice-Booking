@@ -73,7 +73,7 @@ export class BookingsService {
   async create(client: User, dto: CreateBookingDto): Promise<Booking> {
     const scheduledAt = new Date(dto.scheduledAt);
     if (scheduledAt <= new Date()) {
-      throw new BadRequestException('Cannot book in the past');
+      throw new BadRequestException('Не можна записатись на минулий час');
     }
 
     // Validate master
@@ -89,12 +89,12 @@ export class BookingsService {
     });
     if (!vehicle) throw new NotFoundException(`Vehicle #${dto.vehicleId} not found`);
     if (vehicle.client.id !== client.id)
-      throw new ForbiddenException('Vehicle does not belong to you');
+      throw new ForbiddenException('Цей автомобіль не належить вам');
 
     // Validate services and master assignments
     const services = await this.servicesRepo.findByIds(dto.serviceIds);
     if (services.length !== dto.serviceIds.length) {
-      throw new NotFoundException('One or more services not found');
+      throw new NotFoundException('Одну або кілька послуг не знайдено');
     }
 
     const masterServices = await this.masterServicesRepo.find({
@@ -107,7 +107,7 @@ export class BookingsService {
 
     if (masterServices.length !== dto.serviceIds.length) {
       throw new BadRequestException(
-        'One or more services are not assigned to this master',
+        'Одна або кілька послуг не закріплені за цим майстром',
       );
     }
 
@@ -143,7 +143,7 @@ export class BookingsService {
         .getMany();
 
       if (overlapping.length > 0) {
-        throw new ConflictException('Time slot is already booked');
+        throw new ConflictException('Цей час вже зайнятий');
       }
 
       // Save booking
@@ -263,7 +263,7 @@ export class BookingsService {
       );
     }
     if (!transition.roles.includes(user.role)) {
-      throw new ForbiddenException('You are not allowed to change this booking status');
+      throw new ForbiddenException('У вас немає прав для зміни цього статусу');
     }
 
     const oldStatus = booking.status;
@@ -306,7 +306,7 @@ export class BookingsService {
     if (!booking) throw new NotFoundException(`Booking #${id} not found`);
 
     if (booking.client?.id !== client.id) {
-      throw new ForbiddenException('You can only cancel your own bookings');
+      throw new ForbiddenException('Ви можете скасувати лише власні записи');
     }
 
     if (
@@ -381,13 +381,13 @@ export class BookingsService {
   private checkBookingAccess(booking: Booking, user: User): void {
     if (user.role === Role.ADMIN) return;
     if (user.role === Role.CLIENT && booking.client?.id !== user.id) {
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException('Доступ заборонено');
     }
     if (
       user.role === Role.MASTER &&
       booking.master.user.id !== user.id
     ) {
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException('Доступ заборонено');
     }
   }
 

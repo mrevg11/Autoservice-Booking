@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth, useLogout } from '../hooks/useAuth';
 import ToastContainer from './Toast';
 import NotificationBell from './NotificationBell';
@@ -54,20 +54,8 @@ export default function Layout() {
   const { user, isAuthenticated } = useAuth();
   const logoutMutation = useLogout();
   const navigate = useNavigate();
-  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const handleRegisterClick = () => {
-    if (location.pathname === '/') {
-      document.getElementById('register')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      navigate('/');
-      setTimeout(() => {
-        document.getElementById('register')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
-  };
 
   const navItems = user?.role === 'MASTER' ? masterNav : user?.role === 'ADMIN' ? adminNav : clientNav;
   const showNav = isAuthenticated() && (user?.role === 'CLIENT' || user?.role === 'MASTER' || user?.role === 'ADMIN');
@@ -83,24 +71,6 @@ export default function Layout() {
             <span className="text-accent">Service</span>
             <span className="w-1.5 h-1.5 rounded-full bg-accent mb-2" />
           </Link>
-
-          {/* Desktop nav */}
-          {showNav && (
-            <nav className="hidden lg:flex items-center gap-1">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
-                    ${isActive ? 'bg-white/15 text-white' : 'text-white/70 hover:text-white hover:bg-white/10'}`
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-            </nav>
-          )}
 
           {/* Right side */}
           <div className="flex items-center gap-2">
@@ -140,14 +110,9 @@ export default function Layout() {
               </div>
               </div>
             ) : (
-              <div className="flex gap-2">
-                <Link to="/login" className="px-3 py-1.5 text-sm text-white/80 hover:text-white transition-colors">
-                  Увійти
-                </Link>
-                <button onClick={handleRegisterClick} className="px-3 py-1.5 text-sm bg-accent text-white rounded-lg hover:bg-accent-hover transition-colors">
-                  Реєстрація
-                </button>
-              </div>
+              <Link to="/login" className="px-3 py-1.5 text-sm text-white/80 hover:text-white transition-colors">
+                Увійти
+              </Link>
             )}
 
             {/* Mobile hamburger */}

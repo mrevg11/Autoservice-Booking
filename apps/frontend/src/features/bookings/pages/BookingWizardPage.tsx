@@ -53,7 +53,7 @@ function VehicleForm({ onDone }: { onDone: () => void }) {
   const createVehicle = useCreateVehicle();
   const { register, handleSubmit, formState: { errors } } = useForm<{
     make: string; model: string; year: number; plateNumber: string; vin?: string;
-  }>();
+  }>({ mode: 'onChange' });
 
   return (
     <form onSubmit={handleSubmit((d) => createVehicle.mutate(
@@ -65,7 +65,7 @@ function VehicleForm({ onDone }: { onDone: () => void }) {
         <Input label="Марка" placeholder="Toyota" error={errors.make?.message} {...register('make', { required: 'Обов\'язково' })} />
         <Input label="Модель" placeholder="Camry" error={errors.model?.message} {...register('model', { required: 'Обов\'язково' })} />
         <Input label="Рік" type="number" placeholder="2020" min={1900} max={new Date().getFullYear()} error={errors.year?.message} {...register('year', { required: 'Обов\'язково', min: { value: 1900, message: 'Не раніше 1900' }, max: { value: new Date().getFullYear(), message: `Не пізніше ${new Date().getFullYear()}` } })} />
-        <Input label="Держ. номер" placeholder="AA1234BB" error={errors.plateNumber?.message} {...register('plateNumber', { required: 'Обов\'язково' })} />
+        <Input label="Держ. номер" placeholder="АА1234АА" error={errors.plateNumber?.message} {...register('plateNumber', { required: 'Обов\'язково', pattern: { value: /^[A-ZА-ЯІЇЄ]{2}\d{4}[A-ZА-ЯІЇЄ]{2}$/i, message: 'Формат: АА1234АА' } })} />
       </div>
       <Input label="VIN (необов'язково)" placeholder="1HGCM82633..." {...register('vin')} />
       <div className="flex gap-2">

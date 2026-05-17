@@ -20,7 +20,7 @@ function VehicleForm({
   onCancel: () => void;
   isLoading: boolean;
 }) {
-  const { register, handleSubmit, formState: { errors } } = useForm<CreateVehiclePayload>({ defaultValues });
+  const { register, handleSubmit, formState: { errors } } = useForm<CreateVehiclePayload>({ defaultValues, mode: 'onChange' });
 
   return (
     <form onSubmit={handleSubmit(onSave)} className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
@@ -28,7 +28,7 @@ function VehicleForm({
         <Input label="Марка" error={errors.make?.message} {...register('make', { required: 'Обов\'язково' })} />
         <Input label="Модель" error={errors.model?.message} {...register('model', { required: 'Обов\'язково' })} />
         <Input label="Рік" type="number" min={1900} max={new Date().getFullYear()} error={errors.year?.message} {...register('year', { required: 'Обов\'язково', valueAsNumber: true, min: { value: 1900, message: 'Не раніше 1900' }, max: { value: new Date().getFullYear(), message: `Не пізніше ${new Date().getFullYear()}` } })} />
-        <Input label="Держ. номер" error={errors.plateNumber?.message} {...register('plateNumber', { required: 'Обов\'язково' })} />
+        <Input label="Держ. номер" placeholder="АА1234АА" error={errors.plateNumber?.message} {...register('plateNumber', { required: 'Обов\'язково', pattern: { value: /^[A-ZА-ЯІЇЄ]{2}\d{4}[A-ZА-ЯІЇЄ]{2}$/i, message: 'Формат: АА1234АА' } })} />
       </div>
       <Input
         label="VIN (необов'язково)"

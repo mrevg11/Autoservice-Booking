@@ -131,18 +131,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="text-center py-8">
-        <h2 className="text-3xl font-bold text-slate-900 mb-4">Готові спробувати?</h2>
-        <p className="text-slate-600 mb-6">Зареєструйтеся безкоштовно і запишіться на перше ТО</p>
-        <button
-          onClick={scrollToRegister}
-          className="inline-flex items-center justify-center px-8 py-3 bg-accent text-white font-semibold rounded-xl hover:bg-accent-hover transition-colors text-lg"
-        >
-          Зареєструватися безкоштовно
-        </button>
-      </section>
-
       {/* Register section */}
       <RegisterSection />
 
@@ -151,11 +139,6 @@ export default function LandingPage() {
         <div className="flex items-center gap-1 font-extrabold text-brand">
           Auto<span className="text-accent">Service</span>
           <span className="w-1.5 h-1.5 rounded-full bg-accent mb-1" />
-        </div>
-        <div className="flex gap-4 text-sm text-slate-500">
-          <Link to="/services" className="hover:text-slate-900">Послуги</Link>
-          <Link to="/login" className="hover:text-slate-900">Увійти</Link>
-          <Link to="/register" className="hover:text-slate-900">Реєстрація</Link>
         </div>
         <p className="text-xs text-slate-400">© 2026 AutoService. Всі права захищено.</p>
       </footer>

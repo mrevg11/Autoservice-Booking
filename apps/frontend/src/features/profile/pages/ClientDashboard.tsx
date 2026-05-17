@@ -97,7 +97,7 @@ export default function ClientDashboard() {
                   </div>
                   <p className="text-xs text-slate-500">
                     {new Date(booking.scheduledAt).toLocaleDateString('uk-UA', {
-                      day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
+                      day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev',
                     })}
                   </p>
                 </div>

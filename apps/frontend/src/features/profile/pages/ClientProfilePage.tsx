@@ -49,6 +49,7 @@ export default function ClientProfilePage() {
 
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileData>({
     resolver: zodResolver(profileSchema),
+    mode: 'onChange',
     values: data ? { firstName: data.firstName, lastName: data.lastName, phone: data.phone ?? '' } : undefined,
   });
 

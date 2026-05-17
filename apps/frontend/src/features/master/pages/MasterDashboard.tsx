@@ -58,7 +58,7 @@ export default function MasterDashboard() {
                 {nextBooking.client?.firstName} {nextBooking.client?.lastName}
               </p>
               <p className="text-sm text-slate-600">
-                {new Date(nextBooking.scheduledAt).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+                {new Date(nextBooking.scheduledAt).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}
                 {' · '}
                 {nextBooking.vehicle?.make} {nextBooking.vehicle?.model}
               </p>
@@ -92,7 +92,7 @@ export default function MasterDashboard() {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium text-sm text-slate-900">
-                      {new Date(b.scheduledAt).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(b.scheduledAt).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}
                     </span>
                     <Badge status={b.status} />
                   </div>

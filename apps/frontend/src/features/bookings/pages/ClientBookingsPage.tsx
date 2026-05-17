@@ -100,7 +100,7 @@ export default function ClientBookingsPage() {
                   <div className="text-xs text-slate-500 mt-0.5">
                     {new Date(booking.scheduledAt).toLocaleDateString('uk-UA', {
                       day: 'numeric', month: 'long', year: 'numeric',
-                      hour: '2-digit', minute: '2-digit',
+                      hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev',
                     })}
                   </div>
                   {booking.bookingServices?.length > 0 && (

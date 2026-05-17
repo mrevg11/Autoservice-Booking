@@ -37,6 +37,7 @@ export default function MasterProfilePage() {
   });
 
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({
+    mode: 'onChange',
     values: me ? {
       specialization: me.specialization ?? '',
       experienceYears: me.experienceYears,

@@ -32,12 +32,12 @@ export class CreateVehicleDto {
   @ApiPropertyOptional({ example: 'JT2BF22K1W0123456' })
   @IsOptional()
   @IsString()
-  @Matches(/^[A-HJ-NPR-Z0-9]{17}$/, { message: 'Invalid VIN format' })
+  @Matches(/^[A-HJ-NPR-Z0-9]{17}$/, { message: 'VIN має складатися з 17 символів (латиниця та цифри)' })
   vin?: string;
 
   @ApiPropertyOptional({ example: 'AB1234CD' })
   @IsOptional()
   @IsString()
-  @MaxLength(20)
+  @Matches(/^[A-ZА-ЯІЇЄ]{2}\d{4}[A-ZА-ЯІЇЄ]{2}$/i, { message: 'Формат номера: АА1234АА' })
   plateNumber?: string;
 }
