@@ -60,17 +60,19 @@ export class MastersService {
   async findAllForServices(serviceIds: number[]): Promise<PaginatedResult<MasterProfile>> {
     if (!serviceIds.length) return this.findAll({ page: 1, limit: 50 });
 
-    const rawIds = await this.masterProfilesRepo
-      .createQueryBuilder('mp')
-      .select('mp.id', 'id')
-      .innerJoin('mp.masterServices', 'ms')
-      .innerJoin('ms.service', 's')
-      .where('s.id IN (:...serviceIds)', { serviceIds })
-      .groupBy('mp.id')
-      .having('COUNT(DISTINCT s.id) = :count', { count: serviceIds.length })
-      .getRawMany<{ id: number }>();
+    // MasterProfile has no @OneToMany relation declared, so we query master_services directly
+    const placeholders = serviceIds.map(() => '?').join(',');
+    const rows = await this.dataSource.query<{ id: number }[]>(
+      `SELECT ms.masterId AS id
+       FROM master_services ms
+       JOIN services s ON s.id = ms.serviceId
+       WHERE s.id IN (${placeholders})
+       GROUP BY ms.masterId
+       HAVING COUNT(DISTINCT s.id) = ?`,
+      [...serviceIds, serviceIds.length],
+    );
 
-    const ids = rawIds.map((r) => r.id);
+    const ids = rows.map((r) => Number(r.id));
     if (!ids.length) return { data: [], total: 0, page: 1, limit: 50, totalPages: 0 };
 
     const data = await this.masterProfilesRepo.find({
@@ -93,7 +95,7 @@ export class MastersService {
   async findOne(masterId: number): Promise<MasterProfile> {
     const master = await this.masterProfilesRepo.findOne({
       where: { id: masterId },
-      relations: ['user', 'masterServices', 'masterServices.service', 'masterSchedules'],
+      relations: ['user'],
     });
     if (!master) throw new NotFoundException(`Master #${masterId} not found`);
     if (master.user) {
