@@ -51,7 +51,7 @@ export class VehiclesService {
       where: { id },
       relations: ['client'],
     });
-    if (!vehicle) throw new NotFoundException(`Vehicle #${id} not found`);
+    if (!vehicle) throw new NotFoundException('Автомобіль не знайдено');
     if (vehicle.client.id !== clientId)
       throw new ForbiddenException('Доступ заборонено');
     return vehicle;
@@ -76,13 +76,20 @@ export class VehiclesService {
     const activeCount = await this.bookingsRepo.count({
       where: {
         vehicle: { id },
-        status: In([BookingStatus.PENDING, BookingStatus.CONFIRMED]),
+        status: In([BookingStatus.PENDING, BookingStatus.CONFIRMED, BookingStatus.IN_PROGRESS]),
       },
     });
     if (activeCount > 0) {
-      throw new ConflictException('Неможливо видалити авто з активними записами');
+      throw new ConflictException('Неможливо видалити авто з активними записами. Спочатку скасуйте записи.');
     }
+    // Nullify vehicle FK in all remaining bookings to avoid FK constraint violation
+    await this.bookingsRepo
+      .createQueryBuilder()
+      .update()
+      .set({ vehicle: null as never })
+      .where('vehicleId = :id', { id })
+      .execute();
     await this.vehiclesRepo.remove(vehicle);
-    return { message: `Vehicle #${id} deleted` };
+    return { message: 'Автомобіль видалено' };
   }
 }

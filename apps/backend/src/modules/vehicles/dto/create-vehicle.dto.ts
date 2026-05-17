@@ -8,6 +8,7 @@ import {
   Max,
   IsOptional,
   Matches,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateVehicleDto {
@@ -31,6 +32,7 @@ export class CreateVehicleDto {
 
   @ApiPropertyOptional({ example: 'JT2BF22K1W0123456' })
   @IsOptional()
+  @ValidateIf((o: CreateVehicleDto) => !!o.vin)
   @IsString()
   @Matches(/^[A-HJ-NPR-Z0-9]{17}$/, { message: 'VIN має складатися з 17 символів (латиниця та цифри)' })
   vin?: string;

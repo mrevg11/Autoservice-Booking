@@ -236,6 +236,8 @@ export class BookingsService {
       .leftJoinAndSelect('b.master', 'master')
       .leftJoinAndSelect('master.user', 'masterUser')
       .leftJoinAndSelect('b.vehicle', 'vehicle')
+      .leftJoinAndSelect('b.bookingServices', 'bookingServices')
+      .leftJoinAndSelect('bookingServices.service', 'bsService')
       .where('b.id = :id', { id })
       .getOne();
 

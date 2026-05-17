@@ -17,9 +17,13 @@ export default function LoginPage() {
   const loginMutation = useLogin();
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    mode: 'onChange',
   });
 
-  const onSubmit = (data: FormData) => loginMutation.mutate(data);
+  const onSubmit = (data: FormData) => {
+    loginMutation.reset();
+    loginMutation.mutate(data);
+  };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center">

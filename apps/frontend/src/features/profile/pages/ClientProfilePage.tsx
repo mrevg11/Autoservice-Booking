@@ -21,8 +21,7 @@ const profileSchema = z.object({
 type ProfileData = z.infer<typeof profileSchema>;
 
 export default function ClientProfilePage() {
-  const { user, setAuth } = useAuthStore();
-  const refreshToken = useAuthStore((s) => s.refreshToken);
+  const updateUser = useAuthStore((s) => s.updateUser);
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
@@ -34,14 +33,7 @@ export default function ClientProfilePage() {
     mutationFn: (d: ProfileData) => usersApi.updateMe(d),
     onSuccess: ({ data: updated }) => {
       void queryClient.invalidateQueries({ queryKey: ['me'] });
-      const accessToken = useAuthStore.getState().accessToken ?? '';
-      if (user && refreshToken) {
-        setAuth(
-          { ...user, firstName: updated.firstName, lastName: updated.lastName, emailVerified: updated.emailVerified },
-          accessToken,
-          refreshToken,
-        );
-      }
+      updateUser({ firstName: updated.firstName, lastName: updated.lastName });
       toast('Профіль оновлено', 'success');
     },
     onError: () => toast('Помилка збереження', 'error'),

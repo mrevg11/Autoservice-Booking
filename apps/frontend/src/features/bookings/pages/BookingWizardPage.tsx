@@ -13,13 +13,7 @@ import TimeSlotPicker from '../../../shared/components/ui/TimeSlotPicker';
 import Spinner from '../../../shared/components/ui/Spinner';
 import { toast } from '../../../shared/store/toast.store';
 import type { ServiceItem, Vehicle } from '../../../shared/api/endpoints';
-
-const KYIV_OFFSET_MINUTES = 3 * 60; // UTC+3
-
-function toKyivUTC(date: string, time: string): string {
-  const local = new Date(`${date}T${time}:00`);
-  return new Date(local.getTime() - KYIV_OFFSET_MINUTES * 60 * 1000).toISOString();
-}
+import { kyivToUTC } from '../../../shared/utils/date';
 
 const STEPS = ['Авто', 'Послуги', 'Майстер і час', 'Підтвердження', 'Готово'];
 
@@ -146,7 +140,7 @@ export default function BookingWizardPage() {
     if (selectedServices.length === 0) { toast('Оберіть послугу', 'error'); setStep(1); return; }
     if (!selectedMasterId) { toast('Оберіть майстра', 'error'); setStep(2); return; }
     if (!selectedDate || !selectedSlot) { toast('Оберіть дату та час', 'error'); setStep(2); return; }
-    const scheduledAt = toKyivUTC(selectedDate, selectedSlot);
+    const scheduledAt = kyivToUTC(selectedDate, selectedSlot);
     if (new Date(scheduledAt) < new Date()) {
       toast('Оберіть майбутню дату', 'error');
       return;
@@ -285,7 +279,7 @@ export default function BookingWizardPage() {
                         <p className="text-xs text-slate-500">{service.category.name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-slate-900 text-sm">{service.price} грн</p>
+                        <p className="font-medium text-slate-900 text-sm">{Number(service.price ?? 0).toFixed(0)} грн</p>
                         <p className="text-xs text-slate-500">{service.baseDurationMinutes} хв</p>
                       </div>
                     </div>
@@ -397,9 +391,15 @@ export default function BookingWizardPage() {
                 <span className="font-medium">{estimate.estimatedDurationMinutes} хв</span>
               </div>
             )}
-            <div className="border-t border-slate-100 pt-3 flex justify-between font-semibold">
-              <span>Загальна сума</span>
-              <span className="text-accent">{totalPrice.toFixed(2)} грн</span>
+            <div className="border-t border-slate-100 pt-3 space-y-1">
+              <div className="flex justify-between text-slate-600 text-sm">
+                <span>Тривалість</span>
+                <span>{totalDuration > 0 ? `${totalDuration} хв` : '—'}</span>
+              </div>
+              <div className="flex justify-between font-semibold">
+                <span>Загальна сума</span>
+                <span className="text-accent">{totalPrice > 0 ? `${totalPrice.toFixed(2)} грн` : '0.00 грн'}</span>
+              </div>
             </div>
           </div>
 

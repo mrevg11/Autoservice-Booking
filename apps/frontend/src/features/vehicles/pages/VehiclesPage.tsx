@@ -77,6 +77,8 @@ export default function VehiclesPage() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const handleCreate = (data: CreateVehiclePayload) => {
+    if (!data.vin) delete data.vin;
+    if (!data.plateNumber) delete data.plateNumber;
     createVehicle.mutate(data, {
       onSuccess: () => { toast('Автомобіль додано', 'success'); setShowForm(false); },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,8 +93,9 @@ export default function VehiclesPage() {
   const handleUpdate = (data: CreateVehiclePayload) => {
     if (!editingVehicle) return;
     const { make, model, year, plateNumber, vin } = data;
+    const payload = { make, model, year, plateNumber: plateNumber || undefined, vin: vin || undefined };
     updateVehicle.mutate(
-      { id: editingVehicle.id, data: { make, model, year, plateNumber, vin } },
+      { id: editingVehicle.id, data: payload },
       {
         onSuccess: () => { toast('Збережено', 'success'); setEditingVehicle(null); },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -9,6 +9,14 @@ import ConfirmDialog from '../../../shared/components/ConfirmDialog';
 import Button from '../../../shared/components/ui/Button';
 import { toast } from '../../../shared/store/toast.store';
 
+const STATUS_LABELS: Record<string, string> = {
+  PENDING: 'Очікує',
+  CONFIRMED: 'Підтверджено',
+  IN_PROGRESS: 'В роботі',
+  COMPLETED: 'Завершено',
+  CANCELLED: 'Скасовано',
+};
+
 export default function BookingDetailPage() {
   const { id } = useParams<{ id: string }>();
   const bookingId = Number(id);
@@ -124,7 +132,7 @@ export default function BookingDetailPage() {
                   <div key={h.id} className="relative mb-3 last:mb-0">
                     <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-accent border-2 border-white" />
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-slate-900">{h.newStatus}</p>
+                      <p className="text-sm font-medium text-slate-900">{STATUS_LABELS[h.newStatus] ?? h.newStatus}</p>
                       <p className="text-xs text-slate-500">
                         {new Date(h.changedAt).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}
                       </p>
