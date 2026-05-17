@@ -406,10 +406,14 @@ export default function BookingWizardPage() {
             <label className="block text-sm font-medium text-slate-700 mb-1">Нотатки (необов'язково)</label>
             <textarea
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={(e) => { if (e.target.value.length <= 300) setNotes(e.target.value); }}
+              maxLength={300}
               placeholder="Особливі побажання або питання..."
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm resize-none h-20 focus:outline-none focus:ring-2 focus:ring-accent"
             />
+            <div className="flex justify-end text-xs text-slate-400 mt-1">
+              {notes.length}/300
+            </div>
           </div>
         </div>
       )}

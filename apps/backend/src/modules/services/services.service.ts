@@ -77,6 +77,13 @@ export class ServicesService {
     return paginate(data, total, pagination);
   }
 
+  async findAllServicesAdmin(): Promise<Service[]> {
+    return this.servicesRepo.find({
+      relations: ['category'],
+      order: { category: { name: 'ASC' }, name: 'ASC' },
+    });
+  }
+
   async findOneService(id: number): Promise<Service> {
     const service = await this.servicesRepo.findOne({
       where: { id },

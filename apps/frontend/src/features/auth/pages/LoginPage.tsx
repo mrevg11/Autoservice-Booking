@@ -1,28 +1,22 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useLogin } from '../../../shared/hooks/useAuth';
 import Input from '../../../shared/components/ui/Input';
 import Button from '../../../shared/components/ui/Button';
 
-const schema = z.object({
-  email: z.string().email('Невірний формат email'),
-  password: z.string().min(1, 'Введіть пароль'),
-});
-
-type FormData = z.infer<typeof schema>;
-
 export default function LoginPage() {
   const loginMutation = useLogin();
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    mode: 'onChange',
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const onSubmit = (data: FormData) => {
-    loginMutation.reset();
-    loginMutation.mutate(data);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    loginMutation.mutate(
+      { email, password },
+      { onError: () => setError('Невірний email або пароль') },
+    );
   };
 
   return (
@@ -33,29 +27,29 @@ export default function LoginPage() {
           <p className="text-sm text-slate-500 mt-1">Раді бачити вас знову!</p>
         </div>
 
-        {loginMutation.error && (
+        {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-            Невірний email або пароль
+            {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <Input
             label="Email"
             type="email"
             placeholder="your@email.com"
-            error={errors.email?.message}
+            value={email}
+            onChange={(e) => { setError(''); setEmail(e.target.value); }}
             data-testid="email-input"
-            {...register('email')}
           />
           <div className="space-y-1">
             <Input
               label="Пароль"
               type="password"
               placeholder="••••••••"
-              error={errors.password?.message}
+              value={password}
+              onChange={(e) => { setError(''); setPassword(e.target.value); }}
               data-testid="password-input"
-              {...register('password')}
             />
             <div className="flex justify-end">
               <Link to="/forgot-password" className="text-xs text-accent hover:underline">
@@ -63,7 +57,14 @@ export default function LoginPage() {
               </Link>
             </div>
           </div>
-          <Button type="submit" isLoading={loginMutation.isPending} className="w-full" size="lg" data-testid="login-button">
+          <Button
+            type="submit"
+            isLoading={loginMutation.isPending}
+            disabled={!email || !password}
+            className="w-full"
+            size="lg"
+            data-testid="login-button"
+          >
             Увійти
           </Button>
         </form>

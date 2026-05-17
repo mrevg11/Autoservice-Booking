@@ -80,6 +80,15 @@ export class ServicesController {
     return this.servicesService.findAllServices({ categoryId, isActive, search }, pagination);
   }
 
+  @Get('admin/all')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[ADMIN] Всі послуги включно з неактивними' })
+  findAllAdmin() {
+    return this.servicesService.findAllServicesAdmin();
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Послуга за ID' })
   @ApiResponse({ status: 404, description: 'Not found' })

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import {
-  servicesApi, adminServicesApi,
+  adminServicesApi,
   type ServiceCategory, type ServiceItem,
   type CreateCategoryPayload, type CreateServicePayload,
 } from '../../../shared/api/endpoints';
@@ -41,11 +41,10 @@ export default function AdminServicesPage() {
     queryFn: () => servicesApi.getCategories().then((r) => r.data),
   });
 
-  const { data: servicesData, isLoading: ls } = useQuery({
+  const { data: services = [], isLoading: ls } = useQuery({
     queryKey: ['services-admin'],
-    queryFn: () => servicesApi.getServices({ limit: 200 }).then((r) => r.data),
+    queryFn: () => adminServicesApi.getAllServices().then((r) => r.data),
   });
-  const services = servicesData?.data ?? [];
 
   const catForm = useForm<CreateCategoryPayload>();
   const svcForm = useForm<CreateServicePayload>();

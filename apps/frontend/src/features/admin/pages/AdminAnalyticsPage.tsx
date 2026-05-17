@@ -13,7 +13,11 @@ import {
 import Spinner from '../../../shared/components/ui/Spinner';
 import Button from '../../../shared/components/ui/Button';
 
-const COLORS = ['#f97316', '#1a2744', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6', '#f59e0b'];
+const COLORS = [
+  '#f97316', '#1a2744', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6', '#f59e0b',
+  '#ef4444', '#06b6d4', '#84cc16', '#8b5cf6', '#f43f5e', '#10b981', '#fb923c', '#6366f1',
+  '#d97706', '#0ea5e9', '#16a34a', '#dc2626',
+];
 
 function exportCsv(data: Record<string, unknown>[], filename: string) {
   if (!data.length) return;
@@ -142,13 +146,30 @@ export default function AdminAnalyticsPage() {
           <p className="text-center text-slate-400 py-8 text-sm">Немає даних</p>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
-                <Pie data={topServices} dataKey="bookingCount" nameKey="serviceName" cx="50%" cy="50%" outerRadius={80}>
+                <Pie
+                  data={topServices}
+                  dataKey="bookingCount"
+                  nameKey="serviceName"
+                  cx="40%"
+                  cy="50%"
+                  outerRadius={110}
+                  label={false}
+                >
                   {topServices.map((_: TopService, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
-                <Tooltip />
-                <Legend formatter={(val) => <span style={{ fontSize: 11 }}>{val}</span>} />
+                <Tooltip formatter={(value: number, name: string) => [`${value} записів`, name]} />
+                <Legend
+                  layout="vertical"
+                  align="right"
+                  verticalAlign="middle"
+                  iconType="circle"
+                  iconSize={10}
+                  formatter={(val) => (
+                    <span style={{ fontSize: '11px', maxWidth: '160px', display: 'inline-block', lineHeight: '1.3' }}>{val}</span>
+                  )}
+                />
               </PieChart>
             </ResponsiveContainer>
             <div className="overflow-x-auto">

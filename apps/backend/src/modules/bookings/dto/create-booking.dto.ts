@@ -35,6 +35,6 @@ export class CreateBookingDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(300, { message: 'Нотатки не можуть перевищувати 300 символів' })
   notes?: string;
 }

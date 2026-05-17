@@ -303,6 +303,7 @@ export interface CreateServicePayload {
 export interface UpdateServicePayload extends Partial<CreateServicePayload> { isActive?: boolean }
 
 export const adminServicesApi = {
+  getAllServices: () => api.get<ServiceItem[]>('/services/admin/all'),
   createCategory: (data: CreateCategoryPayload) =>
     api.post<ServiceCategory>('/services/categories', data),
   updateCategory: (id: number, data: Partial<CreateCategoryPayload>) =>
