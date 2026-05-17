@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useVehicles } from '../../vehicles/hooks/useVehicles';
@@ -8,7 +8,6 @@ import Button from '../../../shared/components/ui/Button';
 import DatePicker from '../../../shared/components/ui/DatePicker';
 import EmptyState from '../../../shared/components/ui/EmptyState';
 import Spinner from '../../../shared/components/ui/Spinner';
-import { isoToKyivDate, isoToKyivTime } from '../../../shared/utils/date';
 
 function ScoreBar({ score }: { score: number }) {
   const pct = Math.round(score * 100);
@@ -60,11 +59,20 @@ export default function SmartBookingPage() {
   const navigate = useNavigate();
   const [selectedServiceIds, setSelectedServiceIds] = useState<number[]>([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState<number | undefined>();
+
   const [preferredDate, setPreferredDate] = useState('');
   const [activeCategoryId, setActiveCategoryId] = useState<number | undefined>();
   const [searched, setSearched] = useState(false);
 
   const { data: vehicles } = useVehicles();
+
+  // Auto-select first vehicle when vehicles load
+  useEffect(() => {
+    if (vehicles && vehicles.length > 0 && !selectedVehicleId) {
+      setSelectedVehicleId(vehicles[0].id);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vehicles]);
   const { data: categories } = useCategories();
   const { data: servicesData } = useServices({ categoryId: activeCategoryId, isActive: true, limit: 50 });
 
@@ -86,8 +94,7 @@ export default function SmartBookingPage() {
   const handleChoose = (s: SlotSuggestion) => {
     const params = new URLSearchParams({
       masterId: String(s.masterId),
-      date: isoToKyivDate(s.startAt),
-      slot: isoToKyivTime(s.startAt),
+      scheduledAt: s.startAt, // raw UTC ISO — no conversion, wizard uses directly
       serviceIds: selectedServiceIds.join(','),
       vehicleId: selectedVehicleId ? String(selectedVehicleId) : '',
     });
@@ -103,17 +110,29 @@ export default function SmartBookingPage() {
 
       {/* Vehicle */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-2">Автомобіль (необов'язково)</label>
-        <select
-          value={selectedVehicleId ?? ''}
-          onChange={(e) => setSelectedVehicleId(e.target.value ? Number(e.target.value) : undefined)}
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
-        >
-          <option value="">Не вказано</option>
-          {(vehicles ?? []).map((v) => (
-            <option key={v.id} value={v.id}>{v.make} {v.model} ({v.year})</option>
-          ))}
-        </select>
+        <label className="block text-sm font-medium text-slate-700 mb-2">Автомобіль</label>
+        {vehicles && vehicles.length > 0 ? (
+          <select
+            value={selectedVehicleId ?? ''}
+            onChange={(e) => setSelectedVehicleId(Number(e.target.value))}
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+          >
+            {vehicles.map((v) => (
+              <option key={v.id} value={v.id}>{v.make} {v.model} ({v.year})</option>
+            ))}
+          </select>
+        ) : (
+          <div className="flex items-center gap-3 text-sm">
+            <span className="text-slate-500">Немає автомобілів</span>
+            <button
+              type="button"
+              onClick={() => navigate('/client/vehicles')}
+              className="text-accent underline"
+            >
+              + Додати автомобіль
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Services */}

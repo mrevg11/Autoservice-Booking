@@ -13,7 +13,7 @@ import TimeSlotPicker from '../../../shared/components/ui/TimeSlotPicker';
 import Spinner from '../../../shared/components/ui/Spinner';
 import { toast } from '../../../shared/store/toast.store';
 import type { ServiceItem, Vehicle } from '../../../shared/api/endpoints';
-import { kyivToUTC } from '../../../shared/utils/date';
+import { kyivToUTC, toKyivDisplay } from '../../../shared/utils/date';
 
 const STEPS = ['Авто', 'Послуги', 'Майстер і час', 'Підтвердження', 'Готово'];
 
@@ -77,10 +77,11 @@ export default function BookingWizardPage() {
 
   const prefilledMasterId = searchParams.get('masterId') ? Number(searchParams.get('masterId')) : undefined;
   const prefilledVehicleId = searchParams.get('vehicleId') ? Number(searchParams.get('vehicleId')) : undefined;
+  const prefilledScheduledAt = searchParams.get('scheduledAt') ?? ''; // UTC ISO from SmartBooking
   const prefilledDate = searchParams.get('date') ?? '';
   const prefilledSlot = searchParams.get('slot') ?? null;
   const prefilledServiceIdsStr = searchParams.get('serviceIds') ?? '';
-  const hasFullSmartBookingParams = !!prefilledMasterId && !!prefilledDate && !!prefilledSlot && !!prefilledServiceIdsStr;
+  const hasFullSmartBookingParams = !!prefilledMasterId && (!!prefilledScheduledAt || (!!prefilledDate && !!prefilledSlot)) && !!prefilledServiceIdsStr;
   const prefilledStep = hasFullSmartBookingParams ? 3 : 0;
 
   const [step, setStep] = useState(prefilledStep);
@@ -139,8 +140,8 @@ export default function BookingWizardPage() {
     if (!selectedVehicle) { toast('Оберіть автомобіль', 'error'); setStep(0); return; }
     if (selectedServices.length === 0) { toast('Оберіть послугу', 'error'); setStep(1); return; }
     if (!selectedMasterId) { toast('Оберіть майстра', 'error'); setStep(2); return; }
-    if (!selectedDate || !selectedSlot) { toast('Оберіть дату та час', 'error'); setStep(2); return; }
-    const scheduledAt = kyivToUTC(selectedDate, selectedSlot);
+    if (!prefilledScheduledAt && (!selectedDate || !selectedSlot)) { toast('Оберіть дату та час', 'error'); setStep(2); return; }
+    const scheduledAt = prefilledScheduledAt || kyivToUTC(selectedDate, selectedSlot ?? '');
     if (new Date(scheduledAt) < new Date()) {
       toast('Оберіть майбутню дату', 'error');
       return;
@@ -383,7 +384,11 @@ export default function BookingWizardPage() {
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500">Дата та час</span>
-              <span className="font-medium">{selectedDate} {selectedSlot}</span>
+              <span className="font-medium">
+                {prefilledScheduledAt
+                  ? toKyivDisplay(prefilledScheduledAt, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
+                  : `${selectedDate} ${selectedSlot}`}
+              </span>
             </div>
             <div className="border-t border-slate-100 pt-3 space-y-1">
               <div className="flex justify-between text-slate-600 text-sm">

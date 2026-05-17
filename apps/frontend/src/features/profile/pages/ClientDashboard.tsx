@@ -10,9 +10,10 @@ import Button from '../../../shared/components/ui/Button';
 export default function ClientDashboard() {
   const { user } = useAuth();
   const { data, isLoading } = useMyBookings({ limit: 3, page: 1 });
+  const { data: allBookingsData } = useMyBookings({ limit: 100, page: 1 });
   const { data: vehicles } = useVehicles();
 
-  const activeBookings = data?.data.filter((b) =>
+  const activeBookings = allBookingsData?.data.filter((b) =>
     ['PENDING', 'CONFIRMED', 'IN_PROGRESS'].includes(b.status),
   ) ?? [];
 

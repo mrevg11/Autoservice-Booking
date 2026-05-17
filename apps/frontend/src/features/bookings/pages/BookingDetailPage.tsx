@@ -105,7 +105,7 @@ export default function BookingDetailPage() {
                 <div key={bs.id} className="flex items-center justify-between text-sm">
                   <span className="text-slate-700">{bs.service?.name ?? '—'}</span>
                   <div className="flex gap-4 text-slate-500">
-                    <span>{bs.actualDurationMinutes != null ? `${bs.actualDurationMinutes} хв` : '—'}</span>
+                    <span>{bs.service?.baseDurationMinutes ? `${bs.service.baseDurationMinutes} хв` : '—'}</span>
                     <span className="font-medium text-slate-900">{Number(bs.actualPrice ?? 0).toFixed(2)} грн</span>
                   </div>
                 </div>
