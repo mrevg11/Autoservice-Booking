@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useVehicles, useCreateVehicle, useUpdateVehicle, useDeleteVehicle } from '../hooks/useVehicles';
 import Button from '../../../shared/components/ui/Button';
 import Input from '../../../shared/components/ui/Input';
@@ -8,6 +8,48 @@ import EmptyState from '../../../shared/components/ui/EmptyState';
 import ConfirmDialog from '../../../shared/components/ConfirmDialog';
 import { toast } from '../../../shared/store/toast.store';
 import type { Vehicle, CreateVehiclePayload } from '../../../shared/api/endpoints';
+import { getMakes, getModels, getYears } from '../../../shared/data/carData';
+
+const selectCls = (hasError: boolean) =>
+  `w-full rounded-lg border px-3 py-2 text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand/40 ${
+    hasError ? 'border-red-400' : 'border-slate-300'
+  }`;
+
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+  placeholder,
+  disabled,
+  error,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: (string | number)[];
+  placeholder: string;
+  disabled?: boolean;
+  error?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="text-xs font-medium text-slate-600">{label}</label>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className={selectCls(!!error) + (disabled ? ' opacity-50 cursor-not-allowed' : '')}
+      >
+        <option value="">{placeholder}</option>
+        {options.map((o) => (
+          <option key={o} value={String(o)}>{o}</option>
+        ))}
+      </select>
+      {error && <p className="text-xs text-red-500">{error}</p>}
+    </div>
+  );
+}
 
 function VehicleForm({
   defaultValues,
@@ -20,15 +62,80 @@ function VehicleForm({
   onCancel: () => void;
   isLoading: boolean;
 }) {
-  const { register, handleSubmit, formState: { errors } } = useForm<CreateVehiclePayload>({ defaultValues, mode: 'onChange' });
+  const { control, register, handleSubmit, watch, setValue, formState: { errors } } = useForm<CreateVehiclePayload>({
+    defaultValues,
+    mode: 'onChange',
+  });
+
+  const selectedMake = watch('make') ?? '';
+  const selectedModel = watch('model') ?? '';
+
+  const makes = getMakes();
+  const models = selectedMake ? getModels(selectedMake) : [];
+  const years = selectedMake && selectedModel ? getYears(selectedMake, selectedModel) : [];
+
+  const handleMakeChange = (make: string) => {
+    setValue('make', make, { shouldValidate: true });
+    setValue('model', '', { shouldValidate: false });
+    setValue('year', '' as unknown as number, { shouldValidate: false });
+  };
+
+  const handleModelChange = (model: string) => {
+    setValue('model', model, { shouldValidate: true });
+    setValue('year', '' as unknown as number, { shouldValidate: false });
+  };
 
   return (
     <form onSubmit={handleSubmit(onSave)} className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
       <div className="grid grid-cols-2 gap-3">
-        <Input label="Марка" error={errors.make?.message} {...register('make', { required: 'Обов\'язково' })} />
-        <Input label="Модель" error={errors.model?.message} {...register('model', { required: 'Обов\'язково' })} />
-        <Input label="Рік" type="number" min={1900} max={new Date().getFullYear()} error={errors.year?.message} {...register('year', { required: 'Обов\'язково', valueAsNumber: true, min: { value: 1900, message: 'Не раніше 1900' }, max: { value: new Date().getFullYear(), message: `Не пізніше ${new Date().getFullYear()}` } })} />
-        <Input label="Держ. номер" placeholder="АА1234АА" error={errors.plateNumber?.message} {...register('plateNumber', { required: 'Обов\'язково', pattern: { value: /^[A-ZА-ЯІЇЄ]{2}\d{4}[A-ZА-ЯІЇЄ]{2}$/i, message: 'Формат: АА1234АА' } })} />
+        <Controller
+          name="make"
+          control={control}
+          rules={{ required: "Обов'язково" }}
+          render={({ field }) => (
+            <SelectField
+              label="Марка"
+              value={field.value ?? ''}
+              onChange={handleMakeChange}
+              options={makes}
+              placeholder="Оберіть марку"
+              error={errors.make?.message}
+            />
+          )}
+        />
+        <Controller
+          name="model"
+          control={control}
+          rules={{ required: "Обов'язково" }}
+          render={({ field }) => (
+            <SelectField
+              label="Модель"
+              value={field.value ?? ''}
+              onChange={handleModelChange}
+              options={models}
+              placeholder={selectedMake ? 'Оберіть модель' : 'Спочатку марку'}
+              disabled={!selectedMake}
+              error={errors.model?.message}
+            />
+          )}
+        />
+        <Controller
+          name="year"
+          control={control}
+          rules={{ required: "Обов'язково" }}
+          render={({ field }) => (
+            <SelectField
+              label="Рік"
+              value={field.value ? String(field.value) : ''}
+              onChange={(v) => field.onChange(v ? Number(v) : '')}
+              options={years}
+              placeholder={selectedModel ? 'Оберіть рік' : 'Спочатку модель'}
+              disabled={!selectedModel}
+              error={errors.year?.message}
+            />
+          )}
+        />
+        <Input label="Держ. номер" placeholder="АА1234АА" error={errors.plateNumber?.message} {...register('plateNumber', { required: "Обов'язково", pattern: { value: /^[A-ZА-ЯІЇЄ]{2}\d{4}[A-ZА-ЯІЇЄ]{2}$/i, message: 'Формат: АА1234АА' } })} />
       </div>
       <Input
         label="VIN (необов'язково)"
