@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import {
-  adminServicesApi,
+  servicesApi, adminServicesApi,
   type ServiceCategory, type ServiceItem,
   type CreateCategoryPayload, type CreateServicePayload,
 } from '../../../shared/api/endpoints';

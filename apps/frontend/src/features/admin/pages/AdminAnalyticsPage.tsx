@@ -159,7 +159,7 @@ export default function AdminAnalyticsPage() {
                 >
                   {topServices.map((_: TopService, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
-                <Tooltip formatter={(value: number, name: string) => [`${value} записів`, name]} />
+                <Tooltip formatter={(value, name) => [`${Number(value ?? 0)} записів`, String(name ?? '')]} />
                 <Legend
                   layout="vertical"
                   align="right"
