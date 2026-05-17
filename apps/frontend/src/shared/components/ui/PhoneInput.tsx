@@ -23,6 +23,8 @@ export function PhoneInput({ value, onChange, error, label }: PhoneInputProps) {
         containerClass="phone-lib-container"
         buttonClass="phone-lib-button"
         dropdownClass="phone-lib-dropdown"
+        inputStyle={{ paddingLeft: '90px' }}
+        buttonStyle={{ minWidth: '80px' }}
       />
       {error && <span className="text-xs text-red-500 mt-0.5">{error}</span>}
     </div>

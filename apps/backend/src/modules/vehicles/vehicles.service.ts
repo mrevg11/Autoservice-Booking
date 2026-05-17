@@ -53,7 +53,7 @@ export class VehiclesService {
     });
     if (!vehicle) throw new NotFoundException(`Vehicle #${id} not found`);
     if (vehicle.client.id !== clientId)
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException('Доступ заборонено');
     return vehicle;
   }
 

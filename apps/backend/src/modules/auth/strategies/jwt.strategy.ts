@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: JwtPayload): Promise<User> {
     const user = await this.usersRepo.findOne({ where: { id: payload.sub } });
     if (!user || user.isBlocked) {
-      throw new UnauthorizedException('User not found or blocked');
+      throw new UnauthorizedException('Користувача не знайдено або заблоковано');
     }
     return user;
   }

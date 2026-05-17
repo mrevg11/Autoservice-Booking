@@ -80,14 +80,14 @@ export class BookingsService {
     const master = await this.masterProfilesRepo.findOne({
       where: { id: dto.masterId },
     });
-    if (!master) throw new NotFoundException(`Master #${dto.masterId} not found`);
+    if (!master) throw new NotFoundException("Майстра не знайдено");
 
     // Validate vehicle belongs to client
     const vehicle = await this.vehiclesRepo.findOne({
       where: { id: dto.vehicleId },
       relations: ['client'],
     });
-    if (!vehicle) throw new NotFoundException(`Vehicle #${dto.vehicleId} not found`);
+    if (!vehicle) throw new NotFoundException("Автомобіль не знайдено");
     if (vehicle.client.id !== client.id)
       throw new ForbiddenException('Цей автомобіль не належить вам');
 
@@ -239,7 +239,7 @@ export class BookingsService {
       .where('b.id = :id', { id })
       .getOne();
 
-    if (!booking) throw new NotFoundException(`Booking #${id} not found`);
+    if (!booking) throw new NotFoundException("Запис не знайдено");
     this.checkBookingAccess(booking, user);
     this.stripSensitiveFields([booking]);
     return booking;
@@ -254,12 +254,12 @@ export class BookingsService {
       where: { id },
       relations: ['client', 'master', 'master.user'],
     });
-    if (!booking) throw new NotFoundException(`Booking #${id} not found`);
+    if (!booking) throw new NotFoundException("Запис не знайдено");
 
     const transition = STATUS_TRANSITIONS[booking.status];
     if (!transition.allowed.includes(dto.status)) {
       throw new BadRequestException(
-        `Transition ${booking.status} → ${dto.status} is not allowed`,
+        `Перехід статусу ${booking.status} → ${dto.status} не дозволений`,
       );
     }
     if (!transition.roles.includes(user.role)) {
@@ -303,7 +303,7 @@ export class BookingsService {
       where: { id },
       relations: ['client'],
     });
-    if (!booking) throw new NotFoundException(`Booking #${id} not found`);
+    if (!booking) throw new NotFoundException("Запис не знайдено");
 
     if (booking.client?.id !== client.id) {
       throw new ForbiddenException('Ви можете скасувати лише власні записи');
@@ -368,7 +368,7 @@ export class BookingsService {
       where: { id },
       relations: ['client', 'master', 'master.user'],
     });
-    if (!booking) throw new NotFoundException(`Booking #${id} not found`);
+    if (!booking) throw new NotFoundException("Запис не знайдено");
     this.checkBookingAccess(booking, user);
 
     return this.historyRepo.find({

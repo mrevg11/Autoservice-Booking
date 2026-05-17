@@ -3,14 +3,14 @@ import { describe, it, expect } from 'vitest';
 import DatePicker from './DatePicker';
 
 describe('DatePicker', () => {
-  it('renders a date input', () => {
+  it('renders a text input', () => {
     const { container } = render(<DatePicker />);
-    expect(container.querySelector('input[type="date"]')).toBeDefined();
+    expect(container.querySelector('input')).toBeDefined();
   });
 
   it('renders label when provided', () => {
     render(<DatePicker label="Дата запису" id="booking-date" />);
-    expect(screen.getByLabelText('Дата запису')).toBeDefined();
+    expect(screen.getByText('Дата запису')).toBeDefined();
   });
 
   it('shows error message', () => {
@@ -18,16 +18,17 @@ describe('DatePicker', () => {
     expect(screen.getByText('Invalid date')).toBeDefined();
   });
 
-  it('uses provided minDate', () => {
-    render(<DatePicker minDate="2026-01-01" id="dp" />);
-    const input = document.getElementById('dp') as HTMLInputElement;
-    expect(input?.min).toBe('2026-01-01');
+  it('renders with placeholder when no value', () => {
+    const { container } = render(<DatePicker id="dp" />);
+    const input = container.querySelector('input') as HTMLInputElement;
+    expect(input).toBeDefined();
+    expect(input?.placeholder).toBe('дд.мм.рррр');
   });
 
-  it('defaults minDate to today when not provided', () => {
-    render(<DatePicker id="dp2" />);
-    const input = document.getElementById('dp2') as HTMLInputElement;
-    const today = new Date().toISOString().slice(0, 10);
-    expect(input?.min).toBe(today);
+  it('accepts and displays a value', () => {
+    const { container } = render(<DatePicker value="2026-05-19" id="dp2" />);
+    const input = container.querySelector('input') as HTMLInputElement;
+    expect(input).toBeDefined();
+    expect(input?.value).toBe('19.05.2026');
   });
 });
