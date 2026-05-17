@@ -90,6 +90,7 @@ describe('AuthService', () => {
       password: 'SecurePass123!',
       firstName: 'Іван',
       lastName: 'Петренко',
+      phone: '+380991234567',
     };
 
     it('повинен успішно реєструвати нового користувача', async () => {

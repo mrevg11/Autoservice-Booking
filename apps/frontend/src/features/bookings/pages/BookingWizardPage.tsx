@@ -117,6 +117,14 @@ export default function BookingWizardPage() {
     enabled: !!selectedMasterId,
   });
 
+  // Fetch master info individually — needed when arriving from SmartBooking (step starts at 3,
+  // mastersData is never loaded because enabled: step === 2 was never true)
+  const { data: selectedMasterInfo } = useQuery({
+    queryKey: ['master-info', selectedMasterId],
+    queryFn: () => mastersApi.getOne(selectedMasterId!).then((r) => r.data),
+    enabled: !!selectedMasterId,
+  });
+
   useEffect(() => {
     if (prefilledVehicleId && vehicles && !selectedVehicle) {
       const v = vehicles.find((v) => v.id === prefilledVehicleId);
@@ -326,6 +334,10 @@ export default function BookingWizardPage() {
 
           {mastersLoading ? (
             <div className="flex justify-center py-8"><Spinner /></div>
+          ) : !mastersLoading && (mastersData?.data ?? []).length === 0 ? (
+            <p className="text-sm text-slate-500 text-center py-6 bg-slate-50 rounded-xl border border-slate-200">
+              Немає майстрів що виконують усі обрані послуги. Спробуйте обрати інші послуги або зменшити їх кількість.
+            </p>
           ) : (
             <div className="space-y-2">
               {(mastersData?.data ?? []).map((master) => (
@@ -397,8 +409,11 @@ export default function BookingWizardPage() {
             <div className="flex justify-between">
               <span className="text-slate-500">Майстер</span>
               <span className="font-medium">
-                {mastersData?.data.find((m) => m.id === selectedMasterId)?.user.firstName}{' '}
-                {mastersData?.data.find((m) => m.id === selectedMasterId)?.user.lastName}
+                {(() => {
+                  const fromList = mastersData?.data.find((m) => m.id === selectedMasterId);
+                  const master = fromList ?? selectedMasterInfo;
+                  return `${master?.user?.firstName ?? ''} ${master?.user?.lastName ?? ''}`.trim() || '—';
+                })()}
               </span>
             </div>
             <div className="flex justify-between">

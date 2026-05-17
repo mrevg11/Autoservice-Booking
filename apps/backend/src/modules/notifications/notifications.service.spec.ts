@@ -81,7 +81,7 @@ describe('NotificationsService', () => {
         expect.objectContaining({ type: NotificationType.BOOKING_CONFIRMED }),
       );
       expect(mailService.sendBookingConfirmed).toHaveBeenCalledWith(
-        booking.client.email,
+        booking.client!.email,
         expect.objectContaining({ bookingId: booking.id }),
       );
       expect(notifRepo.save).toHaveBeenCalledTimes(2);
@@ -102,7 +102,7 @@ describe('NotificationsService', () => {
       await service.notifyStatusChanged(booking, BookingStatus.IN_PROGRESS);
 
       expect(mailService.sendStatusChanged).toHaveBeenCalledWith(
-        booking.client.email,
+        booking.client!.email,
         expect.objectContaining({ newStatus: 'Виконується' }),
       );
     });
@@ -114,7 +114,7 @@ describe('NotificationsService', () => {
       await service.notifyBookingCancelled(booking);
 
       expect(mailService.sendBookingCancelled).toHaveBeenCalledWith(
-        booking.client.email,
+        booking.client!.email,
         expect.objectContaining({ reason: 'Скасовано користувачем' }),
       );
     });
@@ -123,7 +123,7 @@ describe('NotificationsService', () => {
       const booking = makeBooking();
       await service.notifyBookingCancelled(booking, 'Майстер захворів');
       expect(mailService.sendBookingCancelled).toHaveBeenCalledWith(
-        booking.client.email,
+        booking.client!.email,
         expect.objectContaining({ reason: 'Майстер захворів' }),
       );
     });
@@ -140,7 +140,7 @@ describe('NotificationsService', () => {
       await service.sendReminders24h();
 
       expect(mailService.sendBookingReminder24h).toHaveBeenCalledWith(
-        booking.client.email,
+        booking.client!.email,
         expect.objectContaining({ bookingId: booking.id }),
       );
     });
