@@ -121,7 +121,7 @@ export default function BookingWizardPage() {
     selectedMasterId, selectedDate, totalDuration,
   );
 
-  const { data: estimate } = useEstimateDuration(
+  useEstimateDuration(
     selectedServices[0]?.id,
     selectedMasterId,
     selectedVehicle?.year,
@@ -385,12 +385,6 @@ export default function BookingWizardPage() {
               <span className="text-slate-500">Дата та час</span>
               <span className="font-medium">{selectedDate} {selectedSlot}</span>
             </div>
-            {estimate && (
-              <div className="flex justify-between">
-                <span className="text-slate-500">Орієнт. тривалість</span>
-                <span className="font-medium">{estimate.estimatedDurationMinutes} хв</span>
-              </div>
-            )}
             <div className="border-t border-slate-100 pt-3 space-y-1">
               <div className="flex justify-between text-slate-600 text-sm">
                 <span>Тривалість</span>

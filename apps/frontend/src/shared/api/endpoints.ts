@@ -147,8 +147,8 @@ export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'IN_PROGRESS' | 'COMPLETED
 export interface BookingServiceItem {
   id: number;
   service: ServiceItem;
-  priceAtBooking: string;
-  durationAtBooking: number;
+  actualPrice: number;
+  actualDurationMinutes: number | null;
 }
 
 export interface Booking {
@@ -196,6 +196,7 @@ export const bookingsApi = {
     api.patch<Booking>(`/bookings/${id}/status`, { status, comment }),
   cancel: (id: number) => api.post(`/bookings/${id}/cancel`),
   getHistory: (id: number) => api.get<BookingStatusHistoryItem[]>(`/bookings/${id}/history`),
+  forceDelete: (id: number) => api.delete<{ message: string }>(`/bookings/${id}/force`),
 };
 
 // ─── Reviews ──────────────────────────────────────────────────────────────────

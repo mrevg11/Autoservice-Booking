@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Param,
   Query,
@@ -83,6 +84,16 @@ export class BookingsController {
   @ApiResponse({ status: 403, description: 'Not your booking' })
   cancel(@CurrentUser() user: User, @Param('id', ParseIntPipe) id: number) {
     return this.bookingsService.cancel(id, user);
+  }
+
+  @Delete(':id/force')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: '[ADMIN] Повне видалення запису з БД' })
+  @ApiResponse({ status: 200, description: 'Booking permanently deleted' })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  forceDelete(@Param('id', ParseIntPipe) id: number) {
+    return this.bookingsService.forceDelete(id);
   }
 
   @Get(':id/history')

@@ -96,7 +96,7 @@ export default function VehiclesPage() {
   const handleUpdate = (data: CreateVehiclePayload) => {
     if (!editingVehicle) return;
     const { make, model, year, plateNumber, vin } = data;
-    const payload = { make, model, year, plateNumber: plateNumber || undefined, vin: vin || undefined };
+    const payload = { make, model, year, plateNumber: plateNumber?.trim() || '', vin: vin?.trim() ?? '' };
     updateVehicle.mutate(
       { id: editingVehicle.id, data: payload },
       {

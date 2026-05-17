@@ -59,8 +59,9 @@ export class VehiclesService {
 
   async update(id: number, clientId: number, dto: UpdateVehicleDto): Promise<Vehicle> {
     const vehicle = await this.findOne(id, clientId);
-    if (dto.vin) {
-      const existing = await this.vehiclesRepo.findOne({ where: { vin: dto.vin, id: Not(id) } });
+    const trimmedVin = dto.vin?.trim() || null;
+    if (trimmedVin) {
+      const existing = await this.vehiclesRepo.findOne({ where: { vin: trimmedVin, id: Not(id) } });
       if (existing) throw new ConflictException('Автомобіль з таким VIN вже зареєстровано');
     }
     if (dto.plateNumber) {
@@ -68,6 +69,7 @@ export class VehiclesService {
       if (existing) throw new ConflictException('Автомобіль з таким держ. номером вже зареєстровано');
     }
     Object.assign(vehicle, dto);
+    vehicle.vin = trimmedVin;
     return this.vehiclesRepo.save(vehicle);
   }
 

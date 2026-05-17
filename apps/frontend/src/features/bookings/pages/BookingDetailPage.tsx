@@ -103,10 +103,10 @@ export default function BookingDetailPage() {
             <div className="space-y-2">
               {booking.bookingServices?.map((bs) => (
                 <div key={bs.id} className="flex items-center justify-between text-sm">
-                  <span className="text-slate-700">{bs.service.name}</span>
+                  <span className="text-slate-700">{bs.service?.name ?? '—'}</span>
                   <div className="flex gap-4 text-slate-500">
-                    <span>{bs.durationAtBooking} хв</span>
-                    <span className="font-medium text-slate-900">{bs.priceAtBooking} грн</span>
+                    <span>{bs.actualDurationMinutes != null ? `${bs.actualDurationMinutes} хв` : '—'}</span>
+                    <span className="font-medium text-slate-900">{Number(bs.actualPrice ?? 0).toFixed(2)} грн</span>
                   </div>
                 </div>
               ))}

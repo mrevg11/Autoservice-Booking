@@ -8,6 +8,7 @@ import Button from '../../../shared/components/ui/Button';
 import DatePicker from '../../../shared/components/ui/DatePicker';
 import EmptyState from '../../../shared/components/ui/EmptyState';
 import Spinner from '../../../shared/components/ui/Spinner';
+import { isoToKyivDate, isoToKyivTime } from '../../../shared/utils/date';
 
 function ScoreBar({ score }: { score: number }) {
   const pct = Math.round(score * 100);
@@ -31,10 +32,10 @@ function SlotCard({ suggestion, onChoose }: { suggestion: SlotSuggestion; onChoo
         <div>
           <p className="font-semibold text-slate-900">{suggestion.masterName}</p>
           <p className="text-sm text-slate-500 mt-0.5">
-            📅 {start.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' })},{' '}
-            {start.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+            📅 {start.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', timeZone: 'Europe/Kiev' })},{' '}
+            {start.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}
             {' – '}
-            {end.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+            {end.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}
           </p>
         </div>
         <div className="text-right">
@@ -85,8 +86,8 @@ export default function SmartBookingPage() {
   const handleChoose = (s: SlotSuggestion) => {
     const params = new URLSearchParams({
       masterId: String(s.masterId),
-      date: s.startAt.slice(0, 10),
-      slot: s.startAt.slice(11, 16),
+      date: isoToKyivDate(s.startAt),
+      slot: isoToKyivTime(s.startAt),
       serviceIds: selectedServiceIds.join(','),
       vehicleId: selectedVehicleId ? String(selectedVehicleId) : '',
     });

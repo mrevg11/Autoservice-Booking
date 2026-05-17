@@ -365,6 +365,14 @@ export class BookingsService {
     }
   }
 
+  async forceDelete(id: number): Promise<{ message: string }> {
+    const booking = await this.bookingsRepo.findOne({ where: { id } });
+    if (!booking) throw new NotFoundException('Запис не знайдено');
+    // booking_services and booking_status_history have onDelete: CASCADE in the DB
+    await this.bookingsRepo.remove(booking);
+    return { message: 'Запис повністю видалено' };
+  }
+
   async getHistory(id: number, user: User): Promise<BookingStatusHistory[]> {
     const booking = await this.bookingsRepo.findOne({
       where: { id },
