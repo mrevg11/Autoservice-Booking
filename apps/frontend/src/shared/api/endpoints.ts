@@ -265,9 +265,9 @@ export interface DurationEstimateResponse {
 }
 
 export const intelligenceApi = {
-  suggestSlots: (serviceId: number, preferredDate: string, vehicleYear?: number) =>
+  suggestSlots: (serviceId: number, preferredDate: string, vehicleYear?: number, serviceIds?: number[]) =>
     api.get<SuggestSlotsResponse>('/intelligence/suggest-slots', {
-      params: { serviceId, preferredDate, vehicleYear },
+      params: { serviceId, preferredDate, vehicleYear, serviceIds: serviceIds?.join(',') },
     }),
   getRecommendations: (serviceId: number) =>
     api.get<RecommendationsResponse>('/intelligence/recommendations', {

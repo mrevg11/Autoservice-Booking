@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
 import { MasterSchedule } from '../../database/entities/master-schedule.entity';
@@ -55,6 +55,7 @@ export class SlotSuggesterService {
     serviceId: number,
     preferredDate: Date,
     estimatedMinutes: number,
+    allServiceIds: number[] = [],
   ): Promise<SlotSuggestionDto[]> {
     const service = await this.serviceRepo.findOne({
       where: { id: serviceId },
@@ -62,17 +63,37 @@ export class SlotSuggesterService {
     });
     if (!service) throw new NotFoundException(`Service ${serviceId} not found`);
 
-    // Single query — all masters offering this service (no N+1)
-    const masterLinks = await this.masterServiceRepo
+    // Use all required service IDs for master eligibility filter;
+    // fall back to the primary serviceId if not provided
+    const effectiveServiceIds = allServiceIds.length > 0 ? allServiceIds : [serviceId];
+
+    // Find masters who can perform ALL required services via master_services join
+    const rawRows = await this.masterServiceRepo
       .createQueryBuilder('ms')
-      .innerJoinAndSelect('ms.master', 'mp')
-      .innerJoinAndSelect('mp.user', 'u')
-      .where('ms.service = :serviceId', { serviceId })
-      .getMany();
+      .innerJoin('ms.master', 'mp')
+      .innerJoin('ms.service', 'svc')
+      .select('mp.id', 'mpId')
+      .where('svc.id IN (:...effectiveServiceIds)', { effectiveServiceIds })
+      .groupBy('mp.id')
+      .having('COUNT(DISTINCT svc.id) = :count', { count: effectiveServiceIds.length })
+      .getRawMany<{ mpId: number }>();
 
-    if (masterLinks.length === 0) return [];
+    if (!rawRows.length) return [];
 
-    const masters = masterLinks.map((ml) => ml.master);
+    const eligibleIds = rawRows.map((r) => Number(r.mpId));
+
+    // Load full master profiles with user data
+    const masters = await this.masterProfileRepo.find({
+      where: { id: In(eligibleIds) },
+      relations: ['user'],
+    });
+    masters.forEach((m) => {
+      if (m.user) {
+        const u = m.user as unknown as Record<string, unknown>;
+        delete u['passwordHash']; delete u['refreshTokenHash'];
+        delete u['emailVerificationToken']; delete u['passwordResetToken'];
+      }
+    });
     const masterIds = masters.map((m) => m.id);
 
     const startDate = new Date(preferredDate);

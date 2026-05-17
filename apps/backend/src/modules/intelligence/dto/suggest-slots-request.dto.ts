@@ -1,9 +1,9 @@
-import { IsDateString, IsInt, IsOptional, Min } from 'class-validator';
+import { IsDateString, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class SuggestSlotsRequestDto {
-  @ApiProperty({ description: 'Service ID', example: 1 })
+  @ApiProperty({ description: 'Primary service ID (used for duration estimation)', example: 1 })
   @Type(() => Number)
   @IsInt()
   @Min(1)
@@ -19,4 +19,9 @@ export class SuggestSlotsRequestDto {
   @IsInt()
   @Min(1900)
   vehicleYear?: number;
+
+  @ApiPropertyOptional({ description: 'Comma-separated IDs of all selected services (for multi-service master filtering)', example: '1,2' })
+  @IsOptional()
+  @IsString()
+  serviceIds?: string;
 }

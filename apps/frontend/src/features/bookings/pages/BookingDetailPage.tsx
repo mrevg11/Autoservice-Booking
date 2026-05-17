@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useBooking, useBookingHistory, useCancelBooking } from '../hooks/useBookings';
 import { useReviewForBooking, useCreateReview } from '../../reviews/hooks/useReviews';
 import Badge from '../../../shared/components/ui/Badge';
@@ -26,6 +26,7 @@ export default function BookingDetailPage() {
   const cancelMutation = useCancelBooking();
   const createReview = useCreateReview();
 
+  const navigate = useNavigate();
   const [showCancel, setShowCancel] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -46,7 +47,11 @@ export default function BookingDetailPage() {
 
   const handleCancel = () => {
     cancelMutation.mutate(bookingId, {
-      onSuccess: () => { toast('Запис скасовано', 'success'); setShowCancel(false); },
+      onSuccess: () => {
+        toast('Запис скасовано', 'success');
+        setShowCancel(false);
+        navigate('/client/bookings');
+      },
       onError: () => toast('Помилка скасування', 'error'),
     });
   };

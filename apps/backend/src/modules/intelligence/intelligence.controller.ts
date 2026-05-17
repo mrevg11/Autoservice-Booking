@@ -47,10 +47,14 @@ export class IntelligenceController {
       undefined,
       query.vehicleYear,
     );
+    const allServiceIds = query.serviceIds
+      ? query.serviceIds.split(',').map(Number).filter(Boolean)
+      : [query.serviceId];
     const suggestions = await this.slotSuggesterService.suggestSlots(
       query.serviceId,
       new Date(query.preferredDate),
       estimate.estimatedMinutes,
+      allServiceIds,
     );
     return { suggestions, estimatedDurationMinutes: estimate.estimatedMinutes };
   }
