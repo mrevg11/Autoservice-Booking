@@ -11,8 +11,8 @@ import { PhoneInput } from '../../../shared/components/ui/PhoneInput';
 import Button from '../../../shared/components/ui/Button';
 
 const schema = z.object({
-  firstName: z.string().min(2, 'Мінімум 2 символи'),
-  lastName: z.string().min(2, 'Мінімум 2 символи'),
+  firstName: z.string().min(2, 'Мінімум 2 символи').max(20, 'Максимум 20 символів'),
+  lastName: z.string().min(2, 'Мінімум 2 символи').max(20, 'Максимум 20 символів'),
   email: z.string().email('Невірний формат email'),
   phone: z.string().optional().refine(
     (v) => !v || v === '+' || isValidPhoneNumber(v),

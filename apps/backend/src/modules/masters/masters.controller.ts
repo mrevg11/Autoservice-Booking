@@ -103,6 +103,13 @@ export class MastersController {
     return this.mastersService.findAll(pagination);
   }
 
+  @Get('for-services')
+  @ApiOperation({ summary: 'Майстри що виконують ВСІ зазначені послуги' })
+  findForServices(@Query('serviceIds') serviceIds: string) {
+    const ids = (serviceIds ?? '').split(',').map(Number).filter(Boolean);
+    return this.mastersService.findAllForServices(ids);
+  }
+
   @Get(':id/schedule')
   @ApiOperation({ summary: 'Розклад майстра' })
   @ApiResponse({ status: 404 })
@@ -134,6 +141,12 @@ export class MastersController {
     @Body() dto: SetScheduleDto,
   ) {
     return this.mastersService.setScheduleForMaster(id, dto.schedule);
+  }
+
+  @Get(':id/working-days')
+  @ApiOperation({ summary: 'Робочі дні майстра (JS getDay формат: 0=Нд … 6=Сб)' })
+  getWorkingDays(@Param('id', ParseIntPipe) id: number) {
+    return this.mastersService.getWorkingDaysJs(id);
   }
 
   @Get(':id')

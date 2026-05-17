@@ -3,9 +3,11 @@ import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useVehicles, useCreateVehicle } from '../../vehicles/hooks/useVehicles';
 import { useServices, useCategories } from '../../services/hooks/useServices';
-import { useMasters, useMasterSlots } from '../../masters/hooks/useMasters';
+import { useMasterSlots } from '../../masters/hooks/useMasters';
 import { useCreateBooking } from '../hooks/useBookings';
 import { useEstimateDuration } from '../../intelligence/hooks/useIntelligence';
+import { useQuery } from '@tanstack/react-query';
+import { mastersApi } from '../../../shared/api/endpoints';
 import Button from '../../../shared/components/ui/Button';
 import Input from '../../../shared/components/ui/Input';
 import DatePicker from '../../../shared/components/ui/DatePicker';
@@ -100,7 +102,20 @@ export default function BookingWizardPage() {
   const { data: servicesData, isLoading: servicesLoading } = useServices({
     categoryId: activeCategoryId, isActive: true, limit: 50,
   });
-  const { data: mastersData, isLoading: mastersLoading } = useMasters({ limit: 50 });
+  const selectedServiceIds = selectedServices.map((s) => s.id);
+  const { data: mastersData, isLoading: mastersLoading } = useQuery({
+    queryKey: ['masters-for-services', selectedServiceIds],
+    queryFn: () => selectedServiceIds.length > 0
+      ? mastersApi.getForServices(selectedServiceIds).then((r) => r.data)
+      : mastersApi.getAll({ limit: 50 }).then((r) => r.data),
+    enabled: step === 2,
+  });
+
+  const { data: workingDays } = useQuery({
+    queryKey: ['working-days', selectedMasterId],
+    queryFn: () => mastersApi.getWorkingDays(selectedMasterId!).then((r) => r.data),
+    enabled: !!selectedMasterId,
+  });
 
   useEffect(() => {
     if (prefilledVehicleId && vehicles && !selectedVehicle) {
@@ -342,6 +357,10 @@ export default function BookingWizardPage() {
                 onChange={(e) => { setSelectedDate(e.target.value); setSelectedSlot(null); }}
                 min={today}
                 max={maxDate}
+                filterDate={(date) => {
+                  const day = date.getDay();
+                  return workingDays ? workingDays.includes(day) : (day !== 0 && day !== 6);
+                }}
               />
               {selectedDate && (
                 <div>

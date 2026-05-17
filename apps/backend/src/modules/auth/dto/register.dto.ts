@@ -24,14 +24,14 @@ export class RegisterDto {
 
   @ApiProperty({ example: 'Іван' })
   @IsString()
-  @MinLength(2)
-  @MaxLength(100)
+  @MinLength(2, { message: "Ім'я має містити мінімум 2 символи" })
+  @MaxLength(20, { message: "Ім'я не може перевищувати 20 символів" })
   firstName: string;
 
   @ApiProperty({ example: 'Петренко' })
   @IsString()
-  @MinLength(2)
-  @MaxLength(100)
+  @MinLength(2, { message: 'Прізвище має містити мінімум 2 символи' })
+  @MaxLength(20, { message: 'Прізвище не може перевищувати 20 символів' })
   lastName: string;
 
   @ApiProperty({ example: '+380991234567', required: false })

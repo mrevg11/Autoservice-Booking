@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, Not } from 'typeorm';
+import { Repository, DataSource, Not, In } from 'typeorm';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
 import { MasterSchedule } from '../../database/entities/master-schedule.entity';
 import { MasterDayOff } from '../../database/entities/master-day-off.entity';
@@ -55,6 +55,39 @@ export class MastersService {
       }
     });
     return paginate(data, total, pagination);
+  }
+
+  async findAllForServices(serviceIds: number[]): Promise<PaginatedResult<MasterProfile>> {
+    if (!serviceIds.length) return this.findAll({ page: 1, limit: 50 });
+
+    const rawIds = await this.masterProfilesRepo
+      .createQueryBuilder('mp')
+      .select('mp.id', 'id')
+      .innerJoin('mp.masterServices', 'ms')
+      .innerJoin('ms.service', 's')
+      .where('s.id IN (:...serviceIds)', { serviceIds })
+      .groupBy('mp.id')
+      .having('COUNT(DISTINCT s.id) = :count', { count: serviceIds.length })
+      .getRawMany<{ id: number }>();
+
+    const ids = rawIds.map((r) => r.id);
+    if (!ids.length) return { data: [], total: 0, page: 1, limit: 50, totalPages: 0 };
+
+    const data = await this.masterProfilesRepo.find({
+      where: { id: In(ids) },
+      relations: ['user'],
+    });
+    this.stripSensitiveFields(data);
+    return { data, total: data.length, page: 1, limit: data.length || 50, totalPages: 1 };
+  }
+
+  async getWorkingDaysJs(masterId: number): Promise<number[]> {
+    await this.ensureMasterExists(masterId);
+    const schedules = await this.schedulesRepo.find({
+      where: { master: { id: masterId }, isActive: true },
+    });
+    // Convert app weekday (Mon=0) to JS getDay() (Sun=0, Mon=1, ..., Sat=6)
+    return schedules.map((s) => (s.weekday + 1) % 7);
   }
 
   async findOne(masterId: number): Promise<MasterProfile> {
@@ -221,6 +254,18 @@ export class MastersService {
     }
 
     return slots;
+  }
+
+  private stripSensitiveFields(masters: MasterProfile[]): void {
+    masters.forEach((m) => {
+      if (m.user) {
+        const u = m.user as unknown as Record<string, unknown>;
+        delete u['passwordHash'];
+        delete u['refreshTokenHash'];
+        delete u['emailVerificationToken'];
+        delete u['passwordResetToken'];
+      }
+    });
   }
 
   private async findMasterByUserId(userId: number): Promise<MasterProfile> {

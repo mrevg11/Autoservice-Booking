@@ -8,7 +8,55 @@ import Spinner from '../../../shared/components/ui/Spinner';
 import ConfirmDialog from '../../../shared/components/ConfirmDialog';
 import { toast } from '../../../shared/store/toast.store';
 
+const roleLabel: Record<string, string> = { CLIENT: 'Клієнт', MASTER: 'Майстер', ADMIN: 'Адмін' };
+
 type RoleFilter = '' | 'CLIENT' | 'MASTER' | 'ADMIN';
+
+function UserDetailModal({ userId, onClose }: { userId: number; onClose: () => void }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ['admin-user-detail', userId],
+    queryFn: () => adminUsersApi.getDetails(userId).then((r) => r.data),
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-slate-900">Користувач #{userId}</h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">✕</button>
+        </div>
+        {isLoading ? <div className="flex justify-center py-8"><Spinner /></div> : data ? (
+          <div className="space-y-2 text-sm">
+            <div className="grid grid-cols-2 gap-2">
+              <div><p className="text-xs text-slate-500">Ім'я</p><p className="font-medium">{data.firstName} {data.lastName}</p></div>
+              <div><p className="text-xs text-slate-500">Роль</p><p className="font-medium">{roleLabel[data.role] ?? data.role}</p></div>
+              <div className="col-span-2"><p className="text-xs text-slate-500">Email</p><p className="font-medium">{data.email}</p></div>
+              <div><p className="text-xs text-slate-500">Телефон</p><p className="font-medium">{data.phone ?? '—'}</p></div>
+              <div><p className="text-xs text-slate-500">Реєстрація</p><p className="font-medium">{new Date(data.createdAt).toLocaleDateString('uk-UA', { timeZone: 'Europe/Kiev' })}</p></div>
+              <div><p className="text-xs text-slate-500">Верифікований</p><p>{data.emailVerified ? '✅' : '❌'}</p></div>
+              <div><p className="text-xs text-slate-500">Заблокований</p><p>{data.isBlocked ? '🚫 Так' : '—'}</p></div>
+              {data.role === 'CLIENT' && (
+                <>
+                  <div><p className="text-xs text-slate-500">Автомобілів</p><p className="font-medium">{data.vehiclesCount}</p></div>
+                  <div><p className="text-xs text-slate-500">Записів</p><p className="font-medium">{data.bookingsCount}</p></div>
+                </>
+              )}
+              {data.masterProfile && (
+                <>
+                  <div><p className="text-xs text-slate-500">Досвід</p><p className="font-medium">{data.masterProfile.experienceYears} р.</p></div>
+                  <div><p className="text-xs text-slate-500">Рейтинг</p><p className="font-medium">⭐ {Number(data.masterProfile.rating ?? 0).toFixed(1)}</p></div>
+                </>
+              )}
+            </div>
+          </div>
+        ) : <p className="text-center text-slate-400 py-4">Не знайдено</p>}
+        <div className="mt-4 flex justify-end">
+          <Button size="sm" variant="ghost" onClick={onClose}>Закрити</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
@@ -24,7 +72,6 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   );
 }
 
-const roleLabel: Record<string, string> = { CLIENT: 'Клієнт', MASTER: 'Майстер', ADMIN: 'Адмін' };
 const roleBadge: Record<string, string> = {
   CLIENT: 'bg-blue-100 text-blue-700',
   MASTER: 'bg-green-100 text-green-700',
@@ -36,6 +83,7 @@ export default function AdminUsersPage() {
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('');
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [showCreateMaster, setShowCreateMaster] = useState(false);
+  const [detailUserId, setDetailUserId] = useState<number | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-users', roleFilter],
@@ -121,6 +169,12 @@ export default function AdminUsersPage() {
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       <button
+                        onClick={() => setDetailUserId(u.id)}
+                        className="px-2 py-1 text-xs rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors whitespace-nowrap"
+                      >
+                        👁 Деталі
+                      </button>
+                      <button
                         onClick={() => blockMutation.mutate({ id: u.id, isBlocked: !u.isBlocked })}
                         className={`px-2 py-1 text-xs rounded-lg font-medium transition-colors whitespace-nowrap ${u.isBlocked ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'}`}
                       >
@@ -164,6 +218,10 @@ export default function AdminUsersPage() {
             </div>
           </form>
         </Modal>
+      )}
+
+      {detailUserId && (
+        <UserDetailModal userId={detailUserId} onClose={() => setDetailUserId(null)} />
       )}
 
       <ConfirmDialog

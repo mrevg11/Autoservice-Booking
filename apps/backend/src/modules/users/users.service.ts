@@ -54,6 +54,23 @@ export class UsersService {
     return toUserResponse(user);
   }
 
+  async findOneForAdmin(id: number) {
+    const user = await this.findOneOrFail(id);
+    const [vehiclesCount, bookingsCount, masterProfile] = await Promise.all([
+      this.vehiclesRepo.count({ where: { client: { id } } }),
+      this.bookingsRepo.count({ where: { client: { id } } }),
+      this.masterProfilesRepo.findOne({ where: { user: { id } } }),
+    ]);
+    return {
+      ...toUserResponse(user),
+      vehiclesCount,
+      bookingsCount,
+      masterProfile: masterProfile
+        ? { experienceYears: masterProfile.experienceYears, rating: masterProfile.rating }
+        : null,
+    };
+  }
+
   async adminUpdate(id: number, dto: AdminUpdateUserDto): Promise<UserResponseDto> {
     const user = await this.findOneOrFail(id);
     Object.assign(user, dto);

@@ -96,6 +96,9 @@ export interface UpdateMasterPayload { specialization?: string; experienceYears?
 
 export const mastersApi = {
   getAll: (params?: PaginationParams) => api.get<PaginatedResult<MasterDto>>('/masters', { params }),
+  getForServices: (serviceIds: number[]) =>
+    api.get<PaginatedResult<MasterDto>>('/masters/for-services', { params: { serviceIds: serviceIds.join(',') } }),
+  getWorkingDays: (id: number) => api.get<number[]>(`/masters/${id}/working-days`),
   getOne: (id: number) => api.get<MasterDto>(`/masters/${id}`),
   getSlots: (id: number, date: string, duration: number) =>
     api.get<string[]>(`/masters/${id}/slots`, { params: { date, duration } }),
@@ -283,10 +286,17 @@ export interface CreateMasterPayload {
   firstName: string; lastName: string; email: string; phone?: string; password: string;
 }
 
+export interface UserDetailsDto extends UserDto {
+  vehiclesCount: number;
+  bookingsCount: number;
+  masterProfile: { experienceYears: number; rating: number } | null;
+}
+
 export const adminUsersApi = {
   getAll: (params?: PaginationParams & { role?: string }) =>
     api.get<PaginatedResult<UserDto>>('/users', { params }),
   getOne: (id: number) => api.get<UserDto>(`/users/${id}`),
+  getDetails: (id: number) => api.get<UserDetailsDto>(`/users/${id}/details`),
   update: (id: number, data: AdminUpdateUserPayload) => api.patch<UserDto>(`/users/${id}`, data),
   remove: (id: number) => api.delete(`/users/${id}`),
   createMaster: (data: CreateMasterPayload) =>

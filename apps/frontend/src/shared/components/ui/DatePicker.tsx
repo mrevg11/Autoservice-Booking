@@ -16,6 +16,7 @@ interface DatePickerProps {
   className?: string;
   disabled?: boolean;
   placeholder?: string;
+  filterDate?: (date: Date) => boolean;
 }
 
 function parseLocalDate(dateStr: string | undefined): Date | null {
@@ -29,7 +30,7 @@ function toDateStr(date: Date | null): string {
   return date.toLocaleDateString('en-CA');
 }
 
-export default function DatePicker({ label, error, value, onChange, min, max, minDate, id, className = '', disabled, placeholder }: DatePickerProps) {
+export default function DatePicker({ label, error, value, onChange, min, max, minDate, id, className = '', disabled, placeholder, filterDate }: DatePickerProps) {
   const inputId = id ?? 'datepicker';
 
   const minStr = minDate ?? min;
@@ -57,6 +58,7 @@ export default function DatePicker({ label, error, value, onChange, min, max, mi
         minDate={minDateObj}
         maxDate={maxDateObj}
         disabled={disabled}
+        filterDate={filterDate}
         placeholderText={placeholder ?? 'дд.мм.рррр'}
         wrapperClassName="w-full"
         popperClassName="z-50"

@@ -66,6 +66,14 @@ export class UsersController {
     return this.usersService.findAll(pagination);
   }
 
+  @Get(':id/details')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: '[ADMIN] Детальна інформація про користувача' })
+  findOneForAdmin(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findOneForAdmin(id);
+  }
+
   @Get(':id')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
