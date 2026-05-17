@@ -77,9 +77,12 @@ export default function VehiclesPage() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const handleCreate = (data: CreateVehiclePayload) => {
-    if (!data.vin) delete data.vin;
-    if (!data.plateNumber) delete data.plateNumber;
-    createVehicle.mutate(data, {
+    const payload: CreateVehiclePayload = {
+      ...data,
+      vin: data.vin?.trim() || undefined,
+      plateNumber: data.plateNumber?.trim() || '',
+    };
+    createVehicle.mutate(payload, {
       onSuccess: () => { toast('Автомобіль додано', 'success'); setShowForm(false); },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (error: any) => {
