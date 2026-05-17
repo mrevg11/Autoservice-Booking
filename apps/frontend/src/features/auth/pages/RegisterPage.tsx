@@ -14,10 +14,9 @@ const schema = z.object({
   firstName: z.string().min(2, 'Мінімум 2 символи').max(20, 'Максимум 20 символів'),
   lastName: z.string().min(2, 'Мінімум 2 символи').max(20, 'Максимум 20 символів'),
   email: z.string().email('Невірний формат email'),
-  phone: z.string().optional().refine(
-    (v) => !v || v === '+' || isValidPhoneNumber(v),
-    { message: 'Невірний формат номера' },
-  ),
+  phone: z.string()
+    .min(1, "Номер телефону обов'язковий")
+    .refine((v) => isValidPhoneNumber(v), { message: 'Невірний формат. Приклад: +380991234567' }),
   password: z
     .string()
     .min(8, 'Мінімум 8 символів')
@@ -87,7 +86,7 @@ export default function RegisterPage() {
             defaultValue=""
             render={({ field }) => (
               <PhoneInput
-                label="Телефон (необов'язково)"
+                label="Телефон"
                 value={field.value ?? ''}
                 onChange={field.onChange}
                 error={errors.phone?.message}

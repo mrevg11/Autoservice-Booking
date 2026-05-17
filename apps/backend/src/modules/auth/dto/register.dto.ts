@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsString,
+  IsNotEmpty,
   MinLength,
   MaxLength,
   Matches,
-  IsOptional,
 } from 'class-validator';
 
 export class RegisterDto {
@@ -34,9 +34,9 @@ export class RegisterDto {
   @MaxLength(20, { message: 'Прізвище не може перевищувати 20 символів' })
   lastName: string;
 
-  @ApiProperty({ example: '+380991234567', required: false })
-  @IsOptional()
+  @ApiProperty({ example: '+380991234567' })
+  @IsNotEmpty({ message: "Номер телефону обов'язковий" })
   @IsString()
-  @MaxLength(20)
-  phone?: string;
+  @Matches(/^\+380\d{9}$/, { message: 'Невірний формат. Приклад: +380991234567' })
+  phone: string;
 }
