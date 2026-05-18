@@ -87,8 +87,8 @@ export default function BookingDetailPage() {
               <div><p className="text-slate-500">Дата та час</p>
                 <p className="font-medium">{new Date(booking.scheduledAt).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}</p>
               </div>
-              <div><p className="text-slate-500">Тривалість</p>
-                <p className="font-medium">{booking.estimatedDurationMinutes} хв</p>
+              <div><p className="text-slate-500">Орієнтовна тривалість</p>
+                <p className="font-medium">~{booking.estimatedDurationMinutes} хв</p>
               </div>
               <div><p className="text-slate-500">Автомобіль</p>
                 <p className="font-medium">{booking.vehicle?.make} {booking.vehicle?.model} ({booking.vehicle?.year})</p>
@@ -122,7 +122,7 @@ export default function BookingDetailPage() {
                 <div className="pt-2 mt-1 border-t border-slate-200 flex items-center justify-between text-sm font-semibold">
                   <span className="text-slate-700">Разом</span>
                   <div className="flex gap-4">
-                    <span className="text-slate-600">{booking.estimatedDurationMinutes} хв</span>
+                    <span className="text-slate-600">~{booking.estimatedDurationMinutes} хв</span>
                     <span className="text-accent">{booking.totalPrice} грн</span>
                   </div>
                 </div>

@@ -101,7 +101,7 @@ export default function MasterDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-slate-900 text-sm">{b.totalPrice} грн</p>
-                  <p className="text-xs text-slate-500">{b.estimatedDurationMinutes} хв</p>
+                  <p className="text-xs text-slate-500">~{b.estimatedDurationMinutes} хв</p>
                 </div>
               </Link>
             ))}

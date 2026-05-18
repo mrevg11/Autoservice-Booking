@@ -298,6 +298,7 @@ export default function BookingWizardPage() {
         vehicleId: selectedVehicle.id,
         serviceIds: selectedServices.map((s) => s.id),
         scheduledAt,
+        estimatedDurationMinutes: totalDuration > 0 ? totalDuration : undefined,
         notes: notes || undefined,
       },
       {

@@ -120,15 +120,18 @@ export class BookingsService {
 
     // Calculate totals
     let totalPrice = 0;
-    let estimatedDurationMinutes = 0;
+    let baseDurationMinutes = 0;
     for (const ms of masterServices) {
       const svc = services.find((s) => s.id === ms.service.id);
       if (svc) {
         totalPrice += Number(svc.basePrice) * Number(ms.priceCoefficient);
-        estimatedDurationMinutes += svc.baseDurationMinutes;
+        baseDurationMinutes += svc.baseDurationMinutes;
       }
     }
     totalPrice = Math.round(totalPrice * 100) / 100;
+    // Use the coefficient-adjusted estimate from the client (vehicle age, season, master coefficients).
+    // Fall back to base sum only if the client didn't send an estimate.
+    const estimatedDurationMinutes = dto.estimatedDurationMinutes ?? baseDurationMinutes;
 
     return this.dataSource.transaction(async (manager) => {
       // Lock the master profile row first — serialises all concurrent booking

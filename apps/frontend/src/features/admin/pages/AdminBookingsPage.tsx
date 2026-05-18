@@ -32,7 +32,7 @@ function BookingDetailModal({ bookingId, onClose }: { bookingId: number; onClose
               <div><p className="text-slate-500 text-xs">Майстер</p><p className="font-medium">{booking.master?.user.firstName} {booking.master?.user.lastName}</p></div>
               <div><p className="text-slate-500 text-xs">Статус</p><p className="font-medium">{STATUS_LABELS[booking.status] ?? booking.status}</p></div>
               <div><p className="text-slate-500 text-xs">Дата та час</p><p className="font-medium">{new Date(booking.scheduledAt).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p></div>
-              <div><p className="text-slate-500 text-xs">Тривалість</p><p className="font-medium">{booking.estimatedDurationMinutes} хв</p></div>
+              <div><p className="text-slate-500 text-xs">Орієнт. тривалість</p><p className="font-medium">~{booking.estimatedDurationMinutes} хв</p></div>
               {booking.vehicle && (
                 <div className="col-span-2"><p className="text-slate-500 text-xs">Автомобіль</p><p className="font-medium">{booking.vehicle.make} {booking.vehicle.model} ({booking.vehicle.year}) — {booking.vehicle.plateNumber}</p></div>
               )}

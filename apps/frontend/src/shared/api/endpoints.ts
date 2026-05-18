@@ -173,6 +173,7 @@ export interface CreateBookingPayload {
   vehicleId: number;
   serviceIds: number[];
   scheduledAt: string;
+  estimatedDurationMinutes?: number;
   notes?: string;
 }
 

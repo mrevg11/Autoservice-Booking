@@ -66,8 +66,8 @@ export default function MasterBookingDetailPage() {
               <div><p className="text-slate-500">Автомобіль</p>
                 <p className="font-medium">{booking.vehicle?.make} {booking.vehicle?.model} ({booking.vehicle?.year})</p>
               </div>
-              <div><p className="text-slate-500">Тривалість</p>
-                <p className="font-medium">{booking.estimatedDurationMinutes} хв</p>
+              <div><p className="text-slate-500">Орієнтовна тривалість</p>
+                <p className="font-medium">~{booking.estimatedDurationMinutes} хв</p>
               </div>
               {booking.vehicle?.plateNumber && (
                 <div><p className="text-slate-500">Держ. номер</p>

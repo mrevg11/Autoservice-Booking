@@ -94,7 +94,7 @@ export default function MasterBookingsPage() {
                       })}
                     </p>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      {booking.vehicle?.make} {booking.vehicle?.model} · {booking.estimatedDurationMinutes} хв
+                      {booking.vehicle?.make} {booking.vehicle?.model} · ~{booking.estimatedDurationMinutes} хв
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-2">

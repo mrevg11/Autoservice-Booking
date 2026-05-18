@@ -8,6 +8,8 @@ import {
   IsOptional,
   IsString,
   MaxLength,
+  Min,
+  Max,
 } from 'class-validator';
 
 export class CreateBookingDto {
@@ -31,6 +33,13 @@ export class CreateBookingDto {
   @IsInt({ each: true })
   @IsPositive({ each: true })
   serviceIds: number[];
+
+  @ApiPropertyOptional({ description: 'Орієнтовна тривалість з урахуванням коефіцієнтів (хв). Якщо не передано — розраховується як сума базових тривалостей послуг.' })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(600)
+  estimatedDurationMinutes?: number;
 
   @ApiPropertyOptional()
   @IsOptional()
