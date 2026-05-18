@@ -105,7 +105,8 @@ export class SlotSuggesterService {
     const [allBookings, allDayOffs, allSchedules] = await Promise.all([
       this.bookingRepo
         .createQueryBuilder('b')
-        .where('b.master IN (:...masterIds)', { masterIds })
+        .innerJoinAndSelect('b.master', 'master')
+        .where('master.id IN (:...masterIds)', { masterIds })
         .andWhere('b.scheduledAt >= :startDate', { startDate })
         .andWhere('b.scheduledAt < :endDate', { endDate })
         .andWhere('b.status != :cancelled', { cancelled: BookingStatus.CANCELLED })
@@ -130,7 +131,7 @@ export class SlotSuggesterService {
     for (const master of masters) {
       const schedules = allSchedules.filter((s) => s.master.id === master.id);
       const dayOffs = allDayOffs.filter((d) => d.master.id === master.id);
-      const bookings = allBookings.filter((b) => (b as unknown as { masterId: number }).masterId === master.id);
+      const bookings = allBookings.filter((b) => b.master?.id === master.id);
 
       const loadScore = this.computeLoadScore(bookings.length, this.lookaheadDays);
       const ratingScore = Math.min(Number(master.rating ?? 0) / 5, 1);
