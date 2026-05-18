@@ -61,6 +61,7 @@ import {
         ],
         migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
         charset: 'utf8mb4',
+        timezone: 'Z',
       }),
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
