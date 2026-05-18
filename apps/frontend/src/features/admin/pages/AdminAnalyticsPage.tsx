@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, PieChart, Pie, Cell, Legend,
+  ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import {
   analyticsApi,
@@ -152,24 +152,14 @@ export default function AdminAnalyticsPage() {
                   data={topServices}
                   dataKey="bookingCount"
                   nameKey="serviceName"
-                  cx="40%"
+                  cx="50%"
                   cy="50%"
-                  outerRadius={110}
+                  outerRadius={120}
                   label={false}
                 >
                   {topServices.map((_: TopService, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
                 <Tooltip formatter={(value, name) => [`${Number(value ?? 0)} записів`, String(name ?? '')]} />
-                <Legend
-                  layout="vertical"
-                  align="right"
-                  verticalAlign="middle"
-                  iconType="circle"
-                  iconSize={10}
-                  formatter={(val) => (
-                    <span style={{ fontSize: '11px', maxWidth: '160px', display: 'inline-block', lineHeight: '1.3' }}>{val}</span>
-                  )}
-                />
               </PieChart>
             </ResponsiveContainer>
             <div className="overflow-x-auto">
