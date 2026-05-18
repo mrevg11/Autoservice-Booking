@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { intelligenceApi } from '../../../shared/api/endpoints';
+import { intelligenceApi, type DurationEstimateMultiResponse } from '../../../shared/api/endpoints';
+export type { DurationEstimateMultiResponse };
 
 export function useSuggestSlots(
   serviceId: number | undefined,
@@ -31,5 +32,17 @@ export function useEstimateDuration(
     queryKey: ['estimateDuration', serviceId, masterId, vehicleYear],
     queryFn: () => intelligenceApi.estimateDuration(serviceId!, masterId, vehicleYear).then((r) => r.data),
     enabled: !!serviceId,
+  });
+}
+
+export function useEstimateDurationMulti(
+  serviceIds: number[],
+  masterId?: number,
+  vehicleYear?: number,
+) {
+  return useQuery({
+    queryKey: ['estimateDurationMulti', serviceIds, masterId, vehicleYear],
+    queryFn: () => intelligenceApi.estimateDurationMulti(serviceIds, masterId, vehicleYear).then((r) => r.data),
+    enabled: serviceIds.length > 0,
   });
 }

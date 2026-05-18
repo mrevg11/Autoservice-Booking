@@ -264,6 +264,22 @@ export interface DurationEstimateResponse {
   estimatedDurationMinutes: number;
 }
 
+export interface DurationEstimateMultiServiceBreakdown {
+  serviceId: number;
+  serviceName: string;
+  baseDurationMinutes: number;
+  estimatedMinutes: number;
+}
+
+export interface DurationEstimateMultiResponse {
+  totalBaseMinutes: number;
+  totalEstimatedMinutes: number;
+  vehicleAgeCoeff: number;
+  seasonCoeff: number;
+  masterCoeff: number;
+  services: DurationEstimateMultiServiceBreakdown[];
+}
+
 export const intelligenceApi = {
   suggestSlots: (serviceId: number, preferredDate: string, vehicleYear?: number, serviceIds?: number[]) =>
     api.get<SuggestSlotsResponse>('/intelligence/suggest-slots', {
@@ -276,6 +292,10 @@ export const intelligenceApi = {
   estimateDuration: (serviceId: number, masterId?: number, vehicleYear?: number) =>
     api.get<DurationEstimateResponse>('/intelligence/estimate-duration', {
       params: { serviceId, masterId, vehicleYear },
+    }),
+  estimateDurationMulti: (serviceIds: number[], masterId?: number, vehicleYear?: number) =>
+    api.get<DurationEstimateMultiResponse>('/intelligence/estimate-duration-multi', {
+      params: { serviceIds: serviceIds.join(','), masterId, vehicleYear },
     }),
 };
 

@@ -6,7 +6,7 @@ import { getMakes, getModels, getYears } from '../../../shared/data/carData';
 import { useServices, useCategories } from '../../services/hooks/useServices';
 import { useMasterSlots } from '../../masters/hooks/useMasters';
 import { useCreateBooking } from '../hooks/useBookings';
-import { useEstimateDuration } from '../../intelligence/hooks/useIntelligence';
+import { useEstimateDurationMulti } from '../../intelligence/hooks/useIntelligence';
 import { useQuery } from '@tanstack/react-query';
 import { mastersApi } from '../../../shared/api/endpoints';
 import Button from '../../../shared/components/ui/Button';
@@ -86,23 +86,26 @@ const selectCls = (hasError: boolean) =>
 
 function VehicleForm({ onDone }: { onDone: () => void }) {
   const createVehicle = useCreateVehicle();
-  const { control, register, handleSubmit, watch, setValue, formState: { errors } } = useForm<{
+  const { control, register, handleSubmit, setValue, formState: { errors } } = useForm<{
     make: string; model: string; year: number | ''; plateNumber: string; vin?: string;
   }>({ mode: 'onChange' });
 
-  const selectedMake = watch('make') ?? '';
-  const selectedModel = watch('model') ?? '';
+  const [selectedMake, setSelectedMake] = useState('');
+  const [selectedModel, setSelectedModel] = useState('');
   const makes = getMakes();
   const models = selectedMake ? getModels(selectedMake) : [];
   const years = selectedMake && selectedModel ? getYears(selectedMake, selectedModel) : [];
 
   const handleMakeChange = (make: string) => {
+    setSelectedMake(make);
+    setSelectedModel('');
     setValue('make', make, { shouldValidate: true });
     setValue('model', '', { shouldValidate: false });
     setValue('year', '', { shouldValidate: false });
   };
 
   const handleModelChange = (model: string) => {
+    setSelectedModel(model);
     setValue('model', model, { shouldValidate: true });
     setValue('year', '', { shouldValidate: false });
   };
@@ -254,15 +257,18 @@ export default function BookingWizardPage() {
   }, [selectedVehicle, selectedServices, selectedMasterId, selectedDate, selectedSlot, notes, step]);
 
 
-  const totalDuration = selectedServices.reduce((s, sv) => s + Number(sv.baseDurationMinutes ?? 0), 0);
-  const { data: slots, isLoading: slotsLoading } = useMasterSlots(
-    selectedMasterId, selectedDate, totalDuration,
-  );
+  const baseDuration = selectedServices.reduce((s, sv) => s + Number(sv.baseDurationMinutes ?? 0), 0);
 
-  useEstimateDuration(
-    selectedServices[0]?.id,
+  const { data: durationEstimate } = useEstimateDurationMulti(
+    selectedServiceIds,
     selectedMasterId,
     selectedVehicle?.year,
+  );
+  // Use model-estimated duration for slot availability; fall back to base sum while loading
+  const totalDuration = durationEstimate?.totalEstimatedMinutes ?? baseDuration;
+
+  const { data: slots, isLoading: slotsLoading } = useMasterSlots(
+    selectedMasterId, selectedDate, totalDuration,
   );
 
   const createBooking = useCreateBooking();
@@ -429,7 +435,12 @@ export default function BookingWizardPage() {
           {selectedServices.length > 0 && (
             <div className="bg-brand text-white rounded-xl p-4 text-sm flex items-center justify-between">
               <span>Обрано: {selectedServices.length} послуг</span>
-              <span>{totalDuration} хв · {totalPrice.toFixed(2)} грн</span>
+              <div className="text-right">
+                <span>~{totalDuration} хв · {totalPrice.toFixed(2)} грн</span>
+                {durationEstimate && durationEstimate.totalEstimatedMinutes !== durationEstimate.totalBaseMinutes && (
+                  <p className="text-xs text-white/70 mt-0.5">базова: {durationEstimate.totalBaseMinutes} хв</p>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -546,8 +557,17 @@ export default function BookingWizardPage() {
             </div>
             <div className="border-t border-slate-100 pt-3 space-y-1">
               <div className="flex justify-between text-slate-600 text-sm">
-                <span>Тривалість</span>
-                <span>{totalDuration > 0 ? `${totalDuration} хв` : '—'}</span>
+                <span>Тривалість (розрахункова)</span>
+                <div className="text-right">
+                  <span className="font-medium text-slate-900">{totalDuration > 0 ? `~${totalDuration} хв` : '—'}</span>
+                  {durationEstimate && durationEstimate.totalEstimatedMinutes !== durationEstimate.totalBaseMinutes && (
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      базова: {durationEstimate.totalBaseMinutes} хв
+                      {durationEstimate.vehicleAgeCoeff !== 1.0 && ` · вік авто ×${durationEstimate.vehicleAgeCoeff}`}
+                      {durationEstimate.seasonCoeff !== 1.0 && ` · сезон ×${durationEstimate.seasonCoeff}`}
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="flex justify-between font-semibold">
                 <span>Загальна сума</span>

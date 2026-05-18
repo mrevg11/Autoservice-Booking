@@ -5,6 +5,7 @@ import {
   ParseIntPipe,
   UseGuards,
   Optional,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,6 +21,7 @@ import { SuggestSlotsRequestDto } from './dto/suggest-slots-request.dto';
 import { SuggestSlotsResponseDto } from './dto/suggest-slots-response.dto';
 import { RecommendationsResponseDto } from './dto/recommendations-response.dto';
 import { DurationEstimateResponseDto } from './dto/duration-estimate-response.dto';
+import { DurationEstimateMultiResponseDto } from './dto/duration-estimate-multi-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { User } from '../../database/entities/user.entity';
@@ -42,21 +44,24 @@ export class IntelligenceController {
     @Query() query: SuggestSlotsRequestDto,
     @CurrentUser() _user: User,
   ): Promise<SuggestSlotsResponseDto> {
-    const estimate = await this.durationPredictorService.predict(
-      query.serviceId,
-      undefined,
-      query.vehicleYear,
-    );
     const allServiceIds = query.serviceIds
       ? query.serviceIds.split(',').map(Number).filter(Boolean)
       : [query.serviceId];
+
+    // Use multi-service estimate so total slot window accounts for all selected services
+    const multiEstimate = await this.durationPredictorService.predictMulti(
+      allServiceIds,
+      undefined,
+      query.vehicleYear,
+    );
+
     const suggestions = await this.slotSuggesterService.suggestSlots(
       query.serviceId,
       new Date(query.preferredDate),
-      estimate.estimatedMinutes,
+      multiEstimate.totalEstimatedMinutes,
       allServiceIds,
     );
-    return { suggestions, estimatedDurationMinutes: estimate.estimatedMinutes };
+    return { suggestions, estimatedDurationMinutes: multiEstimate.totalEstimatedMinutes };
   }
 
   @Get('recommendations')
@@ -86,6 +91,25 @@ export class IntelligenceController {
       serviceId,
       masterId,
       vehicleYear !== undefined ? parseInt(vehicleYear, 10) : undefined,
+    );
+  }
+
+  @Get('estimate-duration-multi')
+  @ApiOperation({ summary: 'Оцінка сумарної тривалості кількох послуг з урахуванням коефіцієнтів (вік авто, сезон, майстер)' })
+  @ApiQuery({ name: 'serviceIds', description: 'Ідентифікатори послуг через кому', example: '1,2,3' })
+  @ApiQuery({ name: 'masterId', required: false, type: Number })
+  @ApiQuery({ name: 'vehicleYear', required: false, type: Number })
+  @ApiResponse({ status: 200, type: DurationEstimateMultiResponseDto })
+  async estimateDurationMulti(
+    @Query('serviceIds', new DefaultValuePipe('')) serviceIds: string,
+    @Query('masterId') @Optional() masterId?: string,
+    @Query('vehicleYear') @Optional() vehicleYear?: string,
+  ): Promise<DurationEstimateMultiResponseDto> {
+    const ids = serviceIds.split(',').map(Number).filter(Boolean);
+    return this.durationPredictorService.predictMulti(
+      ids,
+      masterId ? parseInt(masterId, 10) : undefined,
+      vehicleYear ? parseInt(vehicleYear, 10) : undefined,
     );
   }
 }

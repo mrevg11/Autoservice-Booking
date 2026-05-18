@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Service } from '../../database/entities/service.entity';
 import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 import { BookingStatus } from '../../common/enums/booking-status.enum';
 import { DurationEstimateResponseDto } from './dto/duration-estimate-response.dto';
+import { DurationEstimateMultiResponseDto, ServiceDurationBreakdownDto } from './dto/duration-estimate-multi-response.dto';
 
 @Injectable()
 export class DurationPredictorService {
@@ -49,6 +50,52 @@ export class DurationPredictorService {
       masterCoeff: Math.round(masterCoeff * 100) / 100,
       vehicleAgeCoeff: Math.round(vehicleAgeCoeff * 100) / 100,
       seasonCoeff: Math.round(seasonCoeff * 100) / 100,
+    };
+  }
+
+  async predictMulti(
+    serviceIds: number[],
+    masterId?: number,
+    vehicleYear?: number,
+  ): Promise<DurationEstimateMultiResponseDto> {
+    if (!serviceIds.length) {
+      return { totalBaseMinutes: 0, totalEstimatedMinutes: 0, vehicleAgeCoeff: 1.0, seasonCoeff: 1.0, masterCoeff: 1.0, services: [] };
+    }
+
+    const found = await this.serviceRepo.find({ where: { id: In(serviceIds) } });
+    // Preserve input order
+    const ordered = serviceIds.map((id) => found.find((s) => s.id === id)).filter(Boolean) as Service[];
+
+    const vehicleAgeCoeff = vehicleYear !== undefined ? this.computeVehicleAgeCoeff(vehicleYear) : 1.0;
+    const seasonCoeff = this.computeSeasonCoeff(new Date());
+
+    const services: ServiceDurationBreakdownDto[] = [];
+    let totalMasterCoeff = 0;
+
+    for (const svc of ordered) {
+      const mCoeff = masterId && masterId > 0
+        ? await this.computeMasterCoeff(masterId, svc.id, svc.baseDurationMinutes)
+        : 1.0;
+      services.push({
+        serviceId: svc.id,
+        serviceName: svc.name,
+        baseDurationMinutes: svc.baseDurationMinutes,
+        estimatedMinutes: Math.round(svc.baseDurationMinutes * mCoeff * vehicleAgeCoeff * seasonCoeff),
+      });
+      totalMasterCoeff += mCoeff;
+    }
+
+    const avgMasterCoeff = ordered.length > 0 ? totalMasterCoeff / ordered.length : 1.0;
+    const totalBaseMinutes = services.reduce((s, r) => s + r.baseDurationMinutes, 0);
+    const totalEstimatedMinutes = services.reduce((s, r) => s + r.estimatedMinutes, 0);
+
+    return {
+      totalBaseMinutes,
+      totalEstimatedMinutes,
+      vehicleAgeCoeff: Math.round(vehicleAgeCoeff * 100) / 100,
+      seasonCoeff: Math.round(seasonCoeff * 100) / 100,
+      masterCoeff: Math.round(avgMasterCoeff * 100) / 100,
+      services,
     };
   }
 
