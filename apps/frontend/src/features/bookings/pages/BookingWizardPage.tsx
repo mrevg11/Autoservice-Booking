@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
+import { useAuthStore } from '../../../shared/store/auth.store';
+import BookingPhotosSection from '../components/BookingPhotosSection';
 import { useVehicles, useCreateVehicle } from '../../vehicles/hooks/useVehicles';
 import { getMakes, getModels, getYears } from '../../../shared/data/carData';
 import { useServices, useCategories } from '../../services/hooks/useServices';
@@ -310,16 +312,32 @@ export default function BookingWizardPage() {
   };
 
   if (step === 4) {
+    const currentUser = useAuthStore.getState().user;
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-3xl mb-6" style={{ animation: 'ping 0.5s ease-out' }}>
-          ✅
+      <div className="space-y-8 max-w-2xl mx-auto py-8">
+        <div className="flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-3xl mb-6">
+            ✅
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Запис створено!</h2>
+          <p className="text-slate-600">
+            Запис #{createdBookingId} створено. Очікуйте підтвердження від майстра.
+          </p>
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Запис створено!</h2>
-        <p className="text-slate-600 mb-8">
-          Запис #{createdBookingId} створено. Очікуйте підтвердження від майстра.
-        </p>
-        <div className="flex gap-3">
+
+        {createdBookingId && (
+          <div className="bg-white rounded-xl shadow-card border border-slate-100 p-5">
+            <p className="text-sm font-medium text-slate-700 mb-4">
+              Додайте фото автомобіля або опис проблеми — це допоможе майстру підготуватися заздалегідь
+            </p>
+            <BookingPhotosSection
+              bookingId={createdBookingId}
+              currentUserId={currentUser?.id}
+            />
+          </div>
+        )}
+
+        <div className="flex gap-3 justify-center">
           <Link to="/client/bookings">
             <Button>Мої записи</Button>
           </Link>
