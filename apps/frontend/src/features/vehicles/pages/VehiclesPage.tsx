@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useVehicles, useCreateVehicle, useUpdateVehicle, useDeleteVehicle } from '../hooks/useVehicles';
 import Button from '../../../shared/components/ui/Button';
@@ -62,25 +62,35 @@ function VehicleForm({
   onCancel: () => void;
   isLoading: boolean;
 }) {
-  const { control, register, handleSubmit, watch, setValue, formState: { errors } } = useForm<CreateVehiclePayload>({
+  const { control, register, handleSubmit, setValue, formState: { errors } } = useForm<CreateVehiclePayload>({
     defaultValues,
     mode: 'onChange',
   });
 
-  const selectedMake = watch('make') ?? '';
-  const selectedModel = watch('model') ?? '';
+  // Use local state for cascade — guarantees re-render on every change
+  const [selectedMake, setSelectedMake] = useState(defaultValues?.make ?? '');
+  const [selectedModel, setSelectedModel] = useState(defaultValues?.model ?? '');
+
+  // Sync if defaultValues arrive late (edit mode)
+  useEffect(() => {
+    if (defaultValues?.make) setSelectedMake(defaultValues.make);
+    if (defaultValues?.model) setSelectedModel(defaultValues.model);
+  }, [defaultValues?.make, defaultValues?.model]);
 
   const makes = getMakes();
   const models = selectedMake ? getModels(selectedMake) : [];
   const years = selectedMake && selectedModel ? getYears(selectedMake, selectedModel) : [];
 
   const handleMakeChange = (make: string) => {
+    setSelectedMake(make);
+    setSelectedModel('');
     setValue('make', make, { shouldValidate: true });
     setValue('model', '', { shouldValidate: false });
     setValue('year', '' as unknown as number, { shouldValidate: false });
   };
 
   const handleModelChange = (model: string) => {
+    setSelectedModel(model);
     setValue('model', model, { shouldValidate: true });
     setValue('year', '' as unknown as number, { shouldValidate: false });
   };

@@ -32,4 +32,7 @@ export class Service {
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+
+  @Column({ type: 'int', nullable: true, default: 180 })
+  recommendedIntervalDays: number | null;
 }

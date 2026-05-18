@@ -13,10 +13,9 @@ export interface AuthUser {
 interface AuthState {
   user: AuthUser | null;
   accessToken: string | null;
-  refreshToken: string | null;
   hasHydrated: boolean;
   setHasHydrated: (value: boolean) => void;
-  setAuth: (user: AuthUser, accessToken: string, refreshToken: string) => void;
+  setAuth: (user: AuthUser, accessToken: string) => void;
   setAccessToken: (token: string) => void;
   updateUser: (partial: Partial<AuthUser>) => void;
   logout: () => void;
@@ -28,20 +27,18 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       accessToken: null,
-      refreshToken: null,
       hasHydrated: false,
       setHasHydrated: (value) => set({ hasHydrated: value }),
-      setAuth: (user, accessToken, refreshToken) =>
-        set({ user, accessToken, refreshToken }),
+      setAuth: (user, accessToken) => set({ user, accessToken }),
       setAccessToken: (accessToken) => set({ accessToken }),
       updateUser: (partial) => set((s) => ({ user: s.user ? { ...s.user, ...partial } : s.user })),
-      logout: () => set({ user: null, accessToken: null, refreshToken: null }),
-      isAuthenticated: () => !!get().accessToken,
+      logout: () => set({ user: null, accessToken: null }),
+      isAuthenticated: () => !!get().user,
     }),
     {
       name: 'auth-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (s) => ({ refreshToken: s.refreshToken, accessToken: s.accessToken, user: s.user }),
+      partialize: (s) => ({ accessToken: s.accessToken, user: s.user }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

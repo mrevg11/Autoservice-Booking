@@ -5,6 +5,8 @@ const api = axios.create({
   baseURL: (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:3000/api/v1',
   timeout: 10000,
   headers: { 'Content-Type': 'application/json' },
+  // Required for the httpOnly refreshToken cookie to be sent cross-origin
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -39,9 +41,8 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // No refresh token — user is not logged in, just reject without redirect
-    const refreshToken = useAuthStore.getState().refreshToken;
-    if (!refreshToken) return Promise.reject(error);
+    // No user in store — user is not logged in, just reject without redirect
+    if (!useAuthStore.getState().user) return Promise.reject(error);
 
     if (isRefreshing) {
       return new Promise((resolve, reject) => failedQueue.push({ resolve, reject }))
@@ -53,7 +54,8 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const { data } = await api.post<{ accessToken: string }>('/auth/refresh', { refreshToken });
+      // Cookie is sent automatically — no body needed
+      const { data } = await api.post<{ accessToken: string }>('/auth/refresh');
       useAuthStore.getState().setAccessToken(data.accessToken);
       processQueue(null);
       return api(original);

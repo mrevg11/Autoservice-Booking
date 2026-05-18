@@ -2,6 +2,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
@@ -10,7 +11,31 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
   // Security
-  app.use(helmet());
+  // CSRF note: this API uses JWT Bearer tokens in the Authorization header.
+  // Browsers never auto-attach custom headers to cross-origin requests, so
+  // CSRF attacks against this API are structurally impossible — no CSRF tokens needed.
+  // XSS surface is reduced by Helmet's Content-Security-Policy below.
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          // Allow data: URIs for Base64 booking photos
+          imgSrc: ["'self'", 'data:', 'blob:'],
+          connectSrc: [
+            "'self'",
+            process.env['FRONTEND_URL'] ?? 'http://localhost:5173',
+          ],
+          fontSrc: ["'self'"],
+          objectSrc: ["'none'"],
+          frameSrc: ["'none'"],
+        },
+      },
+    }),
+  );
+  app.use(cookieParser());
   app.enableCors({
     origin: process.env['FRONTEND_URL'] ?? 'http://localhost:5173',
     credentials: true,

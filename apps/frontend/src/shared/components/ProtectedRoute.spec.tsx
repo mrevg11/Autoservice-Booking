@@ -27,7 +27,7 @@ function renderWithRouter(
 
 describe('ProtectedRoute', () => {
   beforeEach(() => {
-    useAuthStore.setState({ user: null, accessToken: null, refreshToken: null });
+    useAuthStore.setState({ user: null, accessToken: null });
   });
 
   it('redirects to /login when not authenticated', () => {
@@ -39,7 +39,6 @@ describe('ProtectedRoute', () => {
     useAuthStore.setState({
       user: { id: 1, email: 'a@b.com', role: 'CLIENT', firstName: 'A', lastName: 'B', emailVerified: true },
       accessToken: 'token',
-      refreshToken: 'ref',
     });
     renderWithRouter('/protected', ['CLIENT']);
     expect(screen.getByText('Protected content')).toBeInTheDocument();
@@ -49,7 +48,6 @@ describe('ProtectedRoute', () => {
     useAuthStore.setState({
       user: { id: 1, email: 'a@b.com', role: 'MASTER', firstName: 'A', lastName: 'B', emailVerified: true },
       accessToken: 'token',
-      refreshToken: 'ref',
     });
     renderWithRouter('/protected', ['CLIENT']);
     expect(screen.getByText('Unauthorized page')).toBeInTheDocument();
@@ -59,7 +57,6 @@ describe('ProtectedRoute', () => {
     useAuthStore.setState({
       user: { id: 1, email: 'a@b.com', role: 'CLIENT', firstName: 'A', lastName: 'B', emailVerified: true },
       accessToken: 'token',
-      refreshToken: 'ref',
     });
     renderWithRouter('/protected');
     expect(screen.getByText('Protected content')).toBeInTheDocument();

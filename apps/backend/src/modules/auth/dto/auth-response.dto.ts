@@ -4,8 +4,8 @@ export class AuthResponseDto {
   @ApiProperty()
   accessToken: string;
 
-  @ApiProperty()
-  refreshToken: string;
+  /** Populated by AuthService; stripped by the controller before sending — set as httpOnly cookie instead. */
+  refreshToken?: string;
 
   @ApiProperty()
   user: {

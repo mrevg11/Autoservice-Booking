@@ -2,17 +2,22 @@ import {
   Controller,
   Post,
   Body,
+  Res,
+  Req,
   UseGuards,
   HttpCode,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiCookieAuth,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -23,15 +28,9 @@ import { AuthResponseDto } from './dto/auth-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { User } from '../../database/entities/user.entity';
-import { IsString, IsNotEmpty } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 
-class RefreshTokenDto {
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  refreshToken: string;
-}
+const REFRESH_COOKIE = 'refreshToken';
+const COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -61,16 +60,36 @@ export class AuthController {
   @ApiOperation({ summary: 'Вхід в систему' })
   @ApiResponse({ status: 200, type: AuthResponseDto })
   @ApiResponse({ status: 401, description: 'Невірні дані' })
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<AuthResponseDto> {
+    const result = await this.authService.login(dto);
+    res.cookie(REFRESH_COOKIE, result.refreshToken, {
+      httpOnly: true,
+      secure: process.env['NODE_ENV'] === 'production',
+      sameSite: 'strict',
+      maxAge: COOKIE_MAX_AGE_MS,
+      path: '/',
+    });
+    const { refreshToken: _rt, ...body } = result;
+    void _rt;
+    return body;
   }
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 30, ttl: 60000 } })
+  @ApiCookieAuth(REFRESH_COOKIE)
   @ApiOperation({ summary: 'Оновлення access токена' })
-  refresh(@Body() dto: RefreshTokenDto) {
-    return this.authService.refresh(dto.refreshToken);
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<{ accessToken: string }> {
+    const token: string | undefined = (req.cookies as Record<string, string | undefined>)[REFRESH_COOKIE];
+    if (!token) throw new UnauthorizedException('Відсутній токен оновлення');
+    const result = await this.authService.refresh(token);
+    return result;
   }
 
   @Post('logout')
@@ -78,7 +97,11 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Вихід з системи' })
-  logout(@CurrentUser() user: User) {
+  async logout(
+    @CurrentUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.clearCookie(REFRESH_COOKIE, { path: '/' });
     return this.authService.logout(user.id);
   }
 

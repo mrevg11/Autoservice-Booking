@@ -22,6 +22,7 @@ import { SuggestSlotsResponseDto } from './dto/suggest-slots-response.dto';
 import { RecommendationsResponseDto } from './dto/recommendations-response.dto';
 import { DurationEstimateResponseDto } from './dto/duration-estimate-response.dto';
 import { DurationEstimateMultiResponseDto } from './dto/duration-estimate-multi-response.dto';
+import { ServiceRemindersResponseDto } from './dto/service-reminder.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { User } from '../../database/entities/user.entity';
@@ -92,6 +93,14 @@ export class IntelligenceController {
       masterId,
       vehicleYear !== undefined ? parseInt(vehicleYear, 10) : undefined,
     );
+  }
+
+  @Get('reminders')
+  @ApiOperation({ summary: 'Персоналізовані нагадування про обслуговування автомобіля' })
+  @ApiResponse({ status: 200, type: ServiceRemindersResponseDto })
+  async getReminders(@CurrentUser() user: User): Promise<ServiceRemindersResponseDto> {
+    const reminders = await this.recommendationsService.getReminders(user.id);
+    return { reminders };
   }
 
   @Get('estimate-duration-multi')

@@ -19,7 +19,7 @@ export interface PaginationParams {
 
 export interface LoginPayload { email: string; password: string }
 export interface RegisterPayload { firstName: string; lastName: string; email: string; phone?: string; password: string }
-export interface AuthResponse { user: AuthUser; accessToken: string; refreshToken: string }
+export interface AuthResponse { user: AuthUser; accessToken: string }
 
 export const authApi = {
   register: (data: RegisterPayload) => api.post<{ message: string }>('/auth/register', data),
@@ -301,6 +301,20 @@ export interface DurationEstimateMultiResponse {
   services: DurationEstimateMultiServiceBreakdown[];
 }
 
+export interface ServiceReminder {
+  serviceId: number;
+  serviceName: string;
+  lastServiceDate: string;
+  nextRecommendedDate: string;
+  daysOverdue: number;
+  isOverdue: boolean;
+  lastBookingId: number;
+}
+
+export interface ServiceRemindersResponse {
+  reminders: ServiceReminder[];
+}
+
 export const intelligenceApi = {
   suggestSlots: (serviceId: number, preferredDate: string, vehicleYear?: number, serviceIds?: number[]) =>
     api.get<SuggestSlotsResponse>('/intelligence/suggest-slots', {
@@ -318,6 +332,8 @@ export const intelligenceApi = {
     api.get<DurationEstimateMultiResponse>('/intelligence/estimate-duration-multi', {
       params: { serviceIds: serviceIds.join(','), masterId, vehicleYear },
     }),
+  getReminders: () =>
+    api.get<ServiceRemindersResponse>('/intelligence/reminders'),
 };
 
 // ─── Admin / Users ────────────────────────────────────────────────────────────

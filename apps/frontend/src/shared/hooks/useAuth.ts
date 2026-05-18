@@ -8,6 +8,7 @@ export function useAuth() {
   return { user, accessToken, setAuth, setAccessToken, logout, isAuthenticated };
 }
 
+
 export function useLogin() {
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: authApi.login,
     onSuccess: ({ data }) => {
-      setAuth(data.user, data.accessToken, data.refreshToken);
+      setAuth(data.user, data.accessToken);
       const role = data.user.role;
       navigate(role === 'MASTER' ? '/master/dashboard' : '/client/dashboard');
     },

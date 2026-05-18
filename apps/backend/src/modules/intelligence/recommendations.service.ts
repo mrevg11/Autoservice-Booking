@@ -6,9 +6,11 @@ import { MasterProfile } from '../../database/entities/master-profile.entity';
 import { Booking } from '../../database/entities/booking.entity';
 import { Service } from '../../database/entities/service.entity';
 import { MasterService } from '../../database/entities/master-service.entity';
+import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 import { Review } from '../../database/entities/review.entity';
 import { BookingStatus } from '../../common/enums/booking-status.enum';
 import { MasterRecommendationDto } from './dto/recommendations-response.dto';
+import { ServiceReminderDto } from './dto/service-reminder.dto';
 
 interface Weights {
   rating: number;
@@ -32,6 +34,8 @@ export class RecommendationsService {
     private readonly serviceRepo: Repository<Service>,
     @InjectRepository(MasterService)
     private readonly masterServiceRepo: Repository<MasterService>,
+    @InjectRepository(BookingServiceEntity)
+    private readonly bookingServiceRepo: Repository<BookingServiceEntity>,
     @InjectRepository(Review)
     private readonly reviewRepo: Repository<Review>,
     private readonly configService: ConfigService,
@@ -158,6 +162,62 @@ export class RecommendationsService {
     }
 
     return results.sort((a, b) => b.score - a.score).slice(0, 5);
+  }
+
+  async getReminders(clientId: number): Promise<ServiceReminderDto[]> {
+    // Find the most recent completed booking per service for this client
+    const rows = await this.bookingServiceRepo
+      .createQueryBuilder('bs')
+      .innerJoin('bs.booking', 'b')
+      .innerJoin('bs.service', 's')
+      .where('b.client = :clientId', { clientId })
+      .andWhere('b.status = :status', { status: BookingStatus.COMPLETED })
+      .andWhere('s.recommendedIntervalDays IS NOT NULL')
+      .select([
+        's.id AS serviceId',
+        's.name AS serviceName',
+        's.recommendedIntervalDays AS intervalDays',
+        'MAX(b.scheduledAt) AS lastDate',
+        'b.id AS bookingId',
+      ])
+      .groupBy('s.id')
+      .addGroupBy('s.name')
+      .addGroupBy('s.recommendedIntervalDays')
+      .addGroupBy('b.id')
+      .getRawMany<{
+        serviceId: number;
+        serviceName: string;
+        intervalDays: number;
+        lastDate: string;
+        bookingId: number;
+      }>();
+
+    const today = new Date();
+    const reminders: ServiceReminderDto[] = [];
+
+    for (const row of rows) {
+      const lastDate = new Date(row.lastDate);
+      const nextDate = new Date(lastDate);
+      nextDate.setDate(nextDate.getDate() + Number(row.intervalDays));
+
+      const msOverdue = today.getTime() - nextDate.getTime();
+      const daysOverdue = Math.floor(msOverdue / 86_400_000);
+
+      // Only surface reminders within 30 days upcoming or already overdue
+      if (daysOverdue < -30) continue;
+
+      reminders.push({
+        serviceId: Number(row.serviceId),
+        serviceName: row.serviceName,
+        lastServiceDate: lastDate.toISOString().slice(0, 10),
+        nextRecommendedDate: nextDate.toISOString().slice(0, 10),
+        daysOverdue: Math.max(0, daysOverdue),
+        isOverdue: daysOverdue >= 0,
+        lastBookingId: Number(row.bookingId),
+      });
+    }
+
+    return reminders.sort((a, b) => b.daysOverdue - a.daysOverdue);
   }
 
   private computeSpecScore(specialization: string, categoryName: string): number {
