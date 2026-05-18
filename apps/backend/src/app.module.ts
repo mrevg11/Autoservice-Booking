@@ -20,6 +20,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import {
   Booking,
+  BookingPhoto,
   BookingService,
   BookingStatusHistory,
   ClientProfile,
@@ -56,10 +57,11 @@ import {
         entities: [
           User, ClientProfile, MasterProfile, MasterSchedule,
           MasterDayOff, ServiceCategory, Service, MasterService,
-          Vehicle, Booking, BookingService, BookingStatusHistory,
+          Vehicle, Booking, BookingPhoto, BookingService, BookingStatusHistory,
           Review, Notification,
         ],
         migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
+        migrationsRun: true,
         charset: 'utf8mb4',
         timezone: 'Z',
       }),
