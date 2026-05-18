@@ -13,7 +13,7 @@ export class MasterProfile {
   id: number;
 
   @OneToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ unique: true })
+  @JoinColumn()
   user: User;
 
   @Column({ type: 'varchar', length: 200, nullable: true })

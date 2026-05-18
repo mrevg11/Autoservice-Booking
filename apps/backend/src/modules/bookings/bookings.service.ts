@@ -1,6 +1,7 @@
 import {
   Injectable,
   BadRequestException,
+  Logger,
   NotFoundException,
   ConflictException,
   ForbiddenException,
@@ -51,6 +52,8 @@ const CANCELLATION_DEADLINE_HOURS = 2;
 
 @Injectable()
 export class BookingsService {
+  private readonly logger = new Logger(BookingsService.name);
+
   constructor(
     @InjectRepository(Booking)
     private bookingsRepo: Repository<Booking>,
@@ -118,9 +121,7 @@ export class BookingsService {
       const svc = services.find((s) => s.id === ms.service.id);
       if (svc) {
         totalPrice += Number(svc.basePrice) * Number(ms.priceCoefficient);
-        estimatedDurationMinutes += Math.round(
-          svc.baseDurationMinutes * Number(ms.priceCoefficient),
-        );
+        estimatedDurationMinutes += svc.baseDurationMinutes;
       }
     }
     totalPrice = Math.round(totalPrice * 100) / 100;
@@ -414,8 +415,8 @@ export class BookingsService {
             }),
           );
         });
-      } catch {
-        // Log but continue — one failed cancellation must not block the rest
+      } catch (err) {
+        this.logger.error(`Failed to cancel expired booking #${booking.id}`, err instanceof Error ? err.stack : String(err));
       }
     }
   }
@@ -436,11 +437,21 @@ export class BookingsService {
     if (!booking) throw new NotFoundException("Запис не знайдено");
     this.checkBookingAccess(booking, user);
 
-    return this.historyRepo.find({
+    const history = await this.historyRepo.find({
       where: { booking: { id } },
       relations: ['changedBy'],
       order: { changedAt: 'ASC' },
     });
+    for (const entry of history) {
+      if (entry.changedBy) {
+        const u = entry.changedBy as unknown as Record<string, unknown>;
+        delete u['passwordHash'];
+        delete u['refreshTokenHash'];
+        delete u['emailVerificationToken'];
+        delete u['passwordResetToken'];
+      }
+    }
+    return history;
   }
 
   private checkBookingAccess(booking: Booking, user: User): void {

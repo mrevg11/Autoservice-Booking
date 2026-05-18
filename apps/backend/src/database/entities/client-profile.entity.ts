@@ -13,7 +13,7 @@ export class ClientProfile {
   id: number;
 
   @OneToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ unique: true })
+  @JoinColumn()
   user: User;
 
   @Column({ type: 'date', nullable: true })

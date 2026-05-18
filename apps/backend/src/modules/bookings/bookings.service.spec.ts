@@ -49,19 +49,24 @@ const makeBooking = (overrides: Partial<Booking> = {}): Booking =>
   } as unknown as Booking);
 
 // Mock transaction manager
-const makeMockManager = (overlapBookings: Booking[] = []) => ({
-  getRepository: jest.fn().mockReturnValue({
-    createQueryBuilder: jest.fn().mockReturnValue({
-      setLock: jest.fn().mockReturnThis(),
-      where: jest.fn().mockReturnThis(),
-      andWhere: jest.fn().mockReturnThis(),
-      getMany: jest.fn().mockResolvedValue(overlapBookings),
+const makeMockManager = (overlapBookings: Booking[] = [], lockedEntity: unknown = null) => {
+  const qb = {
+    setLock: jest.fn().mockReturnThis(),
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    getMany: jest.fn().mockResolvedValue(overlapBookings),
+    getOne: jest.fn().mockResolvedValue(lockedEntity),
+  };
+  return {
+    getRepository: jest.fn().mockReturnValue({
+      createQueryBuilder: jest.fn().mockReturnValue(qb),
     }),
-  }),
-  create: jest.fn().mockImplementation((_entity: unknown, data: unknown) => data),
-  save: jest.fn().mockImplementation(async (_entity: unknown, data: unknown) => data),
-  delete: jest.fn().mockResolvedValue(undefined),
-});
+    create: jest.fn().mockImplementation((_entity: unknown, data: unknown) => data),
+    save: jest.fn().mockImplementation(async (_entity: unknown, data: unknown) => data),
+    delete: jest.fn().mockResolvedValue(undefined),
+  };
+};
 
 const mockRepo = () => ({
   find: jest.fn(),
@@ -174,9 +179,9 @@ describe('BookingsService', () => {
       servicesRepo.findByIds.mockResolvedValue([makeService(1)]);
       masterServicesRepo.find.mockResolvedValue([makeMasterService(1)]);
 
-      // Transaction returns overlap
+      // Transaction: master locked, but overlapping bookings exist
       dataSource.transaction.mockImplementation(
-        async (cb: (m: unknown) => unknown) => cb(makeMockManager([makeBooking()])),
+        async (cb: (m: unknown) => unknown) => cb(makeMockManager([makeBooking()], makeMaster())),
       );
 
       await expect(service.create(makeUser(), baseDto)).rejects.toThrow(ConflictException);
@@ -194,7 +199,7 @@ describe('BookingsService', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let savedBooking: any = null;
       dataSource.transaction.mockImplementation(async (cb: (m: unknown) => unknown) => {
-        const manager = makeMockManager([]);
+        const manager = makeMockManager([], makeMaster());
         manager.save.mockImplementation(async (_e: unknown, data: unknown) => {
           if ((data as Partial<Booking>).totalPrice !== undefined) {
             savedBooking = data;
@@ -221,7 +226,7 @@ describe('BookingsService', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let savedBooking: any = null;
       dataSource.transaction.mockImplementation(async (cb: (m: unknown) => unknown) => {
-        const manager = makeMockManager([]);
+        const manager = makeMockManager([], makeMaster());
         manager.save.mockImplementation(async (_e: unknown, data: unknown) => {
           if ((data as Partial<Booking>).estimatedDurationMinutes !== undefined) {
             savedBooking = data as Partial<Booking>;
@@ -232,8 +237,8 @@ describe('BookingsService', () => {
       });
 
       await service.create(makeUser(), baseDto);
-      // round(30 * 2.0) = 60
-      expect(savedBooking?.estimatedDurationMinutes).toBe(60);
+      // duration is baseDurationMinutes only, not affected by priceCoefficient
+      expect(savedBooking?.estimatedDurationMinutes).toBe(30);
     });
 
     it('зберігає BookingStatusHistory з oldStatus=null', async () => {
@@ -244,7 +249,7 @@ describe('BookingsService', () => {
 
       const savedHistories: unknown[] = [];
       dataSource.transaction.mockImplementation(async (cb: (m: unknown) => unknown) => {
-        const manager = makeMockManager([]);
+        const manager = makeMockManager([], makeMaster());
         manager.save.mockImplementation(async (_e: unknown, data: unknown) => {
           if ((data as { oldStatus?: unknown }).oldStatus !== undefined || (data as { newStatus?: unknown }).newStatus) {
             if ((data as { newStatus?: BookingStatus }).newStatus === BookingStatus.PENDING) {
@@ -265,24 +270,27 @@ describe('BookingsService', () => {
   });
 
   describe('updateStatus', () => {
+    const mockTxWithBooking = (booking: Booking) => {
+      dataSource.transaction.mockImplementation(async (cb: (m: unknown) => unknown) => {
+        const manager = makeMockManager([], booking);
+        manager.save.mockImplementation(async (_e: unknown, data: unknown) => data);
+        return cb(manager);
+      });
+      // findOne used for notification fetch after transaction
+      bookingsRepo.findOne.mockResolvedValue(null);
+    };
+
     it('PENDING → CONFIRMED дозволено для MASTER', async () => {
       const master = makeUser({ id: 2, role: Role.MASTER });
       const booking = makeBooking({ status: BookingStatus.PENDING });
-      bookingsRepo.findOne.mockResolvedValue(booking);
-      bookingsRepo.save.mockResolvedValue({ ...booking, status: BookingStatus.CONFIRMED });
-      historyRepo.create.mockImplementation((data: unknown) => data);
-      historyRepo.save.mockResolvedValue({});
+      mockTxWithBooking(booking);
 
-      const result = await service.updateStatus(
-        1,
-        master,
-        { status: BookingStatus.CONFIRMED },
-      );
+      const result = await service.updateStatus(1, master, { status: BookingStatus.CONFIRMED });
       expect(result.status).toBe(BookingStatus.CONFIRMED);
     });
 
     it('PENDING → IN_PROGRESS заборонено (пропущений крок)', async () => {
-      bookingsRepo.findOne.mockResolvedValue(makeBooking({ status: BookingStatus.PENDING }));
+      mockTxWithBooking(makeBooking({ status: BookingStatus.PENDING }));
       await expect(
         service.updateStatus(1, makeUser({ role: Role.MASTER }), {
           status: BookingStatus.IN_PROGRESS,
@@ -291,9 +299,7 @@ describe('BookingsService', () => {
     });
 
     it('COMPLETED → CANCELLED заборонено (фінальний статус)', async () => {
-      bookingsRepo.findOne.mockResolvedValue(
-        makeBooking({ status: BookingStatus.COMPLETED }),
-      );
+      mockTxWithBooking(makeBooking({ status: BookingStatus.COMPLETED }));
       await expect(
         service.updateStatus(1, makeUser({ role: Role.ADMIN }), {
           status: BookingStatus.CANCELLED,
@@ -302,7 +308,7 @@ describe('BookingsService', () => {
     });
 
     it('CLIENT не може підтвердити booking', async () => {
-      bookingsRepo.findOne.mockResolvedValue(makeBooking({ status: BookingStatus.PENDING }));
+      mockTxWithBooking(makeBooking({ status: BookingStatus.PENDING }));
       await expect(
         service.updateStatus(1, makeUser({ role: Role.CLIENT }), {
           status: BookingStatus.CONFIRMED,
@@ -312,30 +318,41 @@ describe('BookingsService', () => {
 
     it('зберігає запис у BookingStatusHistory', async () => {
       const booking = makeBooking({ status: BookingStatus.PENDING });
-      bookingsRepo.findOne.mockResolvedValue(booking);
-      bookingsRepo.save.mockResolvedValue({ ...booking, status: BookingStatus.CONFIRMED });
-      historyRepo.create.mockImplementation((data: unknown) => data);
-      historyRepo.save.mockResolvedValue({});
+      let historySaved = false;
+      dataSource.transaction.mockImplementation(async (cb: (m: unknown) => unknown) => {
+        const manager = makeMockManager([], booking);
+        manager.save.mockImplementation(async (_e: unknown, data: unknown) => {
+          if ((data as { newStatus?: unknown }).newStatus !== undefined) historySaved = true;
+          return data;
+        });
+        return cb(manager);
+      });
+      bookingsRepo.findOne.mockResolvedValue(null);
 
       await service.updateStatus(1, makeUser({ role: Role.MASTER }), {
         status: BookingStatus.CONFIRMED,
       });
-      expect(historyRepo.save).toHaveBeenCalled();
+      expect(historySaved).toBe(true);
     });
   });
 
   describe('cancel', () => {
+    const mockCancelTx = (booking: Booking) => {
+      dataSource.transaction.mockImplementation(async (cb: (m: unknown) => unknown) => {
+        const manager = makeMockManager([], booking);
+        manager.save.mockImplementation(async (_e: unknown, data: unknown) => data);
+        return cb(manager);
+      });
+    };
+
     it('CLIENT може скасувати PENDING booking свій', async () => {
       const client = makeUser({ id: 1, role: Role.CLIENT });
       const booking = makeBooking({
         status: BookingStatus.PENDING,
         client,
-        scheduledAt: new Date(Date.now() + 4 * 3600_000), // 4h from now
+        scheduledAt: new Date(Date.now() + 4 * 3600_000),
       });
-      bookingsRepo.findOne.mockResolvedValue(booking);
-      bookingsRepo.save.mockResolvedValue({ ...booking, status: BookingStatus.CANCELLED });
-      historyRepo.create.mockImplementation((d: unknown) => d);
-      historyRepo.save.mockResolvedValue({});
+      mockCancelTx(booking);
 
       const result = await service.cancel(1, client);
       expect(result.status).toBe(BookingStatus.CANCELLED);
@@ -343,19 +360,17 @@ describe('BookingsService', () => {
 
     it('кидає ForbiddenException якщо booking чужий', async () => {
       const booking = makeBooking({ client: makeUser({ id: 99 }) });
-      bookingsRepo.findOne.mockResolvedValue(booking);
-      await expect(service.cancel(1, makeUser({ id: 1 }))).rejects.toThrow(
-        ForbiddenException,
-      );
+      mockCancelTx(booking);
+      await expect(service.cancel(1, makeUser({ id: 1 }))).rejects.toThrow(ForbiddenException);
     });
 
     it('кидає BadRequestException якщо < 2 години до запису', async () => {
       const client = makeUser({ id: 1 });
       const booking = makeBooking({
         client,
-        scheduledAt: new Date(Date.now() + 30 * 60_000), // 30 хв
+        scheduledAt: new Date(Date.now() + 30 * 60_000),
       });
-      bookingsRepo.findOne.mockResolvedValue(booking);
+      mockCancelTx(booking);
       await expect(service.cancel(1, client)).rejects.toThrow(BadRequestException);
     });
   });

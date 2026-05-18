@@ -30,21 +30,25 @@ async function bootstrap(): Promise<void> {
   );
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  // Swagger
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('AutoService API')
-    .setDescription('API для системи онлайн-запису автосервісу')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup(`${prefix}/docs`, app, document);
+  // Swagger — development only
+  if (process.env['NODE_ENV'] !== 'production') {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('AutoService API')
+      .setDescription('API для системи онлайн-запису автосервісу')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup(`${prefix}/docs`, app, document);
+  }
 
   const port = process.env['PORT'] ?? 3000;
   await app.listen(port);
   logger.log(`Server running on http://localhost:${port}/${prefix}`);
-  logger.log(`Swagger: http://localhost:${port}/${prefix}/docs`);
+  if (process.env['NODE_ENV'] !== 'production') {
+    logger.log(`Swagger: http://localhost:${port}/${prefix}/docs`);
+  }
 }
 
-process.env['TZ'] = 'Europe/Kiev';
+process.env['TZ'] = 'Europe/Kyiv';
 bootstrap().catch(console.error);
