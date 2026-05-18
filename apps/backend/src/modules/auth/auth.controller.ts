@@ -65,10 +65,13 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthResponseDto> {
     const result = await this.authService.login(dto);
+    const isProd = process.env['NODE_ENV'] === 'production';
     res.cookie(REFRESH_COOKIE, result.refreshToken, {
       httpOnly: true,
-      secure: process.env['NODE_ENV'] === 'production',
-      sameSite: 'strict',
+      secure: isProd,
+      // 'none' is required when frontend and backend are on different origins (cross-site).
+      // SameSite=None mandates Secure=true, which is always the case in production.
+      sameSite: isProd ? 'none' : 'lax',
       maxAge: COOKIE_MAX_AGE_MS,
       path: '/',
     });
@@ -101,7 +104,13 @@ export class AuthController {
     @CurrentUser() user: User,
     @Res({ passthrough: true }) res: Response,
   ) {
-    res.clearCookie(REFRESH_COOKIE, { path: '/' });
+    const isProd = process.env['NODE_ENV'] === 'production';
+    res.clearCookie(REFRESH_COOKIE, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
+      path: '/',
+    });
     return this.authService.logout(user.id);
   }
 
