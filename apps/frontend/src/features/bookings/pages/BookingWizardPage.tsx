@@ -421,7 +421,14 @@ export default function BookingWizardPage() {
               <span className="font-medium">
                 {prefilledScheduledAt
                   ? toKyivDisplay(prefilledScheduledAt, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
-                  : `${selectedDate} ${selectedSlot}`}
+                  : (selectedDate && selectedSlot
+                      ? (() => {
+                          const [y, m, d] = selectedDate.split('-').map(Number);
+                          const dateLabel = new Date(Date.UTC(y, m - 1, d))
+                            .toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+                          return `${dateLabel} о ${selectedSlot}`;
+                        })()
+                      : '—')}
               </span>
             </div>
             <div className="border-t border-slate-100 pt-3 space-y-1">

@@ -190,6 +190,7 @@ export class SlotSuggesterService {
   ): { startAt: Date; endAt: Date }[] {
     const result: { startAt: Date; endAt: Date }[] = [];
     const dayOffSet = new Set(dayOffs.map((d) => d.date.toString().slice(0, 10)));
+    const cutoff = new Date(Date.now() + 60 * 60_000); // 1-hour buffer from now
 
     const current = new Date(from);
     while (current < to) {
@@ -209,6 +210,11 @@ export class SlotSuggesterService {
 
           let slotStart = new Date(dayStart);
           while (slotStart.getTime() + durationMin * 60_000 <= dayEnd.getTime()) {
+            // Skip slots already in the past or within the 1-hour buffer
+            if (slotStart.getTime() < cutoff.getTime()) {
+              slotStart = new Date(slotStart.getTime() + 30 * 60_000);
+              continue;
+            }
             const slotEnd = new Date(slotStart.getTime() + durationMin * 60_000);
             const overlap = bookings.some((b) => {
               const bStart = new Date(b.scheduledAt);
