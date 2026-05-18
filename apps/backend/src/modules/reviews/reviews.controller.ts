@@ -54,7 +54,11 @@ export class ReviewsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[Auth] Відгук для конкретного запису' })
-  findForBooking(@Param('bookingId', ParseIntPipe) bookingId: number) {
-    return this.reviewsService.findForBooking(bookingId);
+  @ApiResponse({ status: 403, description: 'Booking does not belong to you' })
+  findForBooking(
+    @CurrentUser() user: User,
+    @Param('bookingId', ParseIntPipe) bookingId: number,
+  ) {
+    return this.reviewsService.findForBooking(bookingId, user);
   }
 }

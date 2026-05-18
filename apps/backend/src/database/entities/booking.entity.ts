@@ -16,6 +16,7 @@ import { User } from './user.entity';
 import { Vehicle } from './vehicle.entity';
 
 @Entity('bookings')
+@Index(['master', 'status', 'scheduledAt'])
 export class Booking {
   @PrimaryGeneratedColumn()
   id: number;

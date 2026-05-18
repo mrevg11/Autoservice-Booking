@@ -126,16 +126,26 @@ export class BookingsService {
     totalPrice = Math.round(totalPrice * 100) / 100;
 
     return this.dataSource.transaction(async (manager) => {
-      // Pessimistic write lock to prevent race conditions
+      // Lock the master profile row first — serialises all concurrent booking
+      // attempts for this master so the empty-result SELECT FOR UPDATE loophole
+      // (no rows to lock when calendar is free) cannot cause double-booking.
+      const lockedMaster = await manager
+        .getRepository(MasterProfile)
+        .createQueryBuilder('mp')
+        .setLock('pessimistic_write')
+        .where('mp.id = :masterId', { masterId: master.id })
+        .getOne();
+
+      if (!lockedMaster) throw new NotFoundException('Майстра не знайдено');
+
+      // Check for overlapping bookings (now safe: master row is locked)
+      const newEnd = new Date(scheduledAt.getTime() + estimatedDurationMinutes * 60_000);
       const overlapping = await manager
         .getRepository(Booking)
         .createQueryBuilder('b')
-        .setLock('pessimistic_write')
         .where('b.masterId = :masterId', { masterId: master.id })
         .andWhere('b.status != :cancelled', { cancelled: BookingStatus.CANCELLED })
-        .andWhere('b.scheduledAt < :newEnd', {
-          newEnd: new Date(scheduledAt.getTime() + estimatedDurationMinutes * 60_000),
-        })
+        .andWhere('b.scheduledAt < :newEnd', { newEnd })
         .andWhere(
           `DATE_ADD(b.scheduledAt, INTERVAL b.estimatedDurationMinutes MINUTE) > :newStart`,
           { newStart: scheduledAt },
@@ -252,35 +262,47 @@ export class BookingsService {
     user: User,
     dto: UpdateBookingStatusDto,
   ): Promise<Booking> {
-    const booking = await this.bookingsRepo.findOne({
-      where: { id },
-      relations: ['client', 'master', 'master.user'],
-    });
-    if (!booking) throw new NotFoundException("Запис не знайдено");
+    const updatedBooking = await this.dataSource.transaction(async (manager) => {
+      const booking = await manager
+        .getRepository(Booking)
+        .createQueryBuilder('b')
+        .setLock('pessimistic_write')
+        .leftJoinAndSelect('b.client', 'client')
+        .leftJoinAndSelect('b.master', 'master')
+        .leftJoinAndSelect('master.user', 'masterUser')
+        .where('b.id = :id', { id })
+        .getOne();
 
-    const transition = STATUS_TRANSITIONS[booking.status];
-    if (!transition.allowed.includes(dto.status)) {
-      throw new BadRequestException(
-        `Перехід статусу ${booking.status} → ${dto.status} не дозволений`,
+      if (!booking) throw new NotFoundException('Запис не знайдено');
+
+      const transition = STATUS_TRANSITIONS[booking.status];
+      if (!transition.allowed.includes(dto.status)) {
+        throw new BadRequestException(
+          `Перехід статусу ${booking.status} → ${dto.status} не дозволений`,
+        );
+      }
+      if (!transition.roles.includes(user.role)) {
+        throw new ForbiddenException('У вас немає прав для зміни цього статусу');
+      }
+
+      const oldStatus = booking.status;
+      booking.status = dto.status;
+      const saved = await manager.save(Booking, booking);
+
+      await manager.save(
+        BookingStatusHistory,
+        manager.create(BookingStatusHistory, {
+          booking: saved,
+          oldStatus,
+          newStatus: dto.status,
+          changedBy: user,
+        }),
       );
-    }
-    if (!transition.roles.includes(user.role)) {
-      throw new ForbiddenException('У вас немає прав для зміни цього статусу');
-    }
 
-    const oldStatus = booking.status;
-    booking.status = dto.status;
-    await this.bookingsRepo.save(booking);
-
-    const history = this.historyRepo.create({
-      booking,
-      oldStatus,
-      newStatus: dto.status,
-      changedBy: user,
+      return saved;
     });
-    await this.historyRepo.save(history);
 
-    // Send notification (async, non-blocking)
+    // Send notification outside the transaction (non-blocking, failure is acceptable)
     if (this.notificationsService) {
       const bookingWithRelations = await this.bookingsRepo.findOne({
         where: { id },
@@ -297,49 +319,58 @@ export class BookingsService {
       }
     }
 
-    return booking;
+    return updatedBooking;
   }
 
   async cancel(id: number, client: User): Promise<Booking> {
-    const booking = await this.bookingsRepo.findOne({
-      where: { id },
-      relations: ['client'],
-    });
-    if (!booking) throw new NotFoundException("Запис не знайдено");
+    return this.dataSource.transaction(async (manager) => {
+      // Pessimistic lock prevents concurrent cancel + status-change on the same booking
+      const booking = await manager
+        .getRepository(Booking)
+        .createQueryBuilder('b')
+        .setLock('pessimistic_write')
+        .leftJoinAndSelect('b.client', 'client')
+        .where('b.id = :id', { id })
+        .getOne();
 
-    if (booking.client?.id !== client.id) {
-      throw new ForbiddenException('Ви можете скасувати лише власні записи');
-    }
+      if (!booking) throw new NotFoundException('Запис не знайдено');
 
-    if (
-      booking.status !== BookingStatus.PENDING &&
-      booking.status !== BookingStatus.CONFIRMED
-    ) {
-      throw new BadRequestException(
-        'Only PENDING or CONFIRMED bookings can be cancelled',
+      if (booking.client?.id !== client.id) {
+        throw new ForbiddenException('Ви можете скасувати лише власні записи');
+      }
+
+      if (
+        booking.status !== BookingStatus.PENDING &&
+        booking.status !== BookingStatus.CONFIRMED
+      ) {
+        throw new BadRequestException(
+          'Скасувати можна лише записи зі статусом PENDING або CONFIRMED',
+        );
+      }
+
+      const deadlineMs = CANCELLATION_DEADLINE_HOURS * 60 * 60 * 1000;
+      if (new Date(booking.scheduledAt).getTime() - Date.now() < deadlineMs) {
+        throw new BadRequestException(
+          `Скасування неможливе менш ніж за ${CANCELLATION_DEADLINE_HOURS} год до прийому`,
+        );
+      }
+
+      const oldStatus = booking.status;
+      booking.status = BookingStatus.CANCELLED;
+      const saved = await manager.save(Booking, booking);
+
+      await manager.save(
+        BookingStatusHistory,
+        manager.create(BookingStatusHistory, {
+          booking: saved,
+          oldStatus,
+          newStatus: BookingStatus.CANCELLED,
+          changedBy: client,
+        }),
       );
-    }
 
-    const deadlineMs = CANCELLATION_DEADLINE_HOURS * 60 * 60 * 1000;
-    if (new Date(booking.scheduledAt).getTime() - Date.now() < deadlineMs) {
-      throw new BadRequestException(
-        `Cannot cancel within ${CANCELLATION_DEADLINE_HOURS} hours of appointment`,
-      );
-    }
-
-    const oldStatus = booking.status;
-    booking.status = BookingStatus.CANCELLED;
-    await this.bookingsRepo.save(booking);
-
-    const history = this.historyRepo.create({
-      booking,
-      oldStatus,
-      newStatus: BookingStatus.CANCELLED,
-      changedBy: client,
+      return saved;
     });
-    await this.historyRepo.save(history);
-
-    return booking;
   }
 
   @Cron('0 * * * *')
@@ -351,17 +382,41 @@ export class BookingsService {
         { status: BookingStatus.CONFIRMED, scheduledAt: LessThan(now) },
       ],
     });
+
     for (const booking of expired) {
-      const oldStatus = booking.status;
-      booking.status = BookingStatus.CANCELLED;
-      await this.bookingsRepo.save(booking);
-      await this.historyRepo.save(
-        this.historyRepo.create({
-          booking,
-          oldStatus,
-          newStatus: BookingStatus.CANCELLED,
-        }),
-      );
+      try {
+        await this.dataSource.transaction(async (manager) => {
+          // Re-read with lock to guard against concurrent status changes
+          const current = await manager
+            .getRepository(Booking)
+            .createQueryBuilder('b')
+            .setLock('pessimistic_write')
+            .where('b.id = :id', { id: booking.id })
+            .getOne();
+
+          // Skip if already changed by another process
+          if (!current || current.status === BookingStatus.CANCELLED ||
+              current.status === BookingStatus.COMPLETED) {
+            return;
+          }
+
+          const oldStatus = current.status;
+          current.status = BookingStatus.CANCELLED;
+          const saved = await manager.save(Booking, current);
+
+          await manager.save(
+            BookingStatusHistory,
+            manager.create(BookingStatusHistory, {
+              booking: saved,
+              oldStatus,
+              newStatus: BookingStatus.CANCELLED,
+              changedBy: null,
+            }),
+          );
+        });
+      } catch {
+        // Log but continue — one failed cancellation must not block the rest
+      }
     }
   }
 

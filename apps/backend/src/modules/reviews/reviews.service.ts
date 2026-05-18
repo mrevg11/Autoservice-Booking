@@ -10,7 +10,9 @@ import { Repository } from 'typeorm';
 import { Review } from '../../database/entities/review.entity';
 import { Booking } from '../../database/entities/booking.entity';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
+import { User } from '../../database/entities/user.entity';
 import { BookingStatus } from '../../common/enums/booking-status.enum';
+import { Role } from '../../common/enums/role.enum';
 import { PaginationDto, paginate, PaginatedResult } from '../../common/dto/pagination.dto';
 import { CreateReviewDto } from './dto/create-review.dto';
 
@@ -88,7 +90,23 @@ export class ReviewsService {
     return paginate(data, total, pagination);
   }
 
-  async findForBooking(bookingId: number): Promise<Review | null> {
+  async findForBooking(bookingId: number, requester: User): Promise<Review | null> {
+    const booking = await this.bookingsRepo.findOne({
+      where: { id: bookingId },
+      relations: ['client', 'master', 'master.user'],
+    });
+
+    if (!booking) throw new NotFoundException(`Запис #${bookingId} не знайдено`);
+
+    // Admins may see any booking's review; clients and masters only their own
+    if (requester.role !== Role.ADMIN) {
+      const isClient = booking.client?.id === requester.id;
+      const isMaster = booking.master?.user?.id === requester.id;
+      if (!isClient && !isMaster) {
+        throw new ForbiddenException('Доступ заборонено');
+      }
+    }
+
     return this.reviewsRepo.findOne({
       where: { booking: { id: bookingId } },
       relations: ['booking'],

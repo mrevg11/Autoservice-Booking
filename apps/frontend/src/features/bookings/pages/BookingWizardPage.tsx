@@ -19,6 +19,39 @@ import { kyivToUTC, toKyivDisplay } from '../../../shared/utils/date';
 
 const STEPS = ['Авто', 'Послуги', 'Майстер і час', 'Підтвердження', 'Готово'];
 
+const DRAFT_KEY = 'booking_wizard_draft';
+
+interface WizardDraft {
+  vehicleId: number | null;
+  serviceIds: number[];
+  masterId: number | undefined;
+  date: string;
+  slot: string | null;
+  notes: string;
+  step: number;
+}
+
+function loadDraft(): WizardDraft | null {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    return raw ? (JSON.parse(raw) as WizardDraft) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveDraft(draft: WizardDraft): void {
+  try {
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch {
+    // sessionStorage quota exceeded — fail silently
+  }
+}
+
+function clearDraft(): void {
+  sessionStorage.removeItem(DRAFT_KEY);
+}
+
 function StepProgress({ current }: { current: number }) {
   return (
     <div className="flex items-center gap-0">
@@ -86,14 +119,17 @@ export default function BookingWizardPage() {
   const hasFullSmartBookingParams = !!prefilledMasterId && (!!prefilledScheduledAt || (!!prefilledDate && !!prefilledSlot)) && !!prefilledServiceIdsStr;
   const prefilledStep = hasFullSmartBookingParams ? 3 : 0;
 
-  const [step, setStep] = useState(prefilledStep);
+  // Restore draft only for the manual wizard flow (not when coming from SmartBooking with full params)
+  const draft = hasFullSmartBookingParams ? null : loadDraft();
+
+  const [step, setStep] = useState(draft?.step ?? prefilledStep);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [selectedServices, setSelectedServices] = useState<ServiceItem[]>([]);
   const [activeCategoryId, setActiveCategoryId] = useState<number | undefined>();
-  const [selectedMasterId, setSelectedMasterId] = useState<number | undefined>(prefilledMasterId);
-  const [selectedDate, setSelectedDate] = useState(prefilledDate);
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(prefilledSlot);
-  const [notes, setNotes] = useState('');
+  const [selectedMasterId, setSelectedMasterId] = useState<number | undefined>(prefilledMasterId ?? draft?.masterId);
+  const [selectedDate, setSelectedDate] = useState(prefilledDate || draft?.date || '');
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(prefilledSlot ?? draft?.slot ?? null);
+  const [notes, setNotes] = useState(draft?.notes ?? '');
   const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
 
   const { data: vehicles, isLoading: vehiclesLoading, isError: vehiclesError } = useVehicles();
@@ -128,8 +164,15 @@ export default function BookingWizardPage() {
     if (prefilledVehicleId && vehicles && !selectedVehicle) {
       const v = vehicles.find((v) => v.id === prefilledVehicleId);
       if (v) setSelectedVehicle(v);
+      return;
     }
-  }, [vehicles, prefilledVehicleId]);
+    // Restore vehicle from draft
+    if (!hasFullSmartBookingParams && draft?.vehicleId && vehicles && !selectedVehicle) {
+      const v = vehicles.find((v) => v.id === draft.vehicleId);
+      if (v) setSelectedVehicle(v);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vehicles]);
 
   useEffect(() => {
     if (!prefilledServiceIdsStr || selectedServices.length > 0 || !servicesData) return;
@@ -137,6 +180,28 @@ export default function BookingWizardPage() {
     const matched = servicesData.data.filter((s) => ids.includes(s.id));
     if (matched.length > 0) setSelectedServices(matched);
   }, [servicesData, prefilledServiceIdsStr]);
+
+  // Restore services from draft (manual wizard only)
+  useEffect(() => {
+    if (hasFullSmartBookingParams || prefilledServiceIdsStr || !draft?.serviceIds.length || selectedServices.length > 0 || !servicesData) return;
+    const matched = servicesData.data.filter((s) => draft.serviceIds.includes(s.id));
+    if (matched.length > 0) setSelectedServices(matched);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [servicesData]);
+
+  // Persist wizard state to sessionStorage after each meaningful change
+  useEffect(() => {
+    if (hasFullSmartBookingParams || createdBookingId) return;
+    saveDraft({
+      vehicleId: selectedVehicle?.id ?? null,
+      serviceIds: selectedServices.map((s) => s.id),
+      masterId: selectedMasterId,
+      date: selectedDate,
+      slot: selectedSlot,
+      notes,
+      step,
+    });
+  }, [selectedVehicle, selectedServices, selectedMasterId, selectedDate, selectedSlot, notes, step]);
 
 
   const totalDuration = selectedServices.reduce((s, sv) => s + Number(sv.baseDurationMinutes ?? 0), 0);
@@ -178,7 +243,7 @@ export default function BookingWizardPage() {
         notes: notes || undefined,
       },
       {
-        onSuccess: ({ data }) => { setCreatedBookingId(data.id); setStep(4); },
+        onSuccess: ({ data }) => { clearDraft(); setCreatedBookingId(data.id); setStep(4); },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (err: any) => {
           const msg = err?.response?.data?.message ?? 'Помилка при створенні запису';

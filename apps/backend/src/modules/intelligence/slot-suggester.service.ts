@@ -97,9 +97,9 @@ export class SlotSuggesterService {
     const masterIds = masters.map((m) => m.id);
 
     const startDate = new Date(preferredDate);
-    startDate.setHours(0, 0, 0, 0);
+    startDate.setUTCHours(0, 0, 0, 0);
     const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + this.lookaheadDays);
+    endDate.setUTCDate(endDate.getUTCDate() + this.lookaheadDays);
 
     // Bulk-load all data upfront — no per-master queries
     const [allBookings, allDayOffs, allSchedules] = await Promise.all([
@@ -193,20 +193,19 @@ export class SlotSuggesterService {
     const cutoff = new Date(Date.now() + 60 * 60_000); // 1-hour buffer from now
 
     const current = new Date(from);
+    current.setUTCHours(0, 0, 0, 0);
+
     while (current < to) {
       const dateStr = this.toDateStr(current);
-      const appWeekday = (current.getDay() + 6) % 7; // Mon=0, Sun=6
+      // Use UTC day to avoid local-timezone weekday mismatch
+      const appWeekday = (current.getUTCDay() + 6) % 7; // Mon=0, Sun=6
 
       if (!dayOffSet.has(dateStr)) {
         const sched = schedules.find((s) => s.weekday === appWeekday);
         if (sched) {
-          const [startH, startM] = sched.startTime.split(':').map(Number);
-          const [endH, endM] = sched.endTime.split(':').map(Number);
-
-          const dayStart = new Date(current);
-          dayStart.setHours(startH, startM ?? 0, 0, 0);
-          const dayEnd = new Date(current);
-          dayEnd.setHours(endH, endM ?? 0, 0, 0);
+          // Interpret schedule times as Kyiv local time, convert to UTC
+          const dayStart = this.scheduleTimeToUTC(current, sched.startTime);
+          const dayEnd = this.scheduleTimeToUTC(current, sched.endTime);
 
           let slotStart = new Date(dayStart);
           while (slotStart.getTime() + durationMin * 60_000 <= dayEnd.getTime()) {
@@ -218,7 +217,9 @@ export class SlotSuggesterService {
             const slotEnd = new Date(slotStart.getTime() + durationMin * 60_000);
             const overlap = bookings.some((b) => {
               const bStart = new Date(b.scheduledAt);
-              const bEnd = new Date(bStart.getTime() + b.estimatedDurationMinutes * 60_000);
+              // Guard against zero/null duration — treat as 30 min minimum
+              const duration = b.estimatedDurationMinutes > 0 ? b.estimatedDurationMinutes : 30;
+              const bEnd = new Date(bStart.getTime() + duration * 60_000);
               return bStart < slotEnd && bEnd > slotStart;
             });
             if (!overlap) result.push({ startAt: new Date(slotStart), endAt: new Date(slotEnd) });
@@ -226,9 +227,38 @@ export class SlotSuggesterService {
           }
         }
       }
-      current.setDate(current.getDate() + 1);
+      current.setUTCDate(current.getUTCDate() + 1);
     }
     return result;
+  }
+
+  /**
+   * Converts a schedule time string ("HH:MM", stored as Kyiv local time) to a UTC Date
+   * for a given UTC-midnight date. Handles DST transitions (Kyiv = UTC+2 in winter, UTC+3 in summer).
+   */
+  private scheduleTimeToUTC(utcMidnight: Date, timeStr: string): Date {
+    const [h, m] = timeStr.split(':').map(Number);
+    const y = utcMidnight.getUTCFullYear();
+    const mo = utcMidnight.getUTCMonth();
+    const d = utcMidnight.getUTCDate();
+
+    // First guess: Kyiv summer time (UTC+3)
+    const approx = new Date(Date.UTC(y, mo, d, h - 3, m, 0));
+
+    // Verify what Kyiv actually shows at this UTC moment
+    const kyivH = Number(
+      new Intl.DateTimeFormat('en', {
+        timeZone: 'Europe/Kyiv',
+        hour: '2-digit',
+        hour12: false,
+      }).format(approx),
+    );
+
+    if (kyivH !== h) {
+      // DST is inactive — Kyiv is UTC+2 (winter)
+      return new Date(Date.UTC(y, mo, d, h - 2, m, 0));
+    }
+    return approx;
   }
 
   private computeAvailabilityScore(slotDate: Date, from: Date, to: Date): number {
