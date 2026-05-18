@@ -193,7 +193,6 @@ export default function VehiclesPage() {
       onSuccess: () => { toast('Автомобіль додано', 'success'); setShowForm(false); },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (error: any) => {
-        console.error('Vehicle create error:', error?.response?.data);
         const msg = error?.response?.data?.message ?? 'Помилка додавання авто';
         toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
       },
@@ -210,7 +209,6 @@ export default function VehiclesPage() {
         onSuccess: () => { toast('Збережено', 'success'); setEditingVehicle(null); },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
-          console.error('Vehicle update error:', error?.response?.data);
           const msg = error?.response?.data?.message ?? 'Помилка збереження';
           toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
         },

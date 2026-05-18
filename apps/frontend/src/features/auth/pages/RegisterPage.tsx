@@ -32,9 +32,6 @@ export default function RegisterPage() {
   const mutation = useMutation({
     mutationFn: (data: FormData) => authApi.register(data),
     onSuccess: () => setDone(true),
-    onError: (error: unknown) => {
-      console.log('Registration error:', error);
-    },
   });
 
   const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({

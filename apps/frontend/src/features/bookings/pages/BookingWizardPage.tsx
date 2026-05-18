@@ -96,8 +96,7 @@ export default function BookingWizardPage() {
   const [notes, setNotes] = useState('');
   const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
 
-  const { data: vehicles, isLoading: vehiclesLoading, isError: vehiclesError, error: vehiclesErr } = useVehicles();
-  if (vehiclesErr) console.log('Vehicles fetch error:', vehiclesErr);
+  const { data: vehicles, isLoading: vehiclesLoading, isError: vehiclesError } = useVehicles();
   const { data: categories } = useCategories();
   const { data: servicesData, isLoading: servicesLoading } = useServices({
     categoryId: activeCategoryId, isActive: true, limit: 50,
@@ -182,7 +181,6 @@ export default function BookingWizardPage() {
         onSuccess: ({ data }) => { setCreatedBookingId(data.id); setStep(4); },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (err: any) => {
-          console.error('Booking error:', err?.response?.data);
           const msg = err?.response?.data?.message ?? 'Помилка при створенні запису';
           toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
         },
