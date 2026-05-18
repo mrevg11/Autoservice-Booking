@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useVehicles, useCreateVehicle } from '../../vehicles/hooks/useVehicles';
+import { getMakes, getModels, getYears } from '../../../shared/data/carData';
 import { useServices, useCategories } from '../../services/hooks/useServices';
 import { useMasterSlots } from '../../masters/hooks/useMasters';
 import { useCreateBooking } from '../hooks/useBookings';
@@ -78,11 +79,33 @@ function StepProgress({ current }: { current: number }) {
   );
 }
 
+const selectCls = (hasError: boolean) =>
+  `w-full rounded-lg border px-3 py-2 text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand/40 ${
+    hasError ? 'border-red-400' : 'border-slate-300'
+  }`;
+
 function VehicleForm({ onDone }: { onDone: () => void }) {
   const createVehicle = useCreateVehicle();
-  const { register, handleSubmit, formState: { errors } } = useForm<{
-    make: string; model: string; year: number; plateNumber: string; vin?: string;
+  const { control, register, handleSubmit, watch, setValue, formState: { errors } } = useForm<{
+    make: string; model: string; year: number | ''; plateNumber: string; vin?: string;
   }>({ mode: 'onChange' });
+
+  const selectedMake = watch('make') ?? '';
+  const selectedModel = watch('model') ?? '';
+  const makes = getMakes();
+  const models = selectedMake ? getModels(selectedMake) : [];
+  const years = selectedMake && selectedModel ? getYears(selectedMake, selectedModel) : [];
+
+  const handleMakeChange = (make: string) => {
+    setValue('make', make, { shouldValidate: true });
+    setValue('model', '', { shouldValidate: false });
+    setValue('year', '', { shouldValidate: false });
+  };
+
+  const handleModelChange = (model: string) => {
+    setValue('model', model, { shouldValidate: true });
+    setValue('year', '', { shouldValidate: false });
+  };
 
   return (
     <form onSubmit={handleSubmit((d) => createVehicle.mutate(
@@ -91,9 +114,36 @@ function VehicleForm({ onDone }: { onDone: () => void }) {
     ))} className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
       <h3 className="font-medium text-slate-900 text-sm">Новий автомобіль</h3>
       <div className="grid grid-cols-2 gap-3">
-        <Input label="Марка" placeholder="Toyota" error={errors.make?.message} {...register('make', { required: 'Обов\'язково' })} />
-        <Input label="Модель" placeholder="Camry" error={errors.model?.message} {...register('model', { required: 'Обов\'язково' })} />
-        <Input label="Рік" type="number" placeholder="2020" min={1900} max={new Date().getFullYear()} error={errors.year?.message} {...register('year', { required: 'Обов\'язково', min: { value: 1900, message: 'Не раніше 1900' }, max: { value: new Date().getFullYear(), message: `Не пізніше ${new Date().getFullYear()}` } })} />
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-slate-600">Марка</label>
+          <Controller name="make" control={control} rules={{ required: "Обов'язково" }} render={({ field }) => (
+            <select value={field.value ?? ''} onChange={(e) => handleMakeChange(e.target.value)} className={selectCls(!!errors.make)}>
+              <option value="">Оберіть марку</option>
+              {makes.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+          )} />
+          {errors.make && <p className="text-xs text-red-500">{errors.make.message}</p>}
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-slate-600">Модель</label>
+          <Controller name="model" control={control} rules={{ required: "Обов'язково" }} render={({ field }) => (
+            <select value={field.value ?? ''} onChange={(e) => handleModelChange(e.target.value)} disabled={!selectedMake} className={selectCls(!!errors.model) + (!selectedMake ? ' opacity-50 cursor-not-allowed' : '')}>
+              <option value="">{selectedMake ? 'Оберіть модель' : 'Спочатку марку'}</option>
+              {models.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+          )} />
+          {errors.model && <p className="text-xs text-red-500">{errors.model.message}</p>}
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-slate-600">Рік</label>
+          <Controller name="year" control={control} rules={{ required: "Обов'язково" }} render={({ field }) => (
+            <select value={field.value ? String(field.value) : ''} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : '')} disabled={!selectedModel} className={selectCls(!!errors.year) + (!selectedModel ? ' opacity-50 cursor-not-allowed' : '')}>
+              <option value="">{selectedModel ? 'Оберіть рік' : 'Спочатку модель'}</option>
+              {years.map((y) => <option key={y} value={y}>{y}</option>)}
+            </select>
+          )} />
+          {errors.year && <p className="text-xs text-red-500">{errors.year.message}</p>}
+        </div>
         <Input label="Держ. номер" placeholder="АА1234АА" error={errors.plateNumber?.message} {...register('plateNumber', { required: 'Обов\'язково', pattern: { value: /^[A-ZА-ЯІЇЄ]{2}\d{4}[A-ZА-ЯІЇЄ]{2}$/i, message: 'Формат: АА1234АА' } })} />
       </div>
       <Input label="VIN (необов'язково)" placeholder="1HGCM82633..." {...register('vin')} />
