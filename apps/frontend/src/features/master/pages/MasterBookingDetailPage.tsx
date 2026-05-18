@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useBooking, useBookingHistory, useUpdateBookingStatus } from '../../bookings/hooks/useBookings';
+import BookingPhotosSection from '../../bookings/components/BookingPhotosSection';
 import Badge from '../../../shared/components/ui/Badge';
 import Spinner from '../../../shared/components/ui/Spinner';
 import ConfirmDialog from '../../../shared/components/ConfirmDialog';
 import Button from '../../../shared/components/ui/Button';
 import { toast } from '../../../shared/store/toast.store';
+import { useAuthStore } from '../../../shared/store/auth.store';
 import type { BookingStatus } from '../../../shared/api/endpoints';
 
 function nextAction(status: BookingStatus): { label: string; next: BookingStatus } | null {
@@ -21,6 +23,7 @@ export default function MasterBookingDetailPage() {
   const { data: booking, isLoading } = useBooking(bookingId);
   const { data: history } = useBookingHistory(bookingId);
   const updateStatus = useUpdateBookingStatus();
+  const currentUser = useAuthStore((s) => s.user);
   const [confirmNext, setConfirmNext] = useState<BookingStatus | null>(null);
 
   if (isLoading) return <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
@@ -99,6 +102,9 @@ export default function MasterBookingDetailPage() {
               </div>
             </div>
           </div>
+
+          {/* Photos */}
+          <BookingPhotosSection bookingId={bookingId} currentUserId={currentUser?.id} />
 
           {/* Timeline */}
           {history && history.length > 0 && (

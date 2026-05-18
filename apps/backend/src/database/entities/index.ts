@@ -10,5 +10,6 @@ export { Vehicle } from './vehicle.entity';
 export { Booking } from './booking.entity';
 export { BookingService } from './booking-service.entity';
 export { BookingStatusHistory } from './booking-status-history.entity';
+export { BookingPhoto } from './booking-photo.entity';
 export { Review } from './review.entity';
 export { Notification } from './notification.entity';

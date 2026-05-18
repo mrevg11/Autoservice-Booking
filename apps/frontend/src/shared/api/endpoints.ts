@@ -200,7 +200,28 @@ export const bookingsApi = {
   cancel: (id: number) => api.post(`/bookings/${id}/cancel`),
   getHistory: (id: number) => api.get<BookingStatusHistoryItem[]>(`/bookings/${id}/history`),
   forceDelete: (id: number) => api.delete<{ message: string }>(`/bookings/${id}/force`),
+  getPhotos: (bookingId: number) =>
+    api.get<BookingPhoto[]>(`/bookings/${bookingId}/photos`),
+  addPhoto: (bookingId: number, data: { dataUrl: string; mimeType: string; caption?: string }) =>
+    api.post<BookingPhoto>(`/bookings/${bookingId}/photos`, data),
+  deletePhoto: (bookingId: number, photoId: number) =>
+    api.delete(`/bookings/${bookingId}/photos/${photoId}`),
 };
+
+export interface BookingPhotoUploader {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
+export interface BookingPhoto {
+  id: number;
+  dataUrl: string;
+  mimeType: string;
+  caption: string | null;
+  createdAt: string;
+  uploadedBy: BookingPhotoUploader | null;
+}
 
 // ─── Reviews ──────────────────────────────────────────────────────────────────
 

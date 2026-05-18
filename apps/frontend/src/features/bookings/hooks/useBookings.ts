@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { bookingsApi, BookingFilterParams, BookingStatus, CreateBookingPayload } from '../../../shared/api/endpoints';
+export type { BookingPhoto } from '../../../shared/api/endpoints';
 
 export function useMyBookings(params?: BookingFilterParams) {
   return useQuery({
@@ -50,5 +51,36 @@ export function useCancelBooking() {
   return useMutation({
     mutationFn: (id: number) => bookingsApi.cancel(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
+  });
+}
+
+export function useBookingPhotos(bookingId: number) {
+  return useQuery({
+    queryKey: ['bookingPhotos', bookingId],
+    queryFn: () => bookingsApi.getPhotos(bookingId).then((r) => r.data),
+    enabled: !!bookingId,
+  });
+}
+
+export function useAddBookingPhoto() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      bookingId,
+      ...data
+    }: { bookingId: number; dataUrl: string; mimeType: string; caption?: string }) =>
+      bookingsApi.addPhoto(bookingId, data),
+    onSuccess: (_, { bookingId }) =>
+      qc.invalidateQueries({ queryKey: ['bookingPhotos', bookingId] }),
+  });
+}
+
+export function useDeleteBookingPhoto() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ bookingId, photoId }: { bookingId: number; photoId: number }) =>
+      bookingsApi.deletePhoto(bookingId, photoId),
+    onSuccess: (_, { bookingId }) =>
+      qc.invalidateQueries({ queryKey: ['bookingPhotos', bookingId] }),
   });
 }

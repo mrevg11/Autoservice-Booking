@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useBooking, useBookingHistory, useCancelBooking } from '../hooks/useBookings';
 import { useReviewForBooking, useCreateReview } from '../../reviews/hooks/useReviews';
+import BookingPhotosSection from '../components/BookingPhotosSection';
 import Badge from '../../../shared/components/ui/Badge';
 import Spinner from '../../../shared/components/ui/Spinner';
 import StarRating from '../../../shared/components/ui/StarRating';
 import ConfirmDialog from '../../../shared/components/ConfirmDialog';
 import Button from '../../../shared/components/ui/Button';
 import { toast } from '../../../shared/store/toast.store';
+import { useAuthStore } from '../../../shared/store/auth.store';
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING: 'Очікує',
@@ -27,6 +29,7 @@ export default function BookingDetailPage() {
   const createReview = useCreateReview();
 
   const navigate = useNavigate();
+  const currentUser = useAuthStore((s) => s.user);
   const [showCancel, setShowCancel] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -126,6 +129,9 @@ export default function BookingDetailPage() {
               )}
             </div>
           </div>
+
+          {/* Photos */}
+          <BookingPhotosSection bookingId={bookingId} currentUserId={currentUser?.id} />
 
           {/* Status timeline */}
           {history && history.length > 0 && (

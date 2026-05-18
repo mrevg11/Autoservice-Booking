@@ -22,6 +22,7 @@ import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { BookingFilterDto } from './dto/booking-filter.dto';
+import { CreateBookingPhotoDto } from './dto/create-booking-photo.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -100,5 +101,32 @@ export class BookingsController {
   @ApiOperation({ summary: 'Історія змін статусів' })
   getHistory(@CurrentUser() user: User, @Param('id', ParseIntPipe) id: number) {
     return this.bookingsService.getHistory(id, user);
+  }
+
+  @Get(':id/photos')
+  @ApiOperation({ summary: 'Фотографії замовлення' })
+  getPhotos(@CurrentUser() user: User, @Param('id', ParseIntPipe) id: number) {
+    return this.bookingsService.getPhotos(id, user);
+  }
+
+  @Post(':id/photos')
+  @ApiOperation({ summary: 'Додати фото до замовлення (Base64)' })
+  addPhoto(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CreateBookingPhotoDto,
+  ) {
+    return this.bookingsService.addPhoto(id, user, dto);
+  }
+
+  @Delete(':id/photos/:photoId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Видалити фото (автор або адмін)' })
+  deletePhoto(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+    @Param('photoId', ParseIntPipe) photoId: number,
+  ) {
+    return this.bookingsService.deletePhoto(id, photoId, user);
   }
 }

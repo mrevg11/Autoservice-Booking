@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Booking } from '../../database/entities/booking.entity';
 import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 import { BookingStatusHistory } from '../../database/entities/booking-status-history.entity';
+import { BookingPhoto } from '../../database/entities/booking-photo.entity';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
 import { MasterService as MasterServiceEntity } from '../../database/entities/master-service.entity';
 import { Service } from '../../database/entities/service.entity';
@@ -17,6 +18,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
       Booking,
       BookingServiceEntity,
       BookingStatusHistory,
+      BookingPhoto,
       MasterProfile,
       MasterServiceEntity,
       Service,

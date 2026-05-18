@@ -14,6 +14,7 @@ import { Repository, DataSource, Between, LessThan } from 'typeorm';
 import { Booking } from '../../database/entities/booking.entity';
 import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 import { BookingStatusHistory } from '../../database/entities/booking-status-history.entity';
+import { BookingPhoto } from '../../database/entities/booking-photo.entity';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
 import { MasterService as MasterServiceEntity } from '../../database/entities/master-service.entity';
 import { Service } from '../../database/entities/service.entity';
@@ -25,6 +26,7 @@ import { PaginationDto, paginate, PaginatedResult } from '../../common/dto/pagin
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { BookingFilterDto } from './dto/booking-filter.dto';
+import { CreateBookingPhotoDto } from './dto/create-booking-photo.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 
 // Матриця дозволених переходів статусів
@@ -69,6 +71,8 @@ export class BookingsService {
     private servicesRepo: Repository<Service>,
     @InjectRepository(Vehicle)
     private vehiclesRepo: Repository<Vehicle>,
+    @InjectRepository(BookingPhoto)
+    private bookingPhotosRepo: Repository<BookingPhoto>,
     private dataSource: DataSource,
     @Optional() @Inject(NotificationsService) private notificationsService: NotificationsService | undefined,
   ) {}
@@ -452,6 +456,78 @@ export class BookingsService {
       }
     }
     return history;
+  }
+
+  async getPhotos(bookingId: number, user: User): Promise<BookingPhoto[]> {
+    const booking = await this.bookingsRepo.findOne({
+      where: { id: bookingId },
+      relations: ['client', 'master', 'master.user'],
+    });
+    if (!booking) throw new NotFoundException('Запис не знайдено');
+    this.checkBookingAccess(booking, user);
+
+    const photos = await this.bookingPhotosRepo.find({
+      where: { booking: { id: bookingId } },
+      relations: ['uploadedBy'],
+      order: { createdAt: 'ASC' },
+    });
+    for (const p of photos) {
+      if (p.uploadedBy) this.stripUser(p.uploadedBy);
+    }
+    return photos;
+  }
+
+  async addPhoto(bookingId: number, user: User, dto: CreateBookingPhotoDto): Promise<BookingPhoto> {
+    const booking = await this.bookingsRepo.findOne({
+      where: { id: bookingId },
+      relations: ['client', 'master', 'master.user'],
+    });
+    if (!booking) throw new NotFoundException('Запис не знайдено');
+    this.checkBookingAccess(booking, user);
+
+    if (!dto.dataUrl.startsWith('data:image/')) {
+      throw new BadRequestException('Невірний формат зображення');
+    }
+    if (dto.dataUrl.length > 7_000_000) {
+      throw new BadRequestException('Зображення занадто велике (максимум 5 МБ)');
+    }
+
+    const photo = this.bookingPhotosRepo.create({
+      booking: { id: bookingId } as Booking,
+      uploadedBy: user,
+      dataUrl: dto.dataUrl,
+      mimeType: dto.mimeType,
+      caption: dto.caption ?? null,
+    });
+    const saved = await this.bookingPhotosRepo.save(photo);
+    const result = await this.bookingPhotosRepo.findOne({
+      where: { id: saved.id },
+      relations: ['uploadedBy'],
+    });
+    if (result?.uploadedBy) this.stripUser(result.uploadedBy);
+    return result!;
+  }
+
+  async deletePhoto(bookingId: number, photoId: number, user: User): Promise<void> {
+    const photo = await this.bookingPhotosRepo.findOne({
+      where: { id: photoId, booking: { id: bookingId } },
+      relations: ['uploadedBy'],
+    });
+    if (!photo) throw new NotFoundException('Фото не знайдено');
+
+    const isOwner = photo.uploadedBy?.id === user.id;
+    const isAdmin = user.role === Role.ADMIN;
+    if (!isOwner && !isAdmin) throw new ForbiddenException('Ви не можете видалити це фото');
+
+    await this.bookingPhotosRepo.remove(photo);
+  }
+
+  private stripUser(u: User): void {
+    const rec = u as unknown as Record<string, unknown>;
+    delete rec['passwordHash'];
+    delete rec['refreshTokenHash'];
+    delete rec['emailVerificationToken'];
+    delete rec['passwordResetToken'];
   }
 
   private checkBookingAccess(booking: Booking, user: User): void {
