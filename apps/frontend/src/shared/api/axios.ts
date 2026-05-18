@@ -60,7 +60,9 @@ api.interceptors.response.use(
     } catch (err) {
       processQueue(err);
       useAuthStore.getState().logout();
-      window.location.href = '/login';
+      // Do NOT use window.location.href here — it causes a full page reload
+      // which resets React state (forms, etc.). ProtectedRoute will handle
+      // the redirect to /login reactively once the store is cleared.
       return Promise.reject(err);
     } finally {
       isRefreshing = false;
