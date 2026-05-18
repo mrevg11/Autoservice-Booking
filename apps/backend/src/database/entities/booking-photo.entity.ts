@@ -27,10 +27,10 @@ export class BookingPhoto {
   @Column({ type: 'mediumtext' })
   dataUrl: string;
 
-  @Column({ length: 50 })
+  @Column({ type: 'varchar', length: 50 })
   mimeType: string;
 
-  @Column({ length: 200, nullable: true })
+  @Column({ type: 'varchar', length: 200, nullable: true })
   caption: string | null;
 
   @CreateDateColumn()
