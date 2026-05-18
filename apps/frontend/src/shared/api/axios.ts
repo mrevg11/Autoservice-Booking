@@ -27,10 +27,21 @@ api.interceptors.response.use(
     if (!axios.isAxiosError(error)) return Promise.reject(error);
 
     const original = error.config as AxiosRequestConfig & { _retry?: boolean };
-    // Don't retry the refresh call itself — prevents deadlock when refresh token is invalid
-    if (error.response?.status !== 401 || original._retry || original.url?.includes('/auth/refresh')) {
+    const url = original.url ?? '';
+    // Skip refresh for auth endpoints and when already retried
+    if (
+      error.response?.status !== 401 ||
+      original._retry ||
+      url.includes('/auth/refresh') ||
+      url.includes('/auth/login') ||
+      url.includes('/auth/register')
+    ) {
       return Promise.reject(error);
     }
+
+    // No refresh token — user is not logged in, just reject without redirect
+    const refreshToken = useAuthStore.getState().refreshToken;
+    if (!refreshToken) return Promise.reject(error);
 
     if (isRefreshing) {
       return new Promise((resolve, reject) => failedQueue.push({ resolve, reject }))
@@ -42,9 +53,6 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const refreshToken = useAuthStore.getState().refreshToken;
-      if (!refreshToken) throw new Error('No refresh token');
-
       const { data } = await api.post<{ accessToken: string }>('/auth/refresh', { refreshToken });
       useAuthStore.getState().setAccessToken(data.accessToken);
       processQueue(null);
