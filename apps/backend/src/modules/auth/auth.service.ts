@@ -118,6 +118,7 @@ export class AuthService {
     this.logger.log(`User logged in: ${user.email}`);
     return {
       accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
       user: {
         id: user.id,
         email: user.email,
@@ -129,7 +130,17 @@ export class AuthService {
     };
   }
 
-  async refresh(userId: number, refreshToken: string): Promise<{ accessToken: string }> {
+  async refresh(refreshToken: string): Promise<{ accessToken: string }> {
+    let userId: number;
+    try {
+      const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
+        secret: this.config.get<string>('jwt.refreshSecret'),
+      });
+      userId = payload.sub;
+    } catch {
+      throw new UnauthorizedException('Недійсний токен оновлення');
+    }
+
     const user = await this.usersRepo.findOne({ where: { id: userId } });
     if (!user?.refreshTokenHash) throw new UnauthorizedException('Доступ заборонено');
 

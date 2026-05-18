@@ -27,7 +27,8 @@ api.interceptors.response.use(
     if (!axios.isAxiosError(error)) return Promise.reject(error);
 
     const original = error.config as AxiosRequestConfig & { _retry?: boolean };
-    if (error.response?.status !== 401 || original._retry) {
+    // Don't retry the refresh call itself — prevents deadlock when refresh token is invalid
+    if (error.response?.status !== 401 || original._retry || original.url?.includes('/auth/refresh')) {
       return Promise.reject(error);
     }
 
