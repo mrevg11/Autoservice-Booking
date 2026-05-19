@@ -238,14 +238,7 @@ export default function AdminVehiclesPage() {
               <dt className="text-slate-500">Email власника</dt>
               <dd className="font-medium text-slate-900 text-xs break-all">{detailsVehicle.client.email}</dd>
             </dl>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => { setDetailsVehicle(null); setBookingsVehicle(detailsVehicle); }}
-              >
-                Переглянути записи
-              </Button>
+            <div className="flex justify-end pt-2">
               <Button size="sm" onClick={() => setDetailsVehicle(null)}>Закрити</Button>
             </div>
           </div>
