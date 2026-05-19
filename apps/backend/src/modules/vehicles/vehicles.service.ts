@@ -94,4 +94,27 @@ export class VehiclesService {
     await this.vehiclesRepo.remove(vehicle);
     return { message: 'Автомобіль видалено' };
   }
+
+  async adminFindAll(page = 1, limit = 20): Promise<{ data: Vehicle[]; total: number }> {
+    const [data, total] = await this.vehiclesRepo.findAndCount({
+      relations: ['client'],
+      order: { id: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return { data, total };
+  }
+
+  async adminRemove(id: number): Promise<{ message: string }> {
+    const vehicle = await this.vehiclesRepo.findOne({ where: { id }, relations: ['client'] });
+    if (!vehicle) throw new NotFoundException('Автомобіль не знайдено');
+    await this.bookingsRepo
+      .createQueryBuilder()
+      .update()
+      .set({ vehicle: null as never })
+      .where('vehicleId = :id', { id })
+      .execute();
+    await this.vehiclesRepo.remove(vehicle);
+    return { message: 'Автомобіль видалено' };
+  }
 }

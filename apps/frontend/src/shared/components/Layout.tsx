@@ -27,6 +27,7 @@ const adminNav: NavItem[] = [
   { to: '/admin/services', label: 'Послуги' },
   { to: '/admin/masters', label: 'Майстри' },
   { to: '/admin/bookings', label: 'Записи' },
+  { to: '/admin/vehicles', label: 'Автомобілі' },
   { to: '/admin/analytics', label: 'Аналітика' },
 ];
 

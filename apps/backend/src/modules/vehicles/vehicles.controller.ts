@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -68,5 +69,22 @@ export class VehiclesController {
   @ApiOperation({ summary: '[CLIENT] Видалити автомобіль' })
   remove(@CurrentUser() user: User, @Param('id', ParseIntPipe) id: number) {
     return this.vehiclesService.remove(id, user.id);
+  }
+
+  @Get('admin/all')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: '[ADMIN] Усі автомобілі з даними власника' })
+  adminFindAll(
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 20,
+  ) {
+    return this.vehiclesService.adminFindAll(page, limit);
+  }
+
+  @Delete('admin/:id')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: '[ADMIN] Видалити будь-який автомобіль' })
+  adminRemove(@Param('id', ParseIntPipe) id: number) {
+    return this.vehiclesService.adminRemove(id);
   }
 }

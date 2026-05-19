@@ -383,6 +383,24 @@ export const adminServicesApi = {
   deleteService: (id: number) => api.delete(`/services/${id}`),
 };
 
+// ─── Admin / Vehicles ─────────────────────────────────────────────────────────
+
+export interface AdminVehicle {
+  id: number;
+  make: string;
+  model: string;
+  year: number;
+  vin: string | null;
+  plateNumber: string | null;
+  client: { id: number; firstName: string; lastName: string; email: string };
+}
+
+export const adminVehiclesApi = {
+  getAll: (params?: { page?: number; limit?: number }) =>
+    api.get<{ data: AdminVehicle[]; total: number }>('/vehicles/admin/all', { params }),
+  remove: (id: number) => api.delete<{ message: string }>(`/vehicles/admin/${id}`),
+};
+
 // ─── Admin / Masters ──────────────────────────────────────────────────────────
 
 export const adminMastersApi = {

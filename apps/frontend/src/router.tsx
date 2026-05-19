@@ -41,6 +41,7 @@ const AdminServicesPage = lazy(() => import('./features/admin/pages/AdminService
 const AdminMastersPage = lazy(() => import('./features/admin/pages/AdminMastersPage'));
 const AdminBookingsPage = lazy(() => import('./features/admin/pages/AdminBookingsPage'));
 const AdminAnalyticsPage = lazy(() => import('./features/admin/pages/AdminAnalyticsPage'));
+const AdminVehiclesPage = lazy(() => import('./features/admin/pages/AdminVehiclesPage'));
 
 function PageLoader() {
   return (
@@ -140,6 +141,7 @@ export const router = createBrowserRouter([
           { path: 'admin/masters', element: <Suspense fallback={<PageLoader />}><AdminMastersPage /></Suspense> },
           { path: 'admin/bookings', element: <Suspense fallback={<PageLoader />}><AdminBookingsPage /></Suspense> },
           { path: 'admin/analytics', element: <Suspense fallback={<PageLoader />}><AdminAnalyticsPage /></Suspense> },
+          { path: 'admin/vehicles', element: <Suspense fallback={<PageLoader />}><AdminVehiclesPage /></Suspense> },
         ],
       },
 

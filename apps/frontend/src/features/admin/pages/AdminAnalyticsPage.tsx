@@ -42,12 +42,10 @@ const STATUS_LABELS: Record<string, string> = {
 
 export default function AdminAnalyticsPage() {
   const [groupBy, setGroupBy] = useState<'day' | 'week' | 'month'>('month');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
 
   const { data: revenue = [], isLoading: lr } = useQuery({
-    queryKey: ['analytics-revenue', groupBy, from, to],
-    queryFn: () => analyticsApi.getRevenue({ groupBy, from: from || undefined, to: to || undefined }).then((r) => r.data),
+    queryKey: ['analytics-revenue', groupBy],
+    queryFn: () => analyticsApi.getRevenue({ groupBy }).then((r) => r.data),
   });
 
   const { data: masterLoad = [], isLoading: lm } = useQuery({
@@ -88,8 +86,6 @@ export default function AdminAnalyticsPage() {
                 {g === 'day' ? 'День' : g === 'week' ? 'Тиждень' : 'Місяць'}
               </button>
             ))}
-            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="text-xs border border-slate-200 rounded-lg px-2 py-1" />
-            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="text-xs border border-slate-200 rounded-lg px-2 py-1" />
             <Button size="sm" variant="ghost" onClick={() => exportCsv(revenue as unknown as Record<string, unknown>[], 'revenue.csv')}>CSV</Button>
           </div>
         </div>
