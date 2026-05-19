@@ -267,6 +267,9 @@ export class BookingsService {
     if (filters.clientId && user.role === Role.ADMIN) {
       qb.andWhere('client.id = :clientId', { clientId: filters.clientId });
     }
+    if (filters.vehicleId && user.role === Role.ADMIN) {
+      qb.andWhere('vehicle.id = :vehicleId', { vehicleId: filters.vehicleId });
+    }
     if (filters.from) {
       qb.andWhere('b.scheduledAt >= :from', { from: new Date(filters.from) });
     }

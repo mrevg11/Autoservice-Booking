@@ -33,4 +33,11 @@ export class BookingFilterDto extends PaginationDto {
   @IsOptional()
   @IsDateString()
   to?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @IsPositive()
+  vehicleId?: number;
 }

@@ -181,6 +181,9 @@ export interface BookingFilterParams extends PaginationParams {
   status?: BookingStatus;
   from?: string;
   to?: string;
+  vehicleId?: number;
+  clientId?: number;
+  masterId?: number;
 }
 
 export interface BookingStatusHistoryItem {
