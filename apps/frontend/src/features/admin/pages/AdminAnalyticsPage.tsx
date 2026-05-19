@@ -93,12 +93,16 @@ export default function AdminAnalyticsPage() {
             <Button size="sm" variant="ghost" onClick={() => exportCsv(revenue as unknown as Record<string, unknown>[], 'revenue.csv')}>CSV</Button>
           </div>
         </div>
-        {lr ? <div className="flex justify-center py-8"><Spinner /></div> : (
+        {lr ? (
+          <div className="flex justify-center py-8"><Spinner /></div>
+        ) : revenue.length === 0 ? (
+          <p className="text-center text-slate-400 py-8 text-sm">Немає даних за вибраний період</p>
+        ) : (
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={revenue}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis dataKey="period" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} />
+              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${Number(v).toLocaleString()} ₴`} />
               <Tooltip
                 formatter={(v: unknown, name: unknown) =>
                   name === 'revenue' ? [`${Number(v).toLocaleString()} ₴`, 'Дохід'] : [v as number, 'Записів']
