@@ -100,8 +100,8 @@ export const mastersApi = {
     api.get<PaginatedResult<MasterDto>>('/masters/for-services', { params: { serviceIds: serviceIds.join(',') } }),
   getWorkingDays: (id: number) => api.get<number[]>(`/masters/${id}/working-days`),
   getOne: (id: number) => api.get<MasterDto>(`/masters/${id}`),
-  getSlots: (id: number, date: string, duration: number) =>
-    api.get<string[]>(`/masters/${id}/slots`, { params: { date, duration } }),
+  getSlots: (id: number, date: string, duration: number, vehicleId?: number) =>
+    api.get<string[]>(`/masters/${id}/slots`, { params: { date, duration, vehicleId } }),
   getSchedule: (id: number) => api.get<ScheduleEntry[]>(`/masters/${id}/schedule`),
   updateMyProfile: (data: UpdateMasterPayload) => api.patch<MasterDto>('/masters/me', data),
   getMySchedule: () => api.get<ScheduleEntry[]>('/masters/me/schedule'),
@@ -317,9 +317,9 @@ export interface ServiceRemindersResponse {
 }
 
 export const intelligenceApi = {
-  suggestSlots: (serviceId: number, preferredDate: string, vehicleYear?: number, serviceIds?: number[]) =>
+  suggestSlots: (serviceId: number, preferredDate: string, vehicleYear?: number, serviceIds?: number[], vehicleId?: number) =>
     api.get<SuggestSlotsResponse>('/intelligence/suggest-slots', {
-      params: { serviceId, preferredDate, vehicleYear, serviceIds: serviceIds?.join(',') },
+      params: { serviceId, preferredDate, vehicleYear, serviceIds: serviceIds?.join(','), vehicleId },
     }),
   getRecommendations: (serviceId: number) =>
     api.get<RecommendationsResponse>('/intelligence/recommendations', {

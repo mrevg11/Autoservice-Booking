@@ -61,6 +61,7 @@ export class IntelligenceController {
       new Date(query.preferredDate),
       multiEstimate.totalEstimatedMinutes,
       allServiceIds,
+      query.vehicleId,
     );
     return { suggestions, estimatedDurationMinutes: multiEstimate.totalEstimatedMinutes };
   }

@@ -270,7 +270,7 @@ export default function BookingWizardPage() {
   const totalDuration = durationEstimate?.totalEstimatedMinutes ?? baseDuration;
 
   const { data: slots, isLoading: slotsLoading } = useMasterSlots(
-    selectedMasterId, selectedDate, totalDuration,
+    selectedMasterId, selectedDate, totalDuration, selectedVehicle?.id,
   );
 
   const createBooking = useCreateBooking();

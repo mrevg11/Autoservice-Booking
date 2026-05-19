@@ -56,6 +56,7 @@ export class SlotSuggesterService {
     preferredDate: Date,
     estimatedMinutes: number,
     allServiceIds: number[] = [],
+    vehicleId?: number,
   ): Promise<SlotSuggestionDto[]> {
     const service = await this.serviceRepo.findOne({
       where: { id: serviceId },
@@ -102,7 +103,7 @@ export class SlotSuggesterService {
     endDate.setUTCDate(endDate.getUTCDate() + this.lookaheadDays);
 
     // Bulk-load all data upfront — no per-master queries
-    const [allBookings, allDayOffs, allSchedules] = await Promise.all([
+    const [allBookings, allDayOffs, allSchedules, vehicleBookings] = await Promise.all([
       this.bookingRepo
         .createQueryBuilder('b')
         .innerJoinAndSelect('b.master', 'master')
@@ -124,6 +125,16 @@ export class SlotSuggesterService {
         .where('s.master IN (:...masterIds)', { masterIds })
         .andWhere('s.isActive = true')
         .getMany(),
+      // Load all bookings for this vehicle in the lookahead window to filter out occupied slots
+      vehicleId
+        ? this.bookingRepo
+            .createQueryBuilder('b')
+            .where('b.vehicleId = :vehicleId', { vehicleId })
+            .andWhere('b.scheduledAt >= :startDate', { startDate })
+            .andWhere('b.scheduledAt < :endDate', { endDate })
+            .andWhere('b.status != :cancelled', { cancelled: BookingStatus.CANCELLED })
+            .getMany()
+        : Promise.resolve([] as Booking[]),
     ]);
 
     const slots: SlotSuggestionDto[] = [];
@@ -148,6 +159,7 @@ export class SlotSuggesterService {
         schedules,
         dayOffs,
         bookings,
+        vehicleBookings,
       );
 
       for (const raw of rawSlots) {
@@ -188,6 +200,7 @@ export class SlotSuggesterService {
     schedules: MasterSchedule[],
     dayOffs: MasterDayOff[],
     bookings: Booking[],
+    vehicleBookings: Booking[] = [],
   ): { startAt: Date; endAt: Date }[] {
     const result: { startAt: Date; endAt: Date }[] = [];
     const dayOffSet = new Set(dayOffs.map((d) => d.date.toString().slice(0, 10)));
@@ -216,14 +229,17 @@ export class SlotSuggesterService {
               continue;
             }
             const slotEnd = new Date(slotStart.getTime() + durationMin * 60_000);
-            const overlap = bookings.some((b) => {
-              const bStart = new Date(b.scheduledAt);
-              // Guard against zero/null duration — treat as 30 min minimum
-              const duration = b.estimatedDurationMinutes > 0 ? b.estimatedDurationMinutes : 30;
-              const bEnd = new Date(bStart.getTime() + duration * 60_000);
-              return bStart < slotEnd && bEnd > slotStart;
-            });
-            if (!overlap) result.push({ startAt: new Date(slotStart), endAt: new Date(slotEnd) });
+            const hasOverlap = (bkList: Booking[]) =>
+              bkList.some((b) => {
+                const bStart = new Date(b.scheduledAt);
+                const dur = b.estimatedDurationMinutes > 0 ? b.estimatedDurationMinutes : 30;
+                const bEnd = new Date(bStart.getTime() + dur * 60_000);
+                return bStart < slotEnd && bEnd > slotStart;
+              });
+            // Slot is valid only if master is free AND vehicle is free
+            if (!hasOverlap(bookings) && !hasOverlap(vehicleBookings)) {
+              result.push({ startAt: new Date(slotStart), endAt: new Date(slotEnd) });
+            }
             slotStart = new Date(slotStart.getTime() + 30 * 60_000);
           }
         }

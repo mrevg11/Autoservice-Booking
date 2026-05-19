@@ -134,9 +134,19 @@ export class BookingsService {
     const estimatedDurationMinutes = dto.estimatedDurationMinutes ?? baseDurationMinutes;
 
     return this.dataSource.transaction(async (manager) => {
-      // Lock the master profile row first — serialises all concurrent booking
-      // attempts for this master so the empty-result SELECT FOR UPDATE loophole
-      // (no rows to lock when calendar is free) cannot cause double-booking.
+      // Lock vehicle row BEFORE master to avoid deadlocks (consistent lock order).
+      // This serialises all concurrent attempts to book the same vehicle, so
+      // we can't create two bookings for the same car at overlapping times.
+      if (vehicle) {
+        await manager
+          .getRepository(Vehicle)
+          .createQueryBuilder('v')
+          .setLock('pessimistic_write')
+          .where('v.id = :vehicleId', { vehicleId: vehicle.id })
+          .getOne();
+      }
+
+      // Lock the master profile row — serialises booking attempts for this master.
       const lockedMaster = await manager
         .getRepository(MasterProfile)
         .createQueryBuilder('mp')
@@ -146,9 +156,10 @@ export class BookingsService {
 
       if (!lockedMaster) throw new NotFoundException('Майстра не знайдено');
 
-      // Check for overlapping bookings (now safe: master row is locked)
       const newEnd = new Date(scheduledAt.getTime() + estimatedDurationMinutes * 60_000);
-      const overlapping = await manager
+
+      // Check master availability
+      const masterOverlap = await manager
         .getRepository(Booking)
         .createQueryBuilder('b')
         .where('b.masterId = :masterId', { masterId: master.id })
@@ -160,8 +171,29 @@ export class BookingsService {
         )
         .getMany();
 
-      if (overlapping.length > 0) {
-        throw new ConflictException('Цей час вже зайнятий');
+      if (masterOverlap.length > 0) {
+        throw new ConflictException('Цей майстер вже зайнятий в обраний час');
+      }
+
+      // Check vehicle availability — the same car cannot be serviced by two masters simultaneously.
+      if (vehicle) {
+        const vehicleOverlap = await manager
+          .getRepository(Booking)
+          .createQueryBuilder('b')
+          .where('b.vehicleId = :vehicleId', { vehicleId: vehicle.id })
+          .andWhere('b.status != :cancelled', { cancelled: BookingStatus.CANCELLED })
+          .andWhere('b.scheduledAt < :newEnd', { newEnd })
+          .andWhere(
+            `DATE_ADD(b.scheduledAt, INTERVAL b.estimatedDurationMinutes MINUTE) > :newStart`,
+            { newStart: scheduledAt },
+          )
+          .getMany();
+
+        if (vehicleOverlap.length > 0) {
+          throw new ConflictException(
+            'Цей автомобіль вже має запис на обраний час. Дочекайтесь завершення попереднього запису.',
+          );
+        }
       }
 
       // Save booking

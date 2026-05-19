@@ -79,13 +79,14 @@ export default function SmartBookingPage() {
   const selectedVehicle = vehicles?.find((v) => v.id === selectedVehicleId);
 
   const { data: suggestions, isFetching, refetch } = useQuery({
-    queryKey: ['suggestSlots', selectedServiceIds[0], preferredDate, selectedVehicle?.year],
+    queryKey: ['suggestSlots', selectedServiceIds[0], preferredDate, selectedVehicle?.year, selectedVehicleId],
     queryFn: () =>
       intelligenceApi.suggestSlots(
         selectedServiceIds[0],
         preferredDate || new Date().toISOString().slice(0, 10),
         selectedVehicle?.year,
         selectedServiceIds,
+        selectedVehicleId ?? undefined,
       ).then((r) => r.data),
     enabled: false,
   });

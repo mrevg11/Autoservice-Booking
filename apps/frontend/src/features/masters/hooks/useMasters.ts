@@ -16,10 +16,10 @@ export function useMaster(id: number | undefined) {
   });
 }
 
-export function useMasterSlots(masterId: number | undefined, date: string, duration: number) {
+export function useMasterSlots(masterId: number | undefined, date: string, duration: number, vehicleId?: number) {
   return useQuery({
-    queryKey: ['masterSlots', masterId, date, duration],
-    queryFn: () => mastersApi.getSlots(masterId!, date, duration).then((r) => r.data),
+    queryKey: ['masterSlots', masterId, date, duration, vehicleId],
+    queryFn: () => mastersApi.getSlots(masterId!, date, duration, vehicleId).then((r) => r.data),
     enabled: !!masterId && !!date && duration > 0,
   });
 }

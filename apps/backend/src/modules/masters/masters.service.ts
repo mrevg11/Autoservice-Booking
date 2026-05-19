@@ -194,13 +194,14 @@ export class MastersService {
     masterId: number,
     date: string,
     durationMinutes: number,
+    vehicleId?: number,
   ): Promise<string[]> {
     await this.ensureMasterExists(masterId);
 
     // Convert date to weekday (app convention: Mon=0 … Sun=6)
     const dateObj = new Date(`${date}T00:00:00`);
-    const jsDay = dateObj.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-    const appWeekday = (jsDay + 6) % 7; // Mon=0, Sun=6
+    const jsDay = dateObj.getDay();
+    const appWeekday = (jsDay + 6) % 7;
 
     // 1. Check for day-off
     const dayOff = await this.daysOffRepo.findOne({
@@ -214,15 +215,30 @@ export class MastersService {
     });
     if (!schedule) return [];
 
-    // 3. Get existing non-cancelled bookings on this date
     const dayStart = new Date(`${date}T00:00:00`);
     const dayEnd = new Date(`${date}T23:59:59`);
-    const existingBookings = await this.bookingsRepo
-      .createQueryBuilder('b')
-      .where('b.masterId = :masterId', { masterId })
-      .andWhere('b.status != :cancelled', { cancelled: BookingStatus.CANCELLED })
-      .andWhere('b.scheduledAt BETWEEN :start AND :end', { start: dayStart, end: dayEnd })
-      .getMany();
+
+    // 3. Bulk-load master bookings and (optionally) vehicle bookings for the day
+    const dayQuery = (qb: ReturnType<typeof this.bookingsRepo.createQueryBuilder>) =>
+      qb
+        .andWhere('b.status != :cancelled', { cancelled: BookingStatus.CANCELLED })
+        .andWhere('b.scheduledAt BETWEEN :start AND :end', { start: dayStart, end: dayEnd })
+        .getMany();
+
+    const [masterBookings, vehicleBookings]: [Booking[], Booking[]] = await Promise.all([
+      dayQuery(this.bookingsRepo.createQueryBuilder('b').where('b.masterId = :masterId', { masterId })),
+      vehicleId
+        ? dayQuery(this.bookingsRepo.createQueryBuilder('b').where('b.vehicleId = :vehicleId', { vehicleId }))
+        : Promise.resolve([]),
+    ]);
+
+    const isOccupied = (bookings: Booking[], slotTime: Date, slotEnd: Date) =>
+      bookings.some((b) => {
+        const bStart = new Date(b.scheduledAt);
+        const dur = b.estimatedDurationMinutes > 0 ? b.estimatedDurationMinutes : 30;
+        const bEnd = new Date(bStart.getTime() + dur * 60_000);
+        return bStart < slotEnd && bEnd > slotTime;
+      });
 
     // 4. Generate 30-min slots and filter
     const [sh, sm] = schedule.startTime.split(':').map(Number);
@@ -237,20 +253,13 @@ export class MastersService {
       const mm = m % 60;
       const slotTime = new Date(`${date}T${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:00`);
 
-      // Skip past slots
       if (slotTime <= now) continue;
 
       const slotEnd = new Date(slotTime.getTime() + durationMinutes * 60_000);
 
-      // Check overlap with existing bookings
-      const occupied = existingBookings.some((b) => {
-        const bookingEnd = new Date(
-          new Date(b.scheduledAt).getTime() + b.estimatedDurationMinutes * 60_000,
-        );
-        return new Date(b.scheduledAt) < slotEnd && bookingEnd > slotTime;
-      });
-
-      if (!occupied) {
+      // Slot is free only if BOTH the master AND the vehicle are available
+      if (!isOccupied(masterBookings, slotTime, slotEnd) &&
+          !isOccupied(vehicleBookings, slotTime, slotEnd)) {
         slots.push(`${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`);
       }
     }

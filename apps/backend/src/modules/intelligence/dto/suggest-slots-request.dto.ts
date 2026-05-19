@@ -24,4 +24,11 @@ export class SuggestSlotsRequestDto {
   @IsOptional()
   @IsString()
   serviceIds?: string;
+
+  @ApiPropertyOptional({ description: 'Vehicle ID — filters out slots where the vehicle already has another booking', example: 3 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  vehicleId?: number;
 }

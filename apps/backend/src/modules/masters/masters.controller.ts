@@ -123,12 +123,19 @@ export class MastersController {
   @ApiOperation({ summary: '[Auth] Вільні слоти майстра на дату' })
   @ApiQuery({ name: 'date', example: '2026-12-15' })
   @ApiQuery({ name: 'duration', example: 60, type: Number })
+  @ApiQuery({ name: 'vehicleId', required: false, type: Number, description: 'Фільтрує слоти з урахуванням зайнятості авто' })
   getAvailableSlots(
     @Param('id', ParseIntPipe) id: number,
     @Query('date') date: string,
     @Query('duration') duration: string,
+    @Query('vehicleId') vehicleId?: string,
   ) {
-    return this.mastersService.getAvailableSlots(id, date, parseInt(duration, 10) || 60);
+    return this.mastersService.getAvailableSlots(
+      id,
+      date,
+      parseInt(duration, 10) || 60,
+      vehicleId ? parseInt(vehicleId, 10) : undefined,
+    );
   }
 
   @Patch(':id/schedule')
