@@ -105,16 +105,16 @@ export class VehiclesService {
     return { data, total };
   }
 
-  async adminRemove(id: number): Promise<{ message: string }> {
+  async adminRemove(id: number): Promise<{ message: string; deletedBookings: number }> {
     const vehicle = await this.vehiclesRepo.findOne({ where: { id }, relations: ['client'] });
     if (!vehicle) throw new NotFoundException('Автомобіль не знайдено');
+    const deletedBookings = await this.bookingsRepo.count({ where: { vehicle: { id } } });
     await this.bookingsRepo
       .createQueryBuilder()
-      .update()
-      .set({ vehicle: null as never })
+      .delete()
       .where('vehicleId = :id', { id })
       .execute();
     await this.vehiclesRepo.remove(vehicle);
-    return { message: 'Автомобіль видалено' };
+    return { message: 'Автомобіль видалено', deletedBookings };
   }
 }

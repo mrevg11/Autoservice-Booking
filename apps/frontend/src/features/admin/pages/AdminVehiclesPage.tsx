@@ -15,6 +15,13 @@ import { toKyivDisplay } from '../../../shared/utils/date';
 
 const LIMIT = 20;
 
+function bookingWord(n: number) {
+  if (n % 100 >= 11 && n % 100 <= 19) return 'записів';
+  if (n % 10 === 1) return 'запис';
+  if (n % 10 >= 2 && n % 10 <= 4) return 'записи';
+  return 'записів';
+}
+
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   PENDING:     { label: 'Очікує',      color: 'bg-yellow-100 text-yellow-700' },
   CONFIRMED:   { label: 'Підтверджено', color: 'bg-blue-100 text-blue-700' },
@@ -132,8 +139,12 @@ export default function AdminVehiclesPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => adminVehiclesApi.remove(id),
-    onSuccess: () => {
-      toast('Автомобіль видалено', 'success');
+    onSuccess: (res) => {
+      const { deletedBookings } = res.data;
+      const msg = deletedBookings > 0
+        ? `Автомобіль видалено. Також видалено ${deletedBookings} ${bookingWord(deletedBookings)}`
+        : 'Автомобіль видалено';
+      toast(msg, 'success');
       qc.invalidateQueries({ queryKey: ['admin-vehicles'] });
       setDeleteTarget(null);
     },
@@ -256,7 +267,7 @@ export default function AdminVehiclesPage() {
           isOpen
           isDanger
           title="Видалити автомобіль?"
-          message={`${deleteTarget.make} ${deleteTarget.model} (${deleteTarget.year}) — власник: ${deleteTarget.client.firstName} ${deleteTarget.client.lastName}. Усі записи по цьому авто отримають порожнє поле автомобіля.`}
+          message={`${deleteTarget.make} ${deleteTarget.model} (${deleteTarget.year}) — власник: ${deleteTarget.client.firstName} ${deleteTarget.client.lastName}. Разом з автомобілем будуть видалені всі записи (бронювання), пов'язані з ним.`}
           confirmLabel="Видалити"
           onConfirm={() => deleteMutation.mutate(deleteTarget.id)}
           onCancel={() => setDeleteTarget(null)}

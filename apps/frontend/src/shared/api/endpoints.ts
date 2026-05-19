@@ -401,7 +401,7 @@ export interface AdminVehicle {
 export const adminVehiclesApi = {
   getAll: (params?: { page?: number; limit?: number }) =>
     api.get<{ data: AdminVehicle[]; total: number }>('/vehicles/admin/all', { params }),
-  remove: (id: number) => api.delete<{ message: string }>(`/vehicles/admin/${id}`),
+  remove: (id: number) => api.delete<{ message: string; deletedBookings: number }>(`/vehicles/admin/${id}`),
 };
 
 // ─── Admin / Masters ──────────────────────────────────────────────────────────
