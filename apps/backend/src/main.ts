@@ -8,7 +8,14 @@ import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
 
 async function bootstrap(): Promise<void> {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  // Increase JSON body limit to 10 MB — needed for Base64-encoded booking photos
+  // (a 5 MB image encodes to ~6.7 MB of base64; default Express limit is 100 KB).
+  const app = await NestFactory.create(AppModule, { bodyParser: false });
+  // Re-register body-parser with a higher limit before all other middleware
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const bodyParser = require('body-parser') as typeof import('body-parser');
+  app.use(bodyParser.json({ limit: '10mb' }));
+  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
   // Security
   // CSRF note: this API uses JWT Bearer tokens in the Authorization header.
