@@ -23,7 +23,7 @@ function ServiceCard({ service }: { service: ServiceItem }) {
         <p className="text-sm text-slate-500 line-clamp-2">{service.description}</p>
       )}
       <div className="flex items-center gap-4 text-sm text-slate-600">
-        <span className="font-semibold text-slate-900">{service.price} грн</span>
+        <span className="font-semibold text-slate-900">{Number(service.basePrice).toLocaleString('uk-UA')} грн</span>
         <span className="text-slate-400">·</span>
         <span>{service.baseDurationMinutes} хв</span>
       </div>

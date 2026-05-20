@@ -145,6 +145,22 @@ export class MastersService {
     });
   }
 
+  async getMySchedule(userId: number): Promise<MasterSchedule[]> {
+    const master = await this.findMasterByUserId(userId);
+    return this.schedulesRepo.find({
+      where: { master: { id: master.id } },
+      order: { weekday: 'ASC' },
+    });
+  }
+
+  async getMyDaysOff(userId: number): Promise<MasterDayOff[]> {
+    const master = await this.findMasterByUserId(userId);
+    return this.daysOffRepo.find({
+      where: { master: { id: master.id } },
+      order: { date: 'ASC' },
+    });
+  }
+
   async addDayOff(userId: number, dto: CreateDayOffDto): Promise<MasterDayOff> {
     const master = await this.findMasterByUserId(userId);
     const dayOff = this.daysOffRepo.create({ ...dto, master });

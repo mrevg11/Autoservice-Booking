@@ -59,7 +59,7 @@ export interface ServiceItem {
   id: number;
   name: string;
   description: string | null;
-  price: string;
+  basePrice: string;
   baseDurationMinutes: number;
   isActive: boolean;
   category: ServiceCategory;
@@ -92,6 +92,7 @@ export interface MasterDto {
 }
 
 export interface ScheduleEntry { weekday: number; startTime: string; endTime: string; isActive: boolean }
+export interface MasterDayOff { id: number; date: string; reason: string | null }
 export interface UpdateMasterPayload { specialization?: string; experienceYears?: number; bio?: string }
 
 export const mastersApi = {
@@ -108,6 +109,7 @@ export const mastersApi = {
   setSchedule: (data: ScheduleEntry[]) => api.put<ScheduleEntry[]>('/masters/me/schedule', { schedule: data }),
   addDayOff: (date: string, reason?: string) =>
     api.post('/masters/me/days-off', { date, reason }),
+  getDaysOff: () => api.get<MasterDayOff[]>('/masters/me/days-off'),
   deleteDayOff: (id: number) => api.delete(`/masters/me/days-off/${id}`),
   addService: (serviceId: number, priceCoefficient?: number) =>
     api.post('/masters/me/services', { serviceId, priceCoefficient }),

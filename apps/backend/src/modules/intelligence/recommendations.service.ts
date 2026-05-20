@@ -71,7 +71,7 @@ export class RecommendationsService {
     const masterIds = masters.map((m) => m.id);
 
     // Bulk-load all data — no per-master queries
-    const [clientCompletedBookings, allMasterReviews] = await Promise.all([
+    const [clientCompletedBookings, allMasterReviews, activeMasterBookings] = await Promise.all([
       this.bookingRepo
         .createQueryBuilder('b')
         .where('b.client = :clientId', { clientId })
@@ -83,6 +83,15 @@ export class RecommendationsService {
         .where('b.master IN (:...masterIds)', { masterIds })
         .select(['r.rating as rating', 'b.masterId as masterId'])
         .getRawMany<{ rating: string; masterId: number }>(),
+      this.bookingRepo
+        .createQueryBuilder('b')
+        .where('b.master IN (:...masterIds)', { masterIds })
+        .andWhere('b.status IN (:...statuses)', {
+          statuses: [BookingStatus.PENDING, BookingStatus.CONFIRMED, BookingStatus.IN_PROGRESS],
+        })
+        .select(['b.masterId as masterId', 'COUNT(b.id) as cnt'])
+        .groupBy('b.masterId')
+        .getRawMany<{ masterId: number; cnt: string }>(),
     ]);
 
     // Collaborative: client's personal rating per master
@@ -106,6 +115,12 @@ export class RecommendationsService {
       globalRatings.set(mid, cur);
     }
 
+    // Active bookings per master (lower = less loaded = better)
+    const activeBookingsMap = new Map<number, number>();
+    for (const row of activeMasterBookings) {
+      activeBookingsMap.set(Number(row.masterId), Number(row.cnt));
+    }
+
     const results: MasterRecommendationDto[] = [];
 
     for (const master of masters) {
@@ -124,10 +139,9 @@ export class RecommendationsService {
       // Factor 3 (experience): years / 10 capped at 1
       const experienceScore = Math.min((master.experienceYears ?? 0) / 10, 1);
 
-      // Factor 4 (load): fewer global reviews relative to active masters = less loaded
-      const loadScore = globalData
-        ? Math.max(0, 1 - globalData.count / 50)
-        : 1.0;
+      // Factor 4 (load): fewer active bookings = less loaded = preferred
+      const activeCount = activeBookingsMap.get(master.id) ?? 0;
+      const loadScore = Math.max(0, 1 - activeCount / 10);
 
       // Factor 5 (specialization): keyword match between master specialization and service category
       const specializationScore = this.computeSpecScore(
@@ -155,7 +169,7 @@ export class RecommendationsService {
           `Рейтинг: ${Math.round(ratingScore * 100)}%`,
           `Особистий досвід: ${Math.round(collaborativeScore * 100)}%`,
           `Досвід роботи: ${Math.round(experienceScore * 100)}%`,
-          `Завантаженість: ${Math.round(loadScore * 100)}%`,
+          `Завантаженість: ${activeCount === 0 ? 'вільний' : `${activeCount} актив. записів`}`,
           `Спеціалізація: ${Math.round(specializationScore * 100)}%`,
         ],
       });

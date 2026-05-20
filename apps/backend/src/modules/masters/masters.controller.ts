@@ -47,6 +47,15 @@ export class MastersController {
     return this.mastersService.updateProfile(user.id, dto);
   }
 
+  @Get('me/schedule')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MASTER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[MASTER] Отримати свій розклад' })
+  getMySchedule(@CurrentUser() user: User) {
+    return this.mastersService.getMySchedule(user.id);
+  }
+
   @Put('me/schedule')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.MASTER)
@@ -54,6 +63,15 @@ export class MastersController {
   @ApiOperation({ summary: '[MASTER] Замінити повний розклад' })
   setSchedule(@CurrentUser() user: User, @Body() dto: SetScheduleDto) {
     return this.mastersService.setSchedule(user.id, dto.schedule);
+  }
+
+  @Get('me/days-off')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MASTER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[MASTER] Список своїх вихідних днів' })
+  getMyDaysOff(@CurrentUser() user: User) {
+    return this.mastersService.getMyDaysOff(user.id);
   }
 
   @Post('me/days-off')

@@ -13,6 +13,12 @@ interface ProfileForm {
   bio: string;
 }
 
+interface PersonalForm {
+  firstName: string;
+  lastName: string;
+  phone: string;
+}
+
 export default function MasterProfilePage() {
   const qc = useQueryClient();
   const user = useAuthStore((s) => s.user);
@@ -36,6 +42,12 @@ export default function MasterProfilePage() {
     onError: () => toast('Помилка', 'error'),
   });
 
+  const updatePersonalMutation = useMutation({
+    mutationFn: (d: PersonalForm) => usersApi.updateMe(d),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['me'] }); toast('Особисті дані оновлено', 'success'); },
+    onError: () => toast('Помилка', 'error'),
+  });
+
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({
     mode: 'onChange',
     values: me ? {
@@ -45,12 +57,22 @@ export default function MasterProfilePage() {
     } : undefined,
   });
 
+  const { register: regP, handleSubmit: handlePersonal, formState: { errors: errP } } = useForm<PersonalForm>({
+    mode: 'onChange',
+    values: userMe ? {
+      firstName: userMe.firstName,
+      lastName: userMe.lastName,
+      phone: userMe.phone ?? '',
+    } : undefined,
+  });
+
   if (isLoading) return <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
 
   return (
     <div className="space-y-6 max-w-lg">
       <h1 className="text-2xl font-bold text-slate-900">Профіль майстра</h1>
 
+      {/* Personal info */}
       <div className="bg-white rounded-xl shadow-card border border-slate-100 p-6">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-14 h-14 rounded-full bg-brand flex items-center justify-center text-white text-xl font-bold">
@@ -59,9 +81,37 @@ export default function MasterProfilePage() {
           <div>
             <p className="font-semibold">{userMe?.firstName} {userMe?.lastName}</p>
             {me && <p className="text-sm text-slate-500">⭐ {Number(me.rating ?? 0).toFixed(1)}</p>}
+            <p className="text-xs text-slate-400">{userMe?.email}</p>
           </div>
         </div>
 
+        <h2 className="font-semibold text-slate-900 mb-3 text-sm">Особисті дані</h2>
+        <form onSubmit={handlePersonal((d) => updatePersonalMutation.mutate(d))} className="space-y-3 mb-6 pb-6 border-b border-slate-100">
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              label="Ім'я"
+              error={errP.firstName?.message}
+              {...regP('firstName', { required: "Обов'язково" })}
+            />
+            <Input
+              label="Прізвище"
+              error={errP.lastName?.message}
+              {...regP('lastName', { required: "Обов'язково" })}
+            />
+          </div>
+          <Input
+            label="Телефон"
+            type="tel"
+            placeholder="+380XXXXXXXXX"
+            error={errP.phone?.message}
+            {...regP('phone', {
+              pattern: { value: /^\+?[\d\s\-()]{7,20}$/, message: 'Невірний формат' },
+            })}
+          />
+          <Button type="submit" size="sm" isLoading={updatePersonalMutation.isPending}>Зберегти дані</Button>
+        </form>
+
+        <h2 className="font-semibold text-slate-900 mb-3 text-sm">Профіль майстра</h2>
         <form onSubmit={handleSubmit((d) => updateMutation.mutate(d))} className="space-y-4">
           <Input
             label="Спеціалізація"
@@ -82,7 +132,7 @@ export default function MasterProfilePage() {
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
-          <Button type="submit" isLoading={updateMutation.isPending}>Зберегти</Button>
+          <Button type="submit" isLoading={updateMutation.isPending}>Зберегти профіль</Button>
         </form>
       </div>
     </div>

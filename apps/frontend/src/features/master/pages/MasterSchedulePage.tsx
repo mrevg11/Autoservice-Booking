@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { mastersApi, ScheduleEntry } from '../../../shared/api/endpoints';
+import { mastersApi, ScheduleEntry, MasterDayOff } from '../../../shared/api/endpoints';
 import Button from '../../../shared/components/ui/Button';
 import Spinner from '../../../shared/components/ui/Spinner';
+import ConfirmDialog from '../../../shared/components/ConfirmDialog';
 import { toast } from '../../../shared/store/toast.store';
 
 const WEEKDAYS = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця', 'Субота', 'Неділя'];
@@ -47,6 +48,11 @@ export default function MasterSchedulePage() {
     },
   });
 
+  const { data: daysOff = [], isLoading: daysOffLoading } = useQuery({
+    queryKey: ['dayOffs'],
+    queryFn: () => mastersApi.getDaysOff().then((r) => r.data),
+  });
+
   const addDayOffMutation = useMutation({
     mutationFn: ({ date, reason }: { date: string; reason?: string }) =>
       mastersApi.addDayOff(date, reason),
@@ -54,7 +60,14 @@ export default function MasterSchedulePage() {
     onError: () => toast('Помилка', 'error'),
   });
 
+  const deleteDayOffMutation = useMutation({
+    mutationFn: (id: number) => mastersApi.deleteDayOff(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['dayOffs'] }); toast('Вихідний скасовано', 'success'); },
+    onError: () => toast('Помилка', 'error'),
+  });
+
   const [dayOffDate, setDayOffDate] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<MasterDayOff | null>(null);
 
   const updateEntry = (weekday: number, field: keyof ScheduleEntry, value: string | boolean) => {
     setEntries((prev) => prev.map((e) => e.weekday === weekday ? { ...e, [field]: value } : e));
@@ -135,12 +148,48 @@ export default function MasterSchedulePage() {
             size="sm"
             disabled={!dayOffDate}
             isLoading={addDayOffMutation.isPending}
-            onClick={() => addDayOffMutation.mutate({ date: dayOffDate })}
+            onClick={() => { addDayOffMutation.mutate({ date: dayOffDate }); setDayOffDate(''); }}
           >
             Додати
           </Button>
         </div>
       </div>
+
+      {/* Existing day-offs list */}
+      <div className="bg-white rounded-xl shadow-card border border-slate-100 p-5">
+        <h2 className="font-semibold text-slate-900 mb-4">Заплановані вихідні дні</h2>
+        {daysOffLoading ? (
+          <div className="flex justify-center py-4"><Spinner /></div>
+        ) : daysOff.length === 0 ? (
+          <p className="text-sm text-slate-400 text-center py-4">Немає запланованих вихідних</p>
+        ) : (
+          <div className="space-y-2">
+            {daysOff.map((d: MasterDayOff) => (
+              <div key={d.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-50 border border-slate-100">
+                <div>
+                  <span className="text-sm font-medium text-slate-900">
+                    {new Date(d.date + 'T00:00:00').toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric', weekday: 'short' })}
+                  </span>
+                  {d.reason && <span className="text-xs text-slate-500 ml-2">· {d.reason}</span>}
+                </div>
+                <Button size="sm" variant="danger" onClick={() => setDeleteTarget(d)}>
+                  Скасувати
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <ConfirmDialog
+        isOpen={deleteTarget !== null}
+        isDanger
+        title="Скасувати вихідний?"
+        message={deleteTarget ? `Вихідний ${new Date(deleteTarget.date + 'T00:00:00').toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' })} буде видалено.` : ''}
+        confirmLabel="Скасувати вихідний"
+        onConfirm={() => { if (deleteTarget) { deleteDayOffMutation.mutate(deleteTarget.id); setDeleteTarget(null); } }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

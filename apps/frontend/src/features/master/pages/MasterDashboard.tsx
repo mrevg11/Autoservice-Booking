@@ -9,13 +9,15 @@ export default function MasterDashboard() {
 
   const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local tz
   const { data, isLoading } = useMyBookings({ limit: 50, page: 1 });
+  const { data: confirmedData } = useMyBookings({ status: 'CONFIRMED', limit: 1, page: 1 });
+  const { data: completedData } = useMyBookings({ status: 'COMPLETED', limit: 1, page: 1 });
 
   const todayBookings = (data?.data ?? []).filter((b) =>
     new Date(b.scheduledAt).toLocaleDateString('en-CA') === todayStr,
   ).sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime());
 
-  const confirmed = todayBookings.filter((b) => b.status === 'CONFIRMED').length;
-  const completed = todayBookings.filter((b) => b.status === 'COMPLETED').length;
+  const confirmed = confirmedData?.total ?? 0;
+  const completed = completedData?.total ?? 0;
 
   const nextBooking = todayBookings.find((b) => ['CONFIRMED', 'PENDING'].includes(b.status));
 
@@ -38,8 +40,8 @@ export default function MasterDashboard() {
       <div className="grid grid-cols-3 gap-4">
         {[
           { label: 'Записів сьогодні', value: todayBookings.length },
-          { label: 'Підтверджено', value: confirmed },
-          { label: 'Завершено', value: completed },
+          { label: 'Підтверджено (всього)', value: confirmed },
+          { label: 'Завершено (всього)', value: completed },
         ].map(({ label, value }) => (
           <div key={label} className="bg-white rounded-xl shadow-card border border-slate-100 p-4 text-center">
             <p className="text-3xl font-extrabold text-brand">{value}</p>

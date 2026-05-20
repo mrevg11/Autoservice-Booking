@@ -10,6 +10,14 @@ import { toast } from '../../../shared/store/toast.store';
 import { useAuthStore } from '../../../shared/store/auth.store';
 import type { BookingStatus } from '../../../shared/api/endpoints';
 
+const STATUS_LABELS: Record<string, string> = {
+  PENDING: 'Очікує',
+  CONFIRMED: 'Підтверджено',
+  IN_PROGRESS: 'В роботі',
+  COMPLETED: 'Завершено',
+  CANCELLED: 'Скасовано',
+};
+
 function nextAction(status: BookingStatus): { label: string; next: BookingStatus } | null {
   if (status === 'PENDING') return { label: 'Підтвердити запис', next: 'CONFIRMED' };
   if (status === 'CONFIRMED') return { label: 'Розпочати роботу', next: 'IN_PROGRESS' };
@@ -98,7 +106,10 @@ export default function MasterBookingDetailPage() {
               ))}
               <div className="border-t border-slate-100 pt-2 flex justify-between font-semibold text-sm">
                 <span>Загалом</span>
-                <span>{booking.totalPrice} грн</span>
+                <div className="flex gap-4 items-center">
+                  <span className="text-slate-500 font-normal">~{booking.estimatedDurationMinutes} хв</span>
+                  <span>{booking.totalPrice} грн</span>
+                </div>
               </div>
             </div>
           </div>
@@ -116,7 +127,7 @@ export default function MasterBookingDetailPage() {
                   <div key={h.id} className="relative mb-3">
                     <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-accent border-2 border-white" />
                     <div className="ml-3">
-                      <p className="text-sm font-medium">{h.newStatus}</p>
+                      <p className="text-sm font-medium">{STATUS_LABELS[h.newStatus] ?? h.newStatus}</p>
                       <p className="text-xs text-slate-500">
                         {new Date(h.changedAt).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev' })}
                       </p>
@@ -144,7 +155,7 @@ export default function MasterBookingDetailPage() {
       <ConfirmDialog
         isOpen={confirmNext !== null}
         title="Підтвердити дію?"
-        message={`Змінити статус на "${confirmNext}"?`}
+        message={`Змінити статус на "${STATUS_LABELS[confirmNext ?? ''] ?? confirmNext}"?`}
         onConfirm={handleStatusChange}
         onCancel={() => setConfirmNext(null)}
       />

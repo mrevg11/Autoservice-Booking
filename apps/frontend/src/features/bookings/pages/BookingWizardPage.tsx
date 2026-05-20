@@ -275,7 +275,7 @@ export default function BookingWizardPage() {
 
   const createBooking = useCreateBooking();
 
-  const totalPrice = selectedServices.reduce((s, sv) => s + Number(sv.price ?? 0), 0);
+  const totalPrice = selectedServices.reduce((s, sv) => s + Number(sv.basePrice ?? 0), 0);
 
   const maxDate = new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0];
 
@@ -441,7 +441,7 @@ export default function BookingWizardPage() {
                         <p className="text-xs text-slate-500">{service.category.name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-slate-900 text-sm">{Number(service.price ?? 0).toFixed(0)} грн</p>
+                        <p className="font-medium text-slate-900 text-sm">{Number(service.basePrice ?? 0).toLocaleString('uk-UA')} грн</p>
                         <p className="text-xs text-slate-500">{service.baseDurationMinutes} хв</p>
                       </div>
                     </div>
@@ -455,7 +455,7 @@ export default function BookingWizardPage() {
             <div className="bg-brand text-white rounded-xl p-4 text-sm flex items-center justify-between">
               <span>Обрано: {selectedServices.length} послуг</span>
               <div className="text-right">
-                <span>~{totalDuration} хв · {totalPrice.toFixed(2)} грн</span>
+                <span>~{totalDuration} хв · {totalPrice.toLocaleString('uk-UA')} грн</span>
                 {durationEstimate && durationEstimate.totalEstimatedMinutes !== durationEstimate.totalBaseMinutes && (
                   <p className="text-xs text-white/70 mt-0.5">базова: {durationEstimate.totalBaseMinutes} хв</p>
                 )}
@@ -581,9 +581,13 @@ export default function BookingWizardPage() {
                   <span className="font-medium text-slate-900">{totalDuration > 0 ? `~${totalDuration} хв` : '—'}</span>
                   {durationEstimate && durationEstimate.totalEstimatedMinutes !== durationEstimate.totalBaseMinutes && (
                     <p className="text-xs text-slate-400 mt-0.5">
-                      базова: {durationEstimate.totalBaseMinutes} хв
-                      {durationEstimate.vehicleAgeCoeff !== 1.0 && ` · вік авто ×${durationEstimate.vehicleAgeCoeff}`}
-                      {durationEstimate.seasonCoeff !== 1.0 && ` · сезон ×${durationEstimate.seasonCoeff}`}
+                      {(() => {
+                        const reasons: string[] = [];
+                        if (durationEstimate.vehicleAgeCoeff > 1) reasons.push('вік авто');
+                        if (durationEstimate.seasonCoeff > 1) reasons.push('зимовий сезон');
+                        if (durationEstimate.masterCoeff !== 1) reasons.push('кваліфікація майстра');
+                        return `~${durationEstimate.totalBaseMinutes} хв базова${reasons.length ? ` · збільшено через: ${reasons.join(', ')}` : ''}`;
+                      })()}
                     </p>
                   )}
                 </div>
