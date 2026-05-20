@@ -153,7 +153,7 @@ export class AnalyticsService {
       this.dataSource.query(
         `SELECT
            COUNT(*) AS total,
-           SUM(CASE WHEN DATE(scheduledAt) = CURDATE() THEN 1 ELSE 0 END) AS today,
+           SUM(CASE WHEN DATE(scheduledAt) = CURDATE() AND status IN ('PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED') THEN 1 ELSE 0 END) AS today,
            SUM(CASE WHEN MONTH(scheduledAt) = MONTH(NOW()) AND YEAR(scheduledAt) = YEAR(NOW()) THEN 1 ELSE 0 END) AS thisMonth,
            SUM(CASE WHEN status = 'PENDING' THEN 1 ELSE 0 END) AS pending
          FROM bookings`,
