@@ -34,6 +34,11 @@ export class UsersService {
 
   async updateMe(userId: number, dto: UpdateUserDto): Promise<UserResponseDto> {
     const user = await this.findOneOrFail(userId);
+    if (dto.email && dto.email !== user.email) {
+      const existing = await this.usersRepo.findOne({ where: { email: dto.email } });
+      if (existing) throw new ConflictException('Цей email вже використовується');
+      user.emailVerified = false;
+    }
     Object.assign(user, dto);
     await this.usersRepo.save(user);
     return toUserResponse(user);

@@ -17,6 +17,7 @@ interface PersonalForm {
   firstName: string;
   lastName: string;
   phone: string;
+  email: string;
 }
 
 export default function MasterProfilePage() {
@@ -42,10 +43,19 @@ export default function MasterProfilePage() {
     onError: () => toast('Помилка', 'error'),
   });
 
+  const updateUser = useAuthStore((s) => s.updateUser);
+
   const updatePersonalMutation = useMutation({
     mutationFn: (d: PersonalForm) => usersApi.updateMe(d),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['master-user-me'] }); toast('Особисті дані оновлено', 'success'); },
-    onError: () => toast('Помилка', 'error'),
+    onSuccess: ({ data: updated }) => {
+      qc.invalidateQueries({ queryKey: ['master-user-me'] });
+      updateUser({ firstName: updated.firstName, lastName: updated.lastName });
+      toast('Особисті дані оновлено', 'success');
+    },
+    onError: (err: any) => {
+      const msg = err?.response?.data?.message ?? 'Помилка';
+      toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
+    },
   });
 
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({
@@ -63,6 +73,7 @@ export default function MasterProfilePage() {
       firstName: userMe.firstName,
       lastName: userMe.lastName,
       phone: userMe.phone ?? '',
+      email: userMe.email,
     } : undefined,
   });
 
@@ -108,6 +119,17 @@ export default function MasterProfilePage() {
               pattern: { value: /^\+380\d{9}$/, message: 'Формат: +380XXXXXXXXX' },
             })}
           />
+          <Input
+            label="Email"
+            type="email"
+            placeholder="example@email.com"
+            error={errP.email?.message}
+            {...regP('email', {
+              required: "Обов'язково",
+              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Невірний формат email' },
+            })}
+          />
+          <p className="text-xs text-slate-400 -mt-2">Зміна email скине підтвердження пошти</p>
           <Button type="submit" size="sm" isLoading={updatePersonalMutation.isPending}>Зберегти дані</Button>
         </form>
 

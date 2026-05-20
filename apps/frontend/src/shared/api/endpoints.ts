@@ -45,7 +45,7 @@ export interface UserDto {
   createdAt: string;
 }
 
-export interface UpdateUserPayload { firstName?: string; lastName?: string; phone?: string }
+export interface UpdateUserPayload { firstName?: string; lastName?: string; phone?: string; email?: string }
 
 export const usersApi = {
   getMe: () => api.get<UserDto>('/users/me'),
