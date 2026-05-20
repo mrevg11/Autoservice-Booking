@@ -105,7 +105,7 @@ export default function MasterProfilePage() {
             placeholder="+380XXXXXXXXX"
             error={errP.phone?.message}
             {...regP('phone', {
-              pattern: { value: /^\+?[\d\s\-()]{7,20}$/, message: 'Невірний формат' },
+              pattern: { value: /^\+380\d{9}$/, message: 'Формат: +380XXXXXXXXX' },
             })}
           />
           <Button type="submit" size="sm" isLoading={updatePersonalMutation.isPending}>Зберегти дані</Button>
@@ -134,6 +134,27 @@ export default function MasterProfilePage() {
           </div>
           <Button type="submit" isLoading={updateMutation.isPending}>Зберегти профіль</Button>
         </form>
+      </div>
+
+      {/* Read-only account info */}
+      <div className="bg-white rounded-xl shadow-card border border-slate-100 p-6">
+        <h2 className="font-semibold text-slate-900 mb-4">Інформація про акаунт</h2>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-slate-500">Email</span>
+            <span className="font-medium">{userMe?.email}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500">Email підтверджено</span>
+            <span className={userMe?.emailVerified ? 'text-green-600 font-medium' : 'text-red-500'}>
+              {userMe?.emailVerified ? 'Так' : 'Ні'}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500">Роль</span>
+            <span className="font-medium">{userMe?.role}</span>
+          </div>
+        </div>
       </div>
     </div>
   );

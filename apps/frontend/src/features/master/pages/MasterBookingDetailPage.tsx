@@ -104,13 +104,28 @@ export default function MasterBookingDetailPage() {
                   </div>
                 </div>
               ))}
-              <div className="border-t border-slate-100 pt-2 flex justify-between font-semibold text-sm">
-                <span>Загалом</span>
-                <div className="flex gap-4 items-center">
-                  <span className="text-slate-500 font-normal">~{booking.estimatedDurationMinutes} хв</span>
-                  <span>{booking.totalPrice} грн</span>
-                </div>
-              </div>
+              {(() => {
+                const baseDuration = booking.bookingServices?.reduce(
+                  (s, bs) => s + (bs.service?.baseDurationMinutes ?? 0), 0,
+                ) ?? 0;
+                const adjusted = baseDuration > 0 && booking.estimatedDurationMinutes !== baseDuration;
+                return (
+                  <div className="border-t border-slate-100 pt-2 space-y-1">
+                    <div className="flex justify-between font-semibold text-sm">
+                      <span>Загалом</span>
+                      <div className="flex gap-4 items-center">
+                        <span className="text-slate-500 font-normal">~{booking.estimatedDurationMinutes} хв</span>
+                        <span>{booking.totalPrice} грн</span>
+                      </div>
+                    </div>
+                    {adjusted && (
+                      <p className="text-xs text-slate-400 text-right">
+                        базова {baseDuration} хв — скориговано за характеристиками авто та сезоном
+                      </p>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
 
