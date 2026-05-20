@@ -20,7 +20,9 @@ export function useLogin() {
       queryClient.clear();
       setAuth(data.user, data.accessToken);
       const role = data.user.role;
-      navigate(role === 'MASTER' ? '/master/dashboard' : '/client/dashboard');
+      if (role === 'MASTER') navigate('/master/dashboard');
+      else if (role === 'ADMIN') navigate('/admin/dashboard');
+      else navigate('/client/dashboard');
     },
   });
 }

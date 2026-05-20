@@ -98,7 +98,7 @@ export default function AdminAnalyticsPage() {
             <LineChart data={revenue}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis dataKey="period" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${Number(v).toLocaleString()} ₴`} />
+              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${Number(v).toLocaleString()} грн`} />
               <Tooltip
                 formatter={(v: unknown, name: unknown) =>
                   name === 'revenue' ? [`${Number(v).toLocaleString()} ₴`, 'Дохід'] : [v as number, 'Записів']

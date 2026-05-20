@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, PieChart, Pie, Cell, Legend,
+  ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import { analyticsApi, type TopService } from '../../../shared/api/endpoints';
 import Spinner from '../../../shared/components/ui/Spinner';
@@ -74,15 +74,27 @@ export default function AdminDashboard() {
           {loadingServices ? <div className="flex justify-center py-8"><Spinner /></div> : topServices.length === 0 ? (
             <p className="text-center text-slate-400 py-8 text-sm">Немає даних</p>
           ) : (
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie data={topServices} dataKey="bookingCount" nameKey="serviceName" cx="50%" cy="50%" outerRadius={80}>
-                  {topServices.map((_: TopService, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                </Pie>
-                <Tooltip />
-                <Legend formatter={(val) => <span style={{ fontSize: 11 }}>{val}</span>} />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="flex items-center gap-4">
+              <div className="flex-shrink-0" style={{ width: 160, height: 160 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={topServices} dataKey="bookingCount" nameKey="serviceName" cx="50%" cy="50%" outerRadius={72} label={false}>
+                      {topServices.map((_: TopService, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                    </Pie>
+                    <Tooltip formatter={(value, name) => [`${Number(value ?? 0)} записів`, String(name ?? '')]} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <ul className="flex-1 space-y-1.5 min-w-0">
+                {topServices.map((s: TopService, i: number) => (
+                  <li key={i} className="flex items-center gap-2 text-xs text-slate-700 truncate">
+                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
+                    <span className="truncate">{s.serviceName}</span>
+                    <span className="ml-auto flex-shrink-0 font-medium text-slate-500">{s.bookingCount}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       </div>
