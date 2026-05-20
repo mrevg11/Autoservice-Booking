@@ -169,13 +169,13 @@ export class RecommendationsService {
           `Рейтинг: ${Math.round(ratingScore * 100)}%`,
           `Особистий досвід: ${Math.round(collaborativeScore * 100)}%`,
           `Досвід роботи: ${Math.round(experienceScore * 100)}%`,
-          `Завантаженість: ${activeCount === 0 ? 'вільний' : `${activeCount} актив. записів`}`,
+          `Завантаженість: ${Math.min(100, Math.round(activeCount / 10 * 100))}%`,
           `Спеціалізація: ${Math.round(specializationScore * 100)}%`,
         ],
       });
     }
 
-    return results.sort((a, b) => b.score - a.score).slice(0, 5);
+    return results.sort((a, b) => b.score - a.score).slice(0, 1);
   }
 
   async getReminders(clientId: number): Promise<ServiceReminderDto[]> {
