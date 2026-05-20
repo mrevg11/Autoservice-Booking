@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 import { authApi } from '../api/endpoints';
@@ -12,10 +12,12 @@ export function useAuth() {
 export function useLogin() {
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: authApi.login,
     onSuccess: ({ data }) => {
+      queryClient.clear();
       setAuth(data.user, data.accessToken);
       const role = data.user.role;
       navigate(role === 'MASTER' ? '/master/dashboard' : '/client/dashboard');
@@ -26,10 +28,12 @@ export function useLogin() {
 export function useLogout() {
   const { logout } = useAuthStore();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: authApi.logout,
     onSettled: () => {
+      queryClient.clear();
       logout();
       navigate('/');
     },

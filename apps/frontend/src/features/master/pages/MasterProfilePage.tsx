@@ -24,7 +24,7 @@ export default function MasterProfilePage() {
   const user = useAuthStore((s) => s.user);
 
   const { data: userMe, isLoading } = useQuery({
-    queryKey: ['me'],
+    queryKey: ['master-user-me'],
     queryFn: () => usersApi.getMe().then((r) => r.data),
   });
 
@@ -44,7 +44,7 @@ export default function MasterProfilePage() {
 
   const updatePersonalMutation = useMutation({
     mutationFn: (d: PersonalForm) => usersApi.updateMe(d),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['me'] }); toast('Особисті дані оновлено', 'success'); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['master-user-me'] }); toast('Особисті дані оновлено', 'success'); },
     onError: () => toast('Помилка', 'error'),
   });
 
