@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { mastersApi } from '../../../shared/api/endpoints';
-import { useMasterSlots } from '../../masters/hooks/useMasters';
 import { useRescheduleBooking } from '../hooks/useBookings';
 import DatePicker from '../../../shared/components/ui/DatePicker';
 import TimeSlotPicker from '../../../shared/components/ui/TimeSlotPicker';
@@ -34,7 +33,14 @@ export default function RescheduleModal({ booking, onClose, onSuccess }: Resched
     enabled: !!masterId,
   });
 
-  const { data: slots, isLoading: slotsLoading } = useMasterSlots(masterId, date, duration, vehicleId);
+  const { data: slots, isLoading: slotsLoading } = useQuery({
+    queryKey: ['masterSlots', masterId, date, duration, vehicleId],
+    queryFn: () => mastersApi.getSlots(masterId!, date, duration, vehicleId).then((r) => r.data),
+    enabled: !!masterId && !!date && duration > 0,
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
+  });
 
   const rescheduleMutation = useRescheduleBooking();
 
