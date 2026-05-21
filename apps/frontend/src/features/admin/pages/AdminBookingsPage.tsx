@@ -4,6 +4,7 @@ import { bookingsApi, type BookingStatus, type Booking } from '../../../shared/a
 import Badge from '../../../shared/components/ui/Badge';
 import Spinner from '../../../shared/components/ui/Spinner';
 import Button from '../../../shared/components/ui/Button';
+import DatePicker from '../../../shared/components/ui/DatePicker';
 import { toast } from '../../../shared/store/toast.store';
 
 const STATUS_LABELS: Record<string, string> = {
@@ -154,17 +155,17 @@ export default function AdminBookingsPage() {
         >
           {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
-        <input
-          type="date"
+        <DatePicker
+          placeholder="Від дд.мм.рррр"
           value={from}
           onChange={(e) => { setFrom(e.target.value); setPage(1); }}
-          className="border border-slate-200 rounded-lg px-3 h-9 text-sm"
+          max={to || undefined}
         />
-        <input
-          type="date"
+        <DatePicker
+          placeholder="До дд.мм.рррр"
           value={to}
           onChange={(e) => { setTo(e.target.value); setPage(1); }}
-          className="border border-slate-200 rounded-lg px-3 h-9 text-sm"
+          min={from || undefined}
         />
       </div>
 
