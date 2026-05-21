@@ -115,7 +115,14 @@ function VehicleForm({ onDone }: { onDone: () => void }) {
   return (
     <form onSubmit={handleSubmit((d) => createVehicle.mutate(
       { ...d, year: Number(d.year) },
-      { onSuccess: () => onDone() },
+      {
+        onSuccess: () => onDone(),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (err: any) => {
+          const msg = err?.response?.data?.message ?? 'Помилка додавання авто';
+          toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
+        },
+      },
     ))} className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
       <h3 className="font-medium text-slate-900 text-sm">Новий автомобіль</h3>
       <div className="grid grid-cols-2 gap-3">
