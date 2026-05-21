@@ -46,8 +46,20 @@ describe('UsersService', () => {
           useFactory: () => ({ create: jest.fn(), save: jest.fn() }),
         },
         { provide: getRepositoryToken(MasterSchedule), useFactory: () => ({ delete: jest.fn() }) },
-        { provide: getRepositoryToken(Booking), useFactory: () => ({ find: jest.fn().mockResolvedValue([]), update: jest.fn().mockResolvedValue(undefined) }) },
-        { provide: getRepositoryToken(Vehicle), useFactory: () => ({ find: jest.fn().mockResolvedValue([]), delete: jest.fn().mockResolvedValue(undefined) }) },
+        {
+          provide: getRepositoryToken(Booking),
+          useFactory: () => ({
+            find: jest.fn().mockResolvedValue([]),
+            update: jest.fn().mockResolvedValue(undefined),
+          }),
+        },
+        {
+          provide: getRepositoryToken(Vehicle),
+          useFactory: () => ({
+            find: jest.fn().mockResolvedValue([]),
+            delete: jest.fn().mockResolvedValue(undefined),
+          }),
+        },
       ],
     }).compile();
 

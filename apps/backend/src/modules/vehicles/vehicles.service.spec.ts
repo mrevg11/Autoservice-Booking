@@ -36,8 +36,16 @@ describe('VehiclesService', () => {
         {
           provide: getRepositoryToken(Booking),
           useFactory: () => {
-            const qb = { update: jest.fn().mockReturnThis(), set: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(), execute: jest.fn().mockResolvedValue(undefined) };
-            return { count: jest.fn().mockResolvedValue(0), createQueryBuilder: jest.fn().mockReturnValue(qb) };
+            const qb = {
+              update: jest.fn().mockReturnThis(),
+              set: jest.fn().mockReturnThis(),
+              where: jest.fn().mockReturnThis(),
+              execute: jest.fn().mockResolvedValue(undefined),
+            };
+            return {
+              count: jest.fn().mockResolvedValue(0),
+              createQueryBuilder: jest.fn().mockReturnValue(qb),
+            };
           },
         },
       ],
