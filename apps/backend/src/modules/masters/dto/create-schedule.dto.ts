@@ -9,11 +9,11 @@ export class CreateScheduleDto {
   weekday: number;
 
   @ApiProperty({ example: '09:00' })
-  @Matches(/^\d{2}:\d{2}$/, { message: 'Format: HH:MM' })
+  @Matches(/^\d{2}:\d{2}$/, { message: 'Формат часу: ГГ:ХХ (наприклад 09:00)' })
   startTime: string;
 
   @ApiProperty({ example: '18:00' })
-  @Matches(/^\d{2}:\d{2}$/, { message: 'Format: HH:MM' })
+  @Matches(/^\d{2}:\d{2}$/, { message: 'Формат часу: ГГ:ХХ (наприклад 09:00)' })
   endTime: string;
 
   @ApiPropertyOptional({ default: true })

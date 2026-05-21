@@ -18,7 +18,7 @@ export class ResetPasswordDto {
   @MinLength(8)
   @MaxLength(64)
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, {
-    message: 'Password must contain uppercase, lowercase and number',
+    message: 'Пароль повинен містити велику та малу літери і цифру',
   })
   password: string;
 }
