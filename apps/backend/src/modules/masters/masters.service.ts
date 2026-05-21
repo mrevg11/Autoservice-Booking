@@ -266,12 +266,15 @@ export class MastersService {
     const now = new Date();
     const slots: string[] = [];
 
+    // UTC midnight of the requested date — used for DST-aware Kyiv→UTC conversion
+    const utcMidnight = new Date(`${date}T00:00:00.000Z`);
+
     for (let m = startMin; m + durationMinutes <= endMin; m += 30) {
       const hh = Math.floor(m / 60);
       const mm = m % 60;
-      const slotTime = new Date(
-        `${date}T${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:00`,
-      );
+
+      // Convert schedule time (stored as Kyiv local) to UTC, honouring DST
+      const slotTime = this.kyivTimeToUTC(utcMidnight, hh, mm);
 
       if (slotTime <= now) continue;
 
@@ -287,6 +290,28 @@ export class MastersService {
     }
 
     return slots;
+  }
+
+  // Converts a Kyiv local time (HH:MM, as stored in schedules) to a UTC Date.
+  // Handles DST automatically: Kyiv is UTC+3 in summer, UTC+2 in winter.
+  private kyivTimeToUTC(utcMidnight: Date, h: number, m: number): Date {
+    const y = utcMidnight.getUTCFullYear();
+    const mo = utcMidnight.getUTCMonth();
+    const d = utcMidnight.getUTCDate();
+    // First guess: summer time UTC+3
+    const approx = new Date(Date.UTC(y, mo, d, h - 3, m, 0));
+    const kyivH = Number(
+      new Intl.DateTimeFormat('en', {
+        timeZone: 'Europe/Kyiv',
+        hour: '2-digit',
+        hour12: false,
+      }).format(approx),
+    );
+    if (kyivH !== h) {
+      // Winter time UTC+2
+      return new Date(Date.UTC(y, mo, d, h - 2, m, 0));
+    }
+    return approx;
   }
 
   private stripSensitiveFields(masters: MasterProfile[]): void {
