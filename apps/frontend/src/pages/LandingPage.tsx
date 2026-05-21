@@ -24,16 +24,16 @@ function getCategoryIcon(name: string): string {
 export default function LandingPage() {
   const { isAuthenticated, user } = useAuthStore();
 
+  const { data: categories, isLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => servicesApi.getCategories().then((r) => r.data),
+  });
+
   if (isAuthenticated() && user) {
     if (user.role === 'CLIENT') return <Navigate to="/client/dashboard" replace />;
     if (user.role === 'MASTER') return <Navigate to="/master/dashboard" replace />;
     if (user.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
   }
-
-  const { data: categories, isLoading } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => servicesApi.getCategories().then((r) => r.data),
-  });
 
   return (
     <div className="space-y-20">

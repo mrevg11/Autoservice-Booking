@@ -27,7 +27,7 @@ jobs:
         working-directory: apps/backend
 
       - name: Lint frontend
-        run: npm run lint
+        run: npx eslint . --ext ts,tsx --report-unused-disable-directives
         working-directory: apps/frontend
 
   test:

@@ -103,7 +103,7 @@ jobs:
         run: npm ci
 
       - name: Lint
-        run: npm run lint
+        run: npx eslint . --ext ts,tsx --report-unused-disable-directives
         working-directory: apps/frontend
 
   frontend-build:
