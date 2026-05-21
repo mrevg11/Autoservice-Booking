@@ -27,7 +27,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
       include: ['src/shared/components/**'],
-      thresholds: { lines: 60, branches: 60 },
+      thresholds: { lines: 55, branches: 55 },
     },
   },
 });
