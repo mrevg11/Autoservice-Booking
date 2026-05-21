@@ -198,7 +198,9 @@ describe('SlotSuggesterService', () => {
   it('all scores are clamped to [0..1]', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: { name: 'Технічне обслуговування' } });
     masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([], [{ mpId: masterProfile.id }]));
-    masterProfileRepo.find.mockResolvedValue([{ ...masterProfile, rating: 5, experienceYears: 20 }]);
+    masterProfileRepo.find.mockResolvedValue([
+      { ...masterProfile, rating: 5, experienceYears: 20 },
+    ]);
 
     const monday = getNextMonday();
     const schedule = {
@@ -225,11 +227,26 @@ describe('SlotSuggesterService', () => {
   it('results are sorted by score descending', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
     const masterObjects = [
-      { id: 1, rating: 5, experienceYears: 10, specialization: null, user: { firstName: 'A', lastName: 'B' } },
-      { id: 2, rating: 2, experienceYears: 1, specialization: null, user: { firstName: 'C', lastName: 'D' } },
+      {
+        id: 1,
+        rating: 5,
+        experienceYears: 10,
+        specialization: null,
+        user: { firstName: 'A', lastName: 'B' },
+      },
+      {
+        id: 2,
+        rating: 2,
+        experienceYears: 1,
+        specialization: null,
+        user: { firstName: 'C', lastName: 'D' },
+      },
     ];
     masterServiceRepo.createQueryBuilder.mockReturnValue(
-      buildQb([], masterObjects.map((m) => ({ mpId: m.id }))),
+      buildQb(
+        [],
+        masterObjects.map((m) => ({ mpId: m.id })),
+      ),
     );
     masterProfileRepo.find.mockResolvedValue(masterObjects);
 
