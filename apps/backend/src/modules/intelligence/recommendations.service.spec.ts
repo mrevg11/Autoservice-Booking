@@ -34,8 +34,13 @@ const buildQb = (returnValue: unknown) => ({
   where: jest.fn().mockReturnThis(),
   andWhere: jest.fn().mockReturnThis(),
   select: jest.fn().mockReturnThis(),
+  groupBy: jest.fn().mockReturnThis(),
+  having: jest.fn().mockReturnThis(),
+  orderBy: jest.fn().mockReturnThis(),
+  limit: jest.fn().mockReturnThis(),
   getMany: jest.fn().mockResolvedValue(returnValue),
   getRawMany: jest.fn().mockResolvedValue(returnValue),
+  getOne: jest.fn().mockResolvedValue(Array.isArray(returnValue) ? returnValue[0] ?? null : null),
 });
 
 describe('RecommendationsService', () => {

@@ -4,6 +4,9 @@ import { NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '../../database/entities/user.entity';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
+import { MasterSchedule } from '../../database/entities/master-schedule.entity';
+import { Booking } from '../../database/entities/booking.entity';
+import { Vehicle } from '../../database/entities/vehicle.entity';
 import { Role } from '../../common/enums/role.enum';
 
 const mockUser = (overrides: Partial<User> = {}): User =>
@@ -42,6 +45,9 @@ describe('UsersService', () => {
           provide: getRepositoryToken(MasterProfile),
           useFactory: () => ({ create: jest.fn(), save: jest.fn() }),
         },
+        { provide: getRepositoryToken(MasterSchedule), useFactory: () => ({ delete: jest.fn() }) },
+        { provide: getRepositoryToken(Booking), useFactory: () => ({ find: jest.fn().mockResolvedValue([]), update: jest.fn().mockResolvedValue(undefined) }) },
+        { provide: getRepositoryToken(Vehicle), useFactory: () => ({ find: jest.fn().mockResolvedValue([]), delete: jest.fn().mockResolvedValue(undefined) }) },
       ],
     }).compile();
 

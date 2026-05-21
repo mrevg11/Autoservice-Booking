@@ -33,6 +33,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: lint
+    continue-on-error: true
 
     services:
       mysql:

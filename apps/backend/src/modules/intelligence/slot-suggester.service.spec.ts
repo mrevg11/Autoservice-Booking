@@ -34,8 +34,13 @@ const buildQb = (many: unknown[], raw?: unknown[]) => ({
   where: jest.fn().mockReturnThis(),
   andWhere: jest.fn().mockReturnThis(),
   select: jest.fn().mockReturnThis(),
+  groupBy: jest.fn().mockReturnThis(),
+  having: jest.fn().mockReturnThis(),
+  orderBy: jest.fn().mockReturnThis(),
+  limit: jest.fn().mockReturnThis(),
   getMany: jest.fn().mockResolvedValue(many),
   getRawMany: jest.fn().mockResolvedValue(raw ?? []),
+  getOne: jest.fn().mockResolvedValue(many[0] ?? null),
 });
 
 describe('SlotSuggesterService', () => {

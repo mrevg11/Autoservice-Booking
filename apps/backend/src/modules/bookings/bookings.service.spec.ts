@@ -11,10 +11,12 @@ import { BookingsService } from './bookings.service';
 import { Booking } from '../../database/entities/booking.entity';
 import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 import { BookingStatusHistory } from '../../database/entities/booking-status-history.entity';
+import { BookingPhoto } from '../../database/entities/booking-photo.entity';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
 import { MasterService as MasterServiceEntity } from '../../database/entities/master-service.entity';
 import { Service } from '../../database/entities/service.entity';
 import { Vehicle } from '../../database/entities/vehicle.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 import { BookingStatus } from '../../common/enums/booking-status.enum';
 import { Role } from '../../common/enums/role.enum';
 import { User } from '../../database/entities/user.entity';
@@ -101,6 +103,7 @@ describe('BookingsService', () => {
         { provide: getRepositoryToken(MasterServiceEntity), useFactory: mockRepo },
         { provide: getRepositoryToken(Service), useFactory: mockRepo },
         { provide: getRepositoryToken(Vehicle), useFactory: mockRepo },
+        { provide: getRepositoryToken(BookingPhoto), useFactory: mockRepo },
         {
           provide: DataSource,
           useValue: {
@@ -109,6 +112,7 @@ describe('BookingsService', () => {
               .mockImplementation(async (cb: (m: unknown) => unknown) => cb(makeMockManager())),
           },
         },
+        { provide: NotificationsService, useValue: { sendAndSave: jest.fn() } },
       ],
     }).compile();
 

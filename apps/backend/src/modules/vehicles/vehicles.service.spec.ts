@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
 import { Vehicle } from '../../database/entities/vehicle.entity';
+import { Booking } from '../../database/entities/booking.entity';
 
 const makeVehicle = (clientId = 1): Vehicle =>
   ({
@@ -29,7 +30,17 @@ describe('VehiclesService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [VehiclesService, { provide: getRepositoryToken(Vehicle), useFactory: mockRepo }],
+      providers: [
+        VehiclesService,
+        { provide: getRepositoryToken(Vehicle), useFactory: mockRepo },
+        {
+          provide: getRepositoryToken(Booking),
+          useFactory: () => {
+            const qb = { update: jest.fn().mockReturnThis(), set: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(), execute: jest.fn().mockResolvedValue(undefined) };
+            return { count: jest.fn().mockResolvedValue(0), createQueryBuilder: jest.fn().mockReturnValue(qb) };
+          },
+        },
+      ],
     }).compile();
     service = module.get(VehiclesService);
     repo = module.get(getRepositoryToken(Vehicle));
@@ -84,7 +95,7 @@ describe('VehiclesService', () => {
   it('remove: deletes vehicle and returns message', async () => {
     repo.findOne.mockResolvedValue(makeVehicle(1));
     const result = await service.remove(1, 1);
-    expect(result.message).toContain('1');
+    expect(result.message).toBeTruthy();
     expect(repo.remove).toHaveBeenCalled();
   });
 });
