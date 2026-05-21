@@ -23,6 +23,7 @@ import { JwtPayload } from './strategies/jwt.strategy';
 
 const SALT_ROUNDS = 12;
 const RESET_EXPIRES_HOURS = 1;
+const EMAIL_VERIFY_EXPIRES_HOURS = 24;
 
 @Injectable()
 export class AuthService {
@@ -43,6 +44,8 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
     const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+    const emailVerificationExpires = new Date();
+    emailVerificationExpires.setHours(emailVerificationExpires.getHours() + EMAIL_VERIFY_EXPIRES_HOURS);
 
     const user = this.usersRepo.create({
       email: dto.email,
@@ -53,13 +56,14 @@ export class AuthService {
       role: Role.CLIENT,
       emailVerified: false,
       emailVerificationToken,
+      emailVerificationExpires,
     });
     await this.usersRepo.save(user);
 
     const profile = this.profilesRepo.create({ user });
     await this.profilesRepo.save(profile);
 
-    await this.mailService.sendEmailVerification(user.email, emailVerificationToken);
+    await this.mailService.sendEmailVerification(user.email, emailVerificationToken, user.firstName);
 
     this.logger.log(`New user registered: ${user.email}`);
     return { message: 'Registration successful. Please verify your email.' };
@@ -94,8 +98,13 @@ export class AuthService {
     });
     if (!user) throw new BadRequestException('Недійсний або прострочений токен підтвердження');
 
+    if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
+      throw new BadRequestException('Термін дії посилання для підтвердження вичерпано (24 год). Зверніться до підтримки для повторного надсилання.');
+    }
+
     user.emailVerified = true;
     user.emailVerificationToken = null;
+    user.emailVerificationExpires = null;
     await this.usersRepo.save(user);
 
     return { message: 'Email verified successfully' };
@@ -107,6 +116,10 @@ export class AuthService {
     // Однакова помилка для "не знайдено" і "неправильний пароль" — захист від enumeration
     const isValid = user && (await bcrypt.compare(dto.password, user.passwordHash));
     if (!isValid) throw new UnauthorizedException('Невірний email або пароль');
+
+    if (!user.emailVerified) {
+      throw new UnauthorizedException('Будь ласка, підтвердіть вашу електронну адресу перед входом. Перевірте пошту та перейдіть за посиланням у листі.');
+    }
 
     if (user.isBlocked) throw new UnauthorizedException('Обліковий запис заблоковано');
 

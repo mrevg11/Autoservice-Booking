@@ -36,6 +36,9 @@ export class User {
   @Column({ type: 'varchar', length: 255, nullable: true })
   emailVerificationToken: string | null;
 
+  @Column({ type: 'datetime', nullable: true })
+  emailVerificationExpires: Date | null;
+
   @Column({ type: 'varchar', length: 255, nullable: true })
   passwordResetToken: string | null;
 
