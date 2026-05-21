@@ -10,7 +10,7 @@ import { Booking } from '../../database/entities/booking.entity';
 import { Service } from '../../database/entities/service.entity';
 import { MasterService } from '../../database/entities/master-service.entity';
 
-const mockRepo = () => ({ findOne: jest.fn(), createQueryBuilder: jest.fn() });
+const mockRepo = () => ({ findOne: jest.fn(), find: jest.fn(), createQueryBuilder: jest.fn() });
 
 const mockConfigService = () => ({
   get: jest.fn((key: string) => {
@@ -46,6 +46,7 @@ const buildQb = (many: unknown[], raw?: unknown[]) => ({
 describe('SlotSuggesterService', () => {
   let svc: SlotSuggesterService;
   let serviceRepo: ReturnType<typeof mockRepo>;
+  let masterProfileRepo: ReturnType<typeof mockRepo>;
   let masterServiceRepo: ReturnType<typeof mockRepo>;
   let bookingRepo: ReturnType<typeof mockRepo>;
   let scheduleRepo: ReturnType<typeof mockRepo>;
@@ -85,6 +86,7 @@ describe('SlotSuggesterService', () => {
 
     svc = module.get(SlotSuggesterService);
     serviceRepo = module.get(getRepositoryToken(Service));
+    masterProfileRepo = module.get(getRepositoryToken(MasterProfile));
     masterServiceRepo = module.get(getRepositoryToken(MasterService));
     bookingRepo = module.get(getRepositoryToken(Booking));
     scheduleRepo = module.get(getRepositoryToken(MasterSchedule));
@@ -106,7 +108,8 @@ describe('SlotSuggesterService', () => {
 
   it('returns slots with 5 reasons each', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: { name: 'ТО' } });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([{ master: masterProfile }]));
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([], [{ mpId: masterProfile.id }]));
+    masterProfileRepo.find.mockResolvedValue([masterProfile]);
 
     const monday = getNextMonday();
     const schedule = {
@@ -130,7 +133,8 @@ describe('SlotSuggesterService', () => {
 
   it('respects topSlots limit of 5', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([{ master: masterProfile }]));
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([], [{ mpId: masterProfile.id }]));
+    masterProfileRepo.find.mockResolvedValue([masterProfile]);
 
     const monday = getNextMonday();
     const schedule = {
@@ -153,7 +157,8 @@ describe('SlotSuggesterService', () => {
 
   it('skips slots that overlap existing bookings', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([{ master: masterProfile }]));
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([], [{ mpId: masterProfile.id }]));
+    masterProfileRepo.find.mockResolvedValue([masterProfile]);
 
     const monday = getNextMonday();
     const schedule = {
@@ -165,11 +170,19 @@ describe('SlotSuggesterService', () => {
       isActive: true,
     };
 
-    // Existing booking that occupies the whole window
+    // Find the first Monday in the service's processing window (UTC midnight-based)
+    // to avoid timezone-dependent day-offset bugs
+    const serviceStart = new Date(monday);
+    serviceStart.setUTCHours(0, 0, 0, 0);
+    const targetMonday = new Date(serviceStart);
+    while ((targetMonday.getUTCDay() + 6) % 7 !== 0) {
+      targetMonday.setUTCDate(targetMonday.getUTCDate() + 1);
+    }
+    // Cover the entire Monday with one booking so any slot is guaranteed to overlap
     const existingBooking = {
-      masterId: 1,
-      scheduledAt: new Date(monday.setHours(9, 0, 0, 0)),
-      estimatedDurationMinutes: 60,
+      master: { id: masterProfile.id },
+      scheduledAt: targetMonday, // 00:00 UTC of the Monday
+      estimatedDurationMinutes: 24 * 60,
       status: 'CONFIRMED',
     };
 
@@ -184,9 +197,8 @@ describe('SlotSuggesterService', () => {
 
   it('all scores are clamped to [0..1]', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: { name: 'Технічне обслуговування' } });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(
-      buildQb([{ master: { ...masterProfile, rating: 5, experienceYears: 20 } }]),
-    );
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([], [{ mpId: masterProfile.id }]));
+    masterProfileRepo.find.mockResolvedValue([{ ...masterProfile, rating: 5, experienceYears: 20 }]);
 
     const monday = getNextMonday();
     const schedule = {
@@ -212,27 +224,14 @@ describe('SlotSuggesterService', () => {
 
   it('results are sorted by score descending', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
-    const masters = [
-      {
-        master: {
-          id: 1,
-          rating: 5,
-          experienceYears: 10,
-          specialization: null,
-          user: { firstName: 'A', lastName: 'B' },
-        },
-      },
-      {
-        master: {
-          id: 2,
-          rating: 2,
-          experienceYears: 1,
-          specialization: null,
-          user: { firstName: 'C', lastName: 'D' },
-        },
-      },
+    const masterObjects = [
+      { id: 1, rating: 5, experienceYears: 10, specialization: null, user: { firstName: 'A', lastName: 'B' } },
+      { id: 2, rating: 2, experienceYears: 1, specialization: null, user: { firstName: 'C', lastName: 'D' } },
     ];
-    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb(masters));
+    masterServiceRepo.createQueryBuilder.mockReturnValue(
+      buildQb([], masterObjects.map((m) => ({ mpId: m.id }))),
+    );
+    masterProfileRepo.find.mockResolvedValue(masterObjects);
 
     const monday = getNextMonday();
     const schedules = [
@@ -267,7 +266,8 @@ describe('SlotSuggesterService', () => {
 
   it('skips day-off dates', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([{ master: masterProfile }]));
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([], [{ mpId: masterProfile.id }]));
+    masterProfileRepo.find.mockResolvedValue([masterProfile]);
 
     const monday = getNextMonday();
     const schedule = {

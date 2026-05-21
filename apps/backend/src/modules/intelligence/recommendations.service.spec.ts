@@ -7,6 +7,7 @@ import { Booking } from '../../database/entities/booking.entity';
 import { Service } from '../../database/entities/service.entity';
 import { MasterService } from '../../database/entities/master-service.entity';
 import { Review } from '../../database/entities/review.entity';
+import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 
 const mockRepo = () => ({
   findOne: jest.fn(),
@@ -67,6 +68,10 @@ describe('RecommendationsService', () => {
         { provide: getRepositoryToken(Service), useFactory: mockRepo },
         { provide: getRepositoryToken(MasterService), useFactory: mockRepo },
         { provide: getRepositoryToken(Review), useFactory: mockRepo },
+        {
+          provide: getRepositoryToken(BookingServiceEntity),
+          useFactory: () => ({ createQueryBuilder: jest.fn().mockReturnValue(buildQb([])) }),
+        },
         { provide: ConfigService, useFactory: mockConfigService },
       ],
     }).compile();
