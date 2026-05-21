@@ -27,6 +27,7 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { BookingFilterDto } from './dto/booking-filter.dto';
 import { CreateBookingPhotoDto } from './dto/create-booking-photo.dto';
+import { RescheduleBookingDto } from './dto/reschedule-booking.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 
 // Матриця дозволених переходів статусів
@@ -461,6 +462,112 @@ export class BookingsService {
         this.logger.error(`Failed to cancel expired booking #${booking.id}`, err instanceof Error ? err.stack : String(err));
       }
     }
+  }
+
+  async reschedule(id: number, client: User, dto: RescheduleBookingDto): Promise<Booking> {
+    const newScheduledAt = new Date(dto.scheduledAt);
+    if (newScheduledAt <= new Date()) {
+      throw new BadRequestException('Не можна перенести запис на минулий час');
+    }
+
+    return this.dataSource.transaction(async (manager) => {
+      const booking = await manager
+        .getRepository(Booking)
+        .createQueryBuilder('b')
+        .setLock('pessimistic_write')
+        .leftJoinAndSelect('b.client', 'client')
+        .leftJoinAndSelect('b.master', 'master')
+        .leftJoinAndSelect('b.vehicle', 'vehicle')
+        .where('b.id = :id', { id })
+        .getOne();
+
+      if (!booking) throw new NotFoundException('Запис не знайдено');
+      if (booking.client?.id !== client.id) {
+        throw new ForbiddenException('Ви можете змінити лише власні записи');
+      }
+      if (
+        booking.status !== BookingStatus.PENDING &&
+        booking.status !== BookingStatus.CONFIRMED
+      ) {
+        throw new BadRequestException(
+          'Перенести можна лише записи зі статусом PENDING або CONFIRMED',
+        );
+      }
+
+      const deadlineMs = CANCELLATION_DEADLINE_HOURS * 60 * 60 * 1000;
+      if (new Date(booking.scheduledAt).getTime() - Date.now() < deadlineMs) {
+        throw new BadRequestException(
+          `Перенесення неможливе менш ніж за ${CANCELLATION_DEADLINE_HOURS} год до прийому`,
+        );
+      }
+
+      const dur = booking.estimatedDurationMinutes;
+      const newEnd = new Date(newScheduledAt.getTime() + dur * 60_000);
+
+      // Check master availability at the new time (exclude current booking from conflict check)
+      const masterOverlap = await manager
+        .getRepository(Booking)
+        .createQueryBuilder('b')
+        .where('b.masterId = :masterId', { masterId: booking.master.id })
+        .andWhere('b.id != :selfId', { selfId: id })
+        .andWhere('b.status != :cancelled', { cancelled: BookingStatus.CANCELLED })
+        .andWhere('b.scheduledAt < :newEnd', { newEnd })
+        .andWhere(
+          `DATE_ADD(b.scheduledAt, INTERVAL b.estimatedDurationMinutes MINUTE) > :newStart`,
+          { newStart: newScheduledAt },
+        )
+        .getMany();
+
+      if (masterOverlap.length > 0) {
+        throw new ConflictException('Майстер вже зайнятий в обраний час');
+      }
+
+      // Check vehicle availability at the new time
+      if (booking.vehicle) {
+        const vehicleOverlap = await manager
+          .getRepository(Booking)
+          .createQueryBuilder('b')
+          .where('b.vehicleId = :vehicleId', { vehicleId: booking.vehicle.id })
+          .andWhere('b.id != :selfId', { selfId: id })
+          .andWhere('b.status != :cancelled', { cancelled: BookingStatus.CANCELLED })
+          .andWhere('b.scheduledAt < :newEnd', { newEnd })
+          .andWhere(
+            `DATE_ADD(b.scheduledAt, INTERVAL b.estimatedDurationMinutes MINUTE) > :newStart`,
+            { newStart: newScheduledAt },
+          )
+          .getMany();
+
+        if (vehicleOverlap.length > 0) {
+          throw new ConflictException(
+            'Цей автомобіль вже має запис на обраний час',
+          );
+        }
+      }
+
+      booking.scheduledAt = newScheduledAt;
+      const saved = await manager.save(Booking, booking);
+
+      await manager.save(
+        BookingStatusHistory,
+        manager.create(BookingStatusHistory, {
+          booking: saved,
+          oldStatus: booking.status,
+          newStatus: booking.status,
+          changedBy: client,
+          comment: `Перенесено на ${newScheduledAt.toISOString()}`,
+        }),
+      );
+
+      if (this.notificationsService) {
+        const full = await this.bookingsRepo.findOne({
+          where: { id: saved.id },
+          relations: ['client', 'master', 'master.user', 'vehicle', 'bookingServices', 'bookingServices.service'],
+        });
+        if (full) void this.notificationsService.notifyStatusChanged(full, booking.status);
+      }
+
+      return saved;
+    });
   }
 
   async forceDelete(id: number): Promise<{ message: string }> {

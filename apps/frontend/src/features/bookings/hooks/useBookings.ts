@@ -54,6 +54,19 @@ export function useCancelBooking() {
   });
 }
 
+export function useRescheduleBooking() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, scheduledAt }: { id: number; scheduledAt: string }) =>
+      bookingsApi.reschedule(id, scheduledAt),
+    onSuccess: (_, { id }) => {
+      qc.invalidateQueries({ queryKey: ['bookings'] });
+      qc.invalidateQueries({ queryKey: ['booking', id] });
+      qc.invalidateQueries({ queryKey: ['bookingHistory', id] });
+    },
+  });
+}
+
 export function useBookingPhotos(bookingId: number) {
   return useQuery({
     queryKey: ['bookingPhotos', bookingId],

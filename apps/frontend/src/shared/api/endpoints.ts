@@ -204,6 +204,8 @@ export const bookingsApi = {
   updateStatus: (id: number, status: BookingStatus, comment?: string) =>
     api.patch<Booking>(`/bookings/${id}/status`, { status, comment }),
   cancel: (id: number) => api.post(`/bookings/${id}/cancel`),
+  reschedule: (id: number, scheduledAt: string) =>
+    api.patch<Booking>(`/bookings/${id}/reschedule`, { scheduledAt }),
   getHistory: (id: number) => api.get<BookingStatusHistoryItem[]>(`/bookings/${id}/history`),
   forceDelete: (id: number) => api.delete<{ message: string }>(`/bookings/${id}/force`),
   getPhotos: (bookingId: number) =>

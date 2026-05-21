@@ -23,6 +23,7 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { BookingFilterDto } from './dto/booking-filter.dto';
 import { CreateBookingPhotoDto } from './dto/create-booking-photo.dto';
+import { RescheduleBookingDto } from './dto/reschedule-booking.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -85,6 +86,22 @@ export class BookingsController {
   @ApiResponse({ status: 403, description: 'Not your booking' })
   cancel(@CurrentUser() user: User, @Param('id', ParseIntPipe) id: number) {
     return this.bookingsService.cancel(id, user);
+  }
+
+  @Patch(':id/reschedule')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(RolesGuard)
+  @Roles(Role.CLIENT)
+  @ApiOperation({ summary: '[CLIENT] Перенести запис на інший час' })
+  @ApiResponse({ status: 200, description: 'Запис перенесено' })
+  @ApiResponse({ status: 400, description: 'Минулий час / неправильний статус / дедлайн' })
+  @ApiResponse({ status: 409, description: 'Майстер або авто зайнято в обраний час' })
+  reschedule(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: RescheduleBookingDto,
+  ) {
+    return this.bookingsService.reschedule(id, user, dto);
   }
 
   @Delete(':id/force')

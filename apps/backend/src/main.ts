@@ -17,6 +17,10 @@ async function bootstrap(): Promise<void> {
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
+  // Trust the first reverse proxy (Render, Heroku, etc.) so that
+  // req.protocol is 'https' and secure cookies work correctly in production.
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   // Security
   // CSRF note: this API uses JWT Bearer tokens in the Authorization header.
   // Browsers never auto-attach custom headers to cross-origin requests, so
@@ -24,6 +28,13 @@ async function bootstrap(): Promise<void> {
   // XSS surface is reduced by Helmet's Content-Security-Policy below.
   app.use(
     helmet({
+      // HSTS: tell browsers to use HTTPS for 1 year, include subdomains.
+      // Render terminates TLS and forwards HTTP internally — this header
+      // ensures the client side never tries plain HTTP again.
+      strictTransportSecurity: {
+        maxAge: 31_536_000,
+        includeSubDomains: true,
+      },
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],

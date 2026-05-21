@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useBooking, useBookingHistory, useCancelBooking } from '../hooks/useBookings';
+import { useBooking, useBookingHistory, useCancelBooking, useRescheduleBooking } from '../hooks/useBookings';
 import { useReviewForBooking, useCreateReview } from '../../reviews/hooks/useReviews';
 import BookingPhotosSection from '../components/BookingPhotosSection';
 import Badge from '../../../shared/components/ui/Badge';
 import Spinner from '../../../shared/components/ui/Spinner';
 import StarRating from '../../../shared/components/ui/StarRating';
 import ConfirmDialog from '../../../shared/components/ConfirmDialog';
+import DatePicker from '../../../shared/components/ui/DatePicker';
 import Button from '../../../shared/components/ui/Button';
 import { toast } from '../../../shared/store/toast.store';
 import { useAuthStore } from '../../../shared/store/auth.store';
@@ -26,11 +27,15 @@ export default function BookingDetailPage() {
   const { data: history } = useBookingHistory(bookingId);
   const { data: existingReview } = useReviewForBooking(bookingId);
   const cancelMutation = useCancelBooking();
+  const rescheduleMutation = useRescheduleBooking();
   const createReview = useCreateReview();
 
   const navigate = useNavigate();
   const currentUser = useAuthStore((s) => s.user);
   const [showCancel, setShowCancel] = useState(false);
+  const [showReschedule, setShowReschedule] = useState(false);
+  const [newDate, setNewDate] = useState('');
+  const [newTime, setNewTime] = useState('');
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
 
@@ -57,6 +62,30 @@ export default function BookingDetailPage() {
       },
       onError: () => toast('Помилка скасування', 'error'),
     });
+  };
+
+  const handleReschedule = () => {
+    if (!newDate || !newTime) {
+      toast('Оберіть нову дату та час', 'error');
+      return;
+    }
+    const scheduledAt = new Date(`${newDate}T${newTime}:00`).toISOString();
+    rescheduleMutation.mutate(
+      { id: bookingId, scheduledAt },
+      {
+        onSuccess: () => {
+          toast('Запис перенесено', 'success');
+          setShowReschedule(false);
+          setNewDate('');
+          setNewTime('');
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (err: any) => {
+          const msg = err?.response?.data?.message ?? 'Помилка перенесення';
+          toast(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
+        },
+      },
+    );
   };
 
   const handleReview = () => {
@@ -214,9 +243,40 @@ export default function BookingDetailPage() {
           </div>
 
           {canCancel && (
-            <Button variant="danger" className="w-full" onClick={() => setShowCancel(true)}>
-              Скасувати запис
-            </Button>
+            <div className="space-y-2">
+              <Button variant="ghost" className="w-full" onClick={() => setShowReschedule(!showReschedule)}>
+                {showReschedule ? 'Скасувати перенесення' : 'Перенести запис'}
+              </Button>
+              {showReschedule && (
+                <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-3">
+                  <p className="text-sm font-medium text-slate-700">Нова дата та час</p>
+                  <DatePicker
+                    placeholder="Оберіть дату"
+                    value={newDate}
+                    onChange={(e) => setNewDate(e.target.value)}
+                    min={new Date().toLocaleDateString('en-CA')}
+                  />
+                  <input
+                    type="time"
+                    value={newTime}
+                    onChange={(e) => setNewTime(e.target.value)}
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    onClick={handleReschedule}
+                    isLoading={rescheduleMutation.isPending}
+                    disabled={!newDate || !newTime}
+                  >
+                    Підтвердити перенесення
+                  </Button>
+                </div>
+              )}
+              <Button variant="danger" className="w-full" onClick={() => setShowCancel(true)}>
+                Скасувати запис
+              </Button>
+            </div>
           )}
         </div>
       </div>
