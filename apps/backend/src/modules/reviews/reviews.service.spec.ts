@@ -63,9 +63,7 @@ describe('ReviewsService.create', () => {
   });
 
   it('кидає BadRequestException якщо booking не COMPLETED', async () => {
-    bookingsRepo.findOne.mockResolvedValue(
-      makeBooking({ status: BookingStatus.CONFIRMED }),
-    );
+    bookingsRepo.findOne.mockResolvedValue(makeBooking({ status: BookingStatus.CONFIRMED }));
     await expect(service.create(1, dto)).rejects.toThrow(BadRequestException);
   });
 

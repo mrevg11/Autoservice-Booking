@@ -6,7 +6,10 @@ import { Service } from '../../database/entities/service.entity';
 import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 import { BookingStatus } from '../../common/enums/booking-status.enum';
 import { DurationEstimateResponseDto } from './dto/duration-estimate-response.dto';
-import { DurationEstimateMultiResponseDto, ServiceDurationBreakdownDto } from './dto/duration-estimate-multi-response.dto';
+import {
+  DurationEstimateMultiResponseDto,
+  ServiceDurationBreakdownDto,
+} from './dto/duration-estimate-multi-response.dto';
 
 @Injectable()
 export class DurationPredictorService {
@@ -30,12 +33,12 @@ export class DurationPredictorService {
     const service = await this.serviceRepo.findOne({ where: { id: serviceId } });
     if (!service) throw new NotFoundException(`Service ${serviceId} not found`);
 
-    const masterCoeff = masterId && masterId > 0
-      ? await this.computeMasterCoeff(masterId, serviceId, service.baseDurationMinutes)
-      : 1.0;
-    const vehicleAgeCoeff = vehicleYear !== undefined
-      ? this.computeVehicleAgeCoeff(vehicleYear)
-      : 1.0;
+    const masterCoeff =
+      masterId && masterId > 0
+        ? await this.computeMasterCoeff(masterId, serviceId, service.baseDurationMinutes)
+        : 1.0;
+    const vehicleAgeCoeff =
+      vehicleYear !== undefined ? this.computeVehicleAgeCoeff(vehicleYear) : 1.0;
     const seasonCoeff = this.computeSeasonCoeff(new Date());
 
     const estimatedMinutes = Math.round(
@@ -59,28 +62,41 @@ export class DurationPredictorService {
     vehicleYear?: number,
   ): Promise<DurationEstimateMultiResponseDto> {
     if (!serviceIds.length) {
-      return { totalBaseMinutes: 0, totalEstimatedMinutes: 0, vehicleAgeCoeff: 1.0, seasonCoeff: 1.0, masterCoeff: 1.0, services: [] };
+      return {
+        totalBaseMinutes: 0,
+        totalEstimatedMinutes: 0,
+        vehicleAgeCoeff: 1.0,
+        seasonCoeff: 1.0,
+        masterCoeff: 1.0,
+        services: [],
+      };
     }
 
     const found = await this.serviceRepo.find({ where: { id: In(serviceIds) } });
     // Preserve input order
-    const ordered = serviceIds.map((id) => found.find((s) => s.id === id)).filter(Boolean) as Service[];
+    const ordered = serviceIds
+      .map((id) => found.find((s) => s.id === id))
+      .filter(Boolean) as Service[];
 
-    const vehicleAgeCoeff = vehicleYear !== undefined ? this.computeVehicleAgeCoeff(vehicleYear) : 1.0;
+    const vehicleAgeCoeff =
+      vehicleYear !== undefined ? this.computeVehicleAgeCoeff(vehicleYear) : 1.0;
     const seasonCoeff = this.computeSeasonCoeff(new Date());
 
     const services: ServiceDurationBreakdownDto[] = [];
     let totalMasterCoeff = 0;
 
     for (const svc of ordered) {
-      const mCoeff = masterId && masterId > 0
-        ? await this.computeMasterCoeff(masterId, svc.id, svc.baseDurationMinutes)
-        : 1.0;
+      const mCoeff =
+        masterId && masterId > 0
+          ? await this.computeMasterCoeff(masterId, svc.id, svc.baseDurationMinutes)
+          : 1.0;
       services.push({
         serviceId: svc.id,
         serviceName: svc.name,
         baseDurationMinutes: svc.baseDurationMinutes,
-        estimatedMinutes: Math.round(svc.baseDurationMinutes * mCoeff * vehicleAgeCoeff * seasonCoeff),
+        estimatedMinutes: Math.round(
+          svc.baseDurationMinutes * mCoeff * vehicleAgeCoeff * seasonCoeff,
+        ),
       });
       totalMasterCoeff += mCoeff;
     }
@@ -135,8 +151,8 @@ export class DurationPredictorService {
 
   private computeSeasonCoeff(date: Date): number {
     const month = date.getMonth() + 1;
-    if (month === 12 || month <= 2) return 1.1;  // winter
-    if (month >= 6 && month <= 8) return 0.95;   // summer
+    if (month === 12 || month <= 2) return 1.1; // winter
+    if (month >= 6 && month <= 8) return 0.95; // summer
     return 1.0;
   }
 }

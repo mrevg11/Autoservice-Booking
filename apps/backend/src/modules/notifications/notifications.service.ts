@@ -81,8 +81,10 @@ export class NotificationsService {
     this.logger.log('Running 24h reminder cron...');
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const start = new Date(tomorrow); start.setHours(0, 0, 0, 0);
-    const end = new Date(tomorrow);   end.setHours(23, 59, 59, 999);
+    const start = new Date(tomorrow);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(tomorrow);
+    end.setHours(23, 59, 59, 999);
 
     const bookings = await this.bookingsRepo.find({
       where: { status: BookingStatus.CONFIRMED },
@@ -110,7 +112,10 @@ export class NotificationsService {
         'Нагадування: запис завтра',
         `Запис #${booking.id} — ${this.formatDate(booking.scheduledAt)}`,
         async () => {
-          await this.mailService.sendBookingReminder24h(booking.client!.email, this.buildBookingContext(booking));
+          await this.mailService.sendBookingReminder24h(
+            booking.client!.email,
+            this.buildBookingContext(booking),
+          );
         },
       );
       sent++;
@@ -122,8 +127,10 @@ export class NotificationsService {
   async sendReminders2h(): Promise<void> {
     const now = new Date();
     const in2h = new Date(now.getTime() + 2 * 60 * 60 * 1000);
-    const windowStart = new Date(in2h); windowStart.setMinutes(0, 0, 0);
-    const windowEnd = new Date(in2h); windowEnd.setMinutes(59, 59, 999);
+    const windowStart = new Date(in2h);
+    windowStart.setMinutes(0, 0, 0);
+    const windowEnd = new Date(in2h);
+    windowEnd.setMinutes(59, 59, 999);
 
     const bookings = await this.bookingsRepo.find({
       where: { status: BookingStatus.CONFIRMED },
@@ -147,7 +154,10 @@ export class NotificationsService {
         'Запис через 2 години',
         `Запис #${booking.id} — ${this.formatDate(booking.scheduledAt)}`,
         async () => {
-          await this.mailService.sendBookingReminder2h(booking.client!.email, this.buildBookingContext(booking));
+          await this.mailService.sendBookingReminder2h(
+            booking.client!.email,
+            this.buildBookingContext(booking),
+          );
         },
       );
     }
@@ -173,6 +183,7 @@ export class NotificationsService {
     sendFn: () => Promise<void>,
   ): Promise<void> {
     const notif = this.notifRepo.create({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       user: { id: user.id } as any,
       type,
       title,
@@ -190,13 +201,16 @@ export class NotificationsService {
   }
 
   private buildBookingContext(booking: Booking) {
-    const services = booking.bookingServices
-      ?.map((bs) => bs.service?.name)
-      .filter(Boolean)
-      .join(', ') ?? '';
+    const services =
+      booking.bookingServices
+        ?.map((bs) => bs.service?.name)
+        .filter(Boolean)
+        .join(', ') ?? '';
     return {
       bookingId: booking.id,
-      clientName: booking.client ? `${booking.client.firstName} ${booking.client.lastName}` : 'Клієнт',
+      clientName: booking.client
+        ? `${booking.client.firstName} ${booking.client.lastName}`
+        : 'Клієнт',
       masterName: booking.master?.user
         ? `${booking.master.user.firstName} ${booking.master.user.lastName}`
         : 'Майстер',
@@ -210,7 +224,11 @@ export class NotificationsService {
 
   private formatDate(date: Date | string): string {
     return new Date(date).toLocaleString('uk-UA', {
-      day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit',
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   }
 }

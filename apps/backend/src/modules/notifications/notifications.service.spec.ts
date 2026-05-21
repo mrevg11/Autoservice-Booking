@@ -28,7 +28,7 @@ const makeBooking = (overrides = {}): Booking =>
     totalPrice: 500,
     bookingServices: [{ service: { name: 'ТО' } }],
     ...overrides,
-  } as unknown as Booking);
+  }) as unknown as Booking;
 
 const mockNotifRepo = () => ({
   create: jest.fn().mockImplementation((d) => d),

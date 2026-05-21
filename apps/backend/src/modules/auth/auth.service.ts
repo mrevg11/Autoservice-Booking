@@ -45,7 +45,9 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
     const emailVerificationToken = crypto.randomBytes(32).toString('hex');
     const emailVerificationExpires = new Date();
-    emailVerificationExpires.setHours(emailVerificationExpires.getHours() + EMAIL_VERIFY_EXPIRES_HOURS);
+    emailVerificationExpires.setHours(
+      emailVerificationExpires.getHours() + EMAIL_VERIFY_EXPIRES_HOURS,
+    );
 
     const user = this.usersRepo.create({
       email: dto.email,
@@ -63,7 +65,11 @@ export class AuthService {
     const profile = this.profilesRepo.create({ user });
     await this.profilesRepo.save(profile);
 
-    await this.mailService.sendEmailVerification(user.email, emailVerificationToken, user.firstName);
+    await this.mailService.sendEmailVerification(
+      user.email,
+      emailVerificationToken,
+      user.firstName,
+    );
 
     this.logger.log(`New user registered: ${user.email}`);
     return { message: 'Registration successful. Please verify your email.' };
@@ -99,7 +105,9 @@ export class AuthService {
     if (!user) throw new BadRequestException('Недійсний або прострочений токен підтвердження');
 
     if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
-      throw new BadRequestException('Термін дії посилання для підтвердження вичерпано (24 год). Зверніться до підтримки для повторного надсилання.');
+      throw new BadRequestException(
+        'Термін дії посилання для підтвердження вичерпано (24 год). Зверніться до підтримки для повторного надсилання.',
+      );
     }
 
     user.emailVerified = true;
@@ -118,7 +126,9 @@ export class AuthService {
     if (!isValid) throw new UnauthorizedException('Невірний email або пароль');
 
     if (!user.emailVerified) {
-      throw new UnauthorizedException('Будь ласка, підтвердіть вашу електронну адресу перед входом. Перевірте пошту та перейдіть за посиланням у листі.');
+      throw new UnauthorizedException(
+        'Будь ласка, підтвердіть вашу електронну адресу перед входом. Перевірте пошту та перейдіть за посиланням у листі.',
+      );
     }
 
     if (user.isBlocked) throw new UnauthorizedException('Обліковий запис заблоковано');
@@ -198,11 +208,7 @@ export class AuthService {
       where: { passwordResetToken: token },
     });
 
-    if (
-      !user ||
-      !user.passwordResetExpires ||
-      user.passwordResetExpires < new Date()
-    ) {
+    if (!user || !user.passwordResetExpires || user.passwordResetExpires < new Date()) {
       throw new BadRequestException('Недійсний або прострочений токен скидання паролю');
     }
 
@@ -215,9 +221,7 @@ export class AuthService {
     return { message: 'Password reset successfully' };
   }
 
-  private async generateTokens(
-    user: User,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  private async generateTokens(user: User): Promise<{ accessToken: string; refreshToken: string }> {
     const payload: JwtPayload = { sub: user.id, email: user.email, role: user.role };
 
     const [accessToken, refreshToken] = await Promise.all([

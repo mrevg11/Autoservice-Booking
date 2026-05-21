@@ -29,7 +29,7 @@ const mockUser = (overrides: Partial<User> = {}): User =>
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,
-  } as User);
+  }) as User;
 
 const mockUsersRepo = () => ({
   findOne: jest.fn(),
@@ -61,8 +61,8 @@ describe('AuthService', () => {
   let service: AuthService;
   let usersRepo: ReturnType<typeof mockUsersRepo>;
   let profilesRepo: ReturnType<typeof mockProfilesRepo>;
-  let jwtService: ReturnType<typeof mockJwtService>;
-  let mailService: ReturnType<typeof mockMailService>;
+  let _jwtService: ReturnType<typeof mockJwtService>;
+  let _mailService: ReturnType<typeof mockMailService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -80,8 +80,8 @@ describe('AuthService', () => {
     service = module.get(AuthService);
     usersRepo = module.get(getRepositoryToken(User));
     profilesRepo = module.get(getRepositoryToken(ClientProfile));
-    jwtService = module.get(JwtService);
-    mailService = module.get(MailService);
+    _jwtService = module.get(JwtService);
+    _mailService = module.get(MailService);
   });
 
   describe('register', () => {
@@ -176,9 +176,7 @@ describe('AuthService', () => {
 
     it('повинен кидати UnauthorizedException якщо user.isBlocked = true', async () => {
       const hash = await bcrypt.hash('SecurePass123!', 12);
-      usersRepo.findOne.mockResolvedValue(
-        mockUser({ passwordHash: hash, isBlocked: true }),
-      );
+      usersRepo.findOne.mockResolvedValue(mockUser({ passwordHash: hash, isBlocked: true }));
 
       await expect(
         service.login({ email: 'test@test.com', password: 'SecurePass123!' }),
@@ -224,9 +222,9 @@ describe('AuthService', () => {
     it('повинен кидати BadRequestException при невалідному токені', async () => {
       usersRepo.findOne.mockResolvedValue(null);
 
-      await expect(
-        service.resetPassword('invalid-token', 'NewPass123!'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.resetPassword('invalid-token', 'NewPass123!')).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('повинен кидати BadRequestException при протермінованому токені', async () => {
@@ -236,9 +234,9 @@ describe('AuthService', () => {
         mockUser({ passwordResetToken: 'valid', passwordResetExpires: expiredDate }),
       );
 
-      await expect(
-        service.resetPassword('valid', 'NewPass123!'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.resetPassword('valid', 'NewPass123!')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 });

@@ -5,7 +5,15 @@ import { VehiclesService } from './vehicles.service';
 import { Vehicle } from '../../database/entities/vehicle.entity';
 
 const makeVehicle = (clientId = 1): Vehicle =>
-  ({ id: 1, make: 'Toyota', model: 'Camry', year: 2020, vin: null, plateNumber: 'AA1234BB', client: { id: clientId } } as unknown as Vehicle);
+  ({
+    id: 1,
+    make: 'Toyota',
+    model: 'Camry',
+    year: 2020,
+    vin: null,
+    plateNumber: 'AA1234BB',
+    client: { id: clientId },
+  }) as unknown as Vehicle;
 
 const mockRepo = () => ({
   create: jest.fn().mockImplementation((d) => d),
@@ -21,10 +29,7 @@ describe('VehiclesService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        VehiclesService,
-        { provide: getRepositoryToken(Vehicle), useFactory: mockRepo },
-      ],
+      providers: [VehiclesService, { provide: getRepositoryToken(Vehicle), useFactory: mockRepo }],
     }).compile();
     service = module.get(VehiclesService);
     repo = module.get(getRepositoryToken(Vehicle));
@@ -32,8 +37,11 @@ describe('VehiclesService', () => {
 
   it('create: saves vehicle with clientId', async () => {
     const dto = { make: 'Toyota', model: 'Camry', year: 2020 };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await service.create(1, dto as any);
-    expect(repo.create).toHaveBeenCalledWith(expect.objectContaining({ make: 'Toyota', client: { id: 1 } }));
+    expect(repo.create).toHaveBeenCalledWith(
+      expect.objectContaining({ make: 'Toyota', client: { id: 1 } }),
+    );
     expect(repo.save).toHaveBeenCalled();
     expect(result).toBeDefined();
   });
@@ -42,7 +50,9 @@ describe('VehiclesService', () => {
     repo.find.mockResolvedValue([makeVehicle(1)]);
     const result = await service.findMyVehicles(1);
     expect(result).toHaveLength(1);
-    expect(repo.find).toHaveBeenCalledWith(expect.objectContaining({ where: { client: { id: 1 } } }));
+    expect(repo.find).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { client: { id: 1 } } }),
+    );
   });
 
   describe('findOne', () => {
@@ -65,6 +75,7 @@ describe('VehiclesService', () => {
 
   it('update: updates and saves vehicle', async () => {
     repo.findOne.mockResolvedValue(makeVehicle(1));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await service.update(1, 1, { model: 'Corolla' } as any);
     expect(repo.save).toHaveBeenCalled();
     expect(result).toBeDefined();

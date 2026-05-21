@@ -34,7 +34,10 @@ export class CreateBookingDto {
   @IsPositive({ each: true })
   serviceIds: number[];
 
-  @ApiPropertyOptional({ description: 'Орієнтовна тривалість з урахуванням коефіцієнтів (хв). Якщо не передано — розраховується як сума базових тривалостей послуг.' })
+  @ApiPropertyOptional({
+    description:
+      'Орієнтовна тривалість з урахуванням коефіцієнтів (хв). Якщо не передано — розраховується як сума базових тривалостей послуг.',
+  })
   @IsOptional()
   @IsInt()
   @Min(1)

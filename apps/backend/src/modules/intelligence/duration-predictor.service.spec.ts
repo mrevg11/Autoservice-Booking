@@ -44,7 +44,13 @@ describe('DurationPredictorService', () => {
 
   it('returns base duration with all coeffs=1.0 when no master or vehicle', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, baseDurationMinutes: 40 });
-    const qb = { innerJoin: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(), andWhere: jest.fn().mockReturnThis(), select: jest.fn().mockReturnThis(), getRawMany: jest.fn().mockResolvedValue([]) };
+    const qb = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      getRawMany: jest.fn().mockResolvedValue([]),
+    };
     bookingServiceRepo.createQueryBuilder.mockReturnValue(qb);
 
     const result = await service.predict(1);
@@ -57,7 +63,13 @@ describe('DurationPredictorService', () => {
 
   it('applies vehicleAgeCoeff=1.1 for vehicle aged 10 years', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, baseDurationMinutes: 40 });
-    const qb = { innerJoin: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(), andWhere: jest.fn().mockReturnThis(), select: jest.fn().mockReturnThis(), getRawMany: jest.fn().mockResolvedValue([]) };
+    const qb = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      getRawMany: jest.fn().mockResolvedValue([]),
+    };
     bookingServiceRepo.createQueryBuilder.mockReturnValue(qb);
 
     const currentYear = new Date().getFullYear();
@@ -68,7 +80,13 @@ describe('DurationPredictorService', () => {
 
   it('applies vehicleAgeCoeff=0.95 for brand new vehicle', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, baseDurationMinutes: 40 });
-    const qb = { innerJoin: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(), andWhere: jest.fn().mockReturnThis(), select: jest.fn().mockReturnThis(), getRawMany: jest.fn().mockResolvedValue([]) };
+    const qb = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      getRawMany: jest.fn().mockResolvedValue([]),
+    };
     bookingServiceRepo.createQueryBuilder.mockReturnValue(qb);
 
     const result = await service.predict(1, undefined, new Date().getFullYear());
@@ -78,7 +96,13 @@ describe('DurationPredictorService', () => {
 
   it('uses masterCoeff=1.0 when fewer than minDataPoints historical records', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, baseDurationMinutes: 40 });
-    const qb = { innerJoin: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(), andWhere: jest.fn().mockReturnThis(), select: jest.fn().mockReturnThis(), getRawMany: jest.fn().mockResolvedValue([{ dur: 50 }, { dur: 60 }]) };
+    const qb = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      getRawMany: jest.fn().mockResolvedValue([{ dur: 50 }, { dur: 60 }]),
+    };
     bookingServiceRepo.createQueryBuilder.mockReturnValue(qb);
 
     const result = await service.predict(1, 1);
@@ -90,7 +114,13 @@ describe('DurationPredictorService', () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, baseDurationMinutes: 40 });
     // 5 records averaging 60 → coeff = 60/40 = 1.5
     const rows = Array.from({ length: 5 }, () => ({ dur: 60 }));
-    const qb = { innerJoin: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(), andWhere: jest.fn().mockReturnThis(), select: jest.fn().mockReturnThis(), getRawMany: jest.fn().mockResolvedValue(rows) };
+    const qb = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      getRawMany: jest.fn().mockResolvedValue(rows),
+    };
     bookingServiceRepo.createQueryBuilder.mockReturnValue(qb);
 
     const result = await service.predict(1, 1);
@@ -102,7 +132,13 @@ describe('DurationPredictorService', () => {
   it('clamps masterCoeff to max 2.0', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, baseDurationMinutes: 10 });
     const rows = Array.from({ length: 5 }, () => ({ dur: 100 })); // avg=100, coeff=10 → clamped to 2.0
-    const qb = { innerJoin: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(), andWhere: jest.fn().mockReturnThis(), select: jest.fn().mockReturnThis(), getRawMany: jest.fn().mockResolvedValue(rows) };
+    const qb = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      getRawMany: jest.fn().mockResolvedValue(rows),
+    };
     bookingServiceRepo.createQueryBuilder.mockReturnValue(qb);
 
     const result = await service.predict(1, 1);

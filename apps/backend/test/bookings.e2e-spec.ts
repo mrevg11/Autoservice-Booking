@@ -13,7 +13,7 @@ import { DataSource } from 'typeorm';
  */
 describe('Bookings E2E flow', () => {
   let app: INestApplication;
-  let dataSource: DataSource;
+  let _dataSource: DataSource;
   let clientToken: string;
   let masterToken: string;
   let vehicleId: number;
@@ -26,11 +26,9 @@ describe('Bookings E2E flow', () => {
 
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api/v1');
-    app.useGlobalPipes(
-      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
-    );
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
     await app.init();
-    dataSource = moduleFixture.get(DataSource);
+    _dataSource = moduleFixture.get(DataSource);
   });
 
   afterAll(async () => {

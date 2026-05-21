@@ -1,10 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ServiceCategory } from '../../database/entities/service-category.entity';
 import { Service } from '../../database/entities/service.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -100,6 +96,7 @@ export class ServicesService {
       if (!category) throw new NotFoundException(`Category #${dto.categoryId} not found`);
       service.category = category;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { categoryId: _categoryId, ...rest } = dto;
     Object.assign(service, rest);
     return this.servicesRepo.save(service);

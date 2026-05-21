@@ -1,19 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-  ParseIntPipe,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
@@ -55,10 +41,7 @@ export class ReviewsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '[Auth] Відгук для конкретного запису' })
   @ApiResponse({ status: 403, description: 'Booking does not belong to you' })
-  findForBooking(
-    @CurrentUser() user: User,
-    @Param('bookingId', ParseIntPipe) bookingId: number,
-  ) {
+  findForBooking(@CurrentUser() user: User, @Param('bookingId', ParseIntPipe) bookingId: number) {
     return this.reviewsService.findForBooking(bookingId, user);
   }
 }

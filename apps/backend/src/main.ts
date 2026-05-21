@@ -12,7 +12,7 @@ async function bootstrap(): Promise<void> {
   // (a 5 MB image encodes to ~6.7 MB of base64; default Express limit is 100 KB).
   const app = await NestFactory.create(AppModule, { bodyParser: false });
   // Re-register body-parser with a higher limit before all other middleware
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const bodyParser = require('body-parser') as typeof import('body-parser');
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
@@ -42,10 +42,7 @@ async function bootstrap(): Promise<void> {
           styleSrc: ["'self'", "'unsafe-inline'"],
           // Allow data: URIs for Base64 booking photos
           imgSrc: ["'self'", 'data:', 'blob:'],
-          connectSrc: [
-            "'self'",
-            process.env['FRONTEND_URL'] ?? 'http://localhost:5173',
-          ],
+          connectSrc: ["'self'", process.env['FRONTEND_URL'] ?? 'http://localhost:5173'],
           fontSrc: ["'self'"],
           objectSrc: ["'none'"],
           frameSrc: ["'none'"],

@@ -20,22 +20,22 @@ import { Role } from '../../common/enums/role.enum';
 import { User } from '../../database/entities/user.entity';
 
 const makeUser = (overrides: Partial<User> = {}): User =>
-  ({ id: 1, role: Role.CLIENT, email: 'c@t.com', isBlocked: false, ...overrides } as User);
+  ({ id: 1, role: Role.CLIENT, email: 'c@t.com', isBlocked: false, ...overrides }) as User;
 
-const makeMaster = (id = 1): MasterProfile => ({ id } as MasterProfile);
+const makeMaster = (id = 1): MasterProfile => ({ id }) as MasterProfile;
 
 const makeService = (id = 1): Service =>
-  ({ id, basePrice: 500, baseDurationMinutes: 60 } as Service);
+  ({ id, basePrice: 500, baseDurationMinutes: 60 }) as Service;
 
 const makeMasterService = (serviceId = 1): MasterServiceEntity =>
   ({
     id: 1,
     service: makeService(serviceId),
     priceCoefficient: 1.0,
-  } as MasterServiceEntity);
+  }) as MasterServiceEntity;
 
 const makeVehicle = (clientId = 1): Vehicle =>
-  ({ id: 1, client: { id: clientId } } as unknown as Vehicle);
+  ({ id: 1, client: { id: clientId } }) as unknown as Vehicle;
 
 const makeBooking = (overrides: Partial<Booking> = {}): Booking =>
   ({
@@ -46,7 +46,7 @@ const makeBooking = (overrides: Partial<Booking> = {}): Booking =>
     client: makeUser(),
     master: { id: 1, user: { id: 2, role: Role.MASTER } } as unknown as MasterProfile,
     ...overrides,
-  } as unknown as Booking);
+  }) as unknown as Booking;
 
 // Mock transaction manager
 const makeMockManager = (overlapBookings: Booking[] = [], lockedEntity: unknown = null) => {
@@ -87,7 +87,7 @@ describe('BookingsService', () => {
   let masterServicesRepo: ReturnType<typeof mockRepo>;
   let servicesRepo: ReturnType<typeof mockRepo>;
   let vehiclesRepo: ReturnType<typeof mockRepo>;
-  let historyRepo: ReturnType<typeof mockRepo>;
+  let _historyRepo: ReturnType<typeof mockRepo>;
   let dataSource: { transaction: jest.Mock };
 
   beforeEach(async () => {
@@ -104,9 +104,9 @@ describe('BookingsService', () => {
         {
           provide: DataSource,
           useValue: {
-            transaction: jest.fn().mockImplementation(async (cb: (m: unknown) => unknown) =>
-              cb(makeMockManager()),
-            ),
+            transaction: jest
+              .fn()
+              .mockImplementation(async (cb: (m: unknown) => unknown) => cb(makeMockManager())),
           },
         },
       ],
@@ -118,7 +118,7 @@ describe('BookingsService', () => {
     masterServicesRepo = module.get(getRepositoryToken(MasterServiceEntity));
     servicesRepo = module.get(getRepositoryToken(Service));
     vehiclesRepo = module.get(getRepositoryToken(Vehicle));
-    historyRepo = module.get(getRepositoryToken(BookingStatusHistory));
+    _historyRepo = module.get(getRepositoryToken(BookingStatusHistory));
     dataSource = module.get(DataSource);
   });
 
@@ -165,7 +165,7 @@ describe('BookingsService', () => {
       await expect(service.create(makeUser(), baseDto)).rejects.toThrow(NotFoundException);
     });
 
-    it('кидає BadRequestException якщо service не прив\'язаний до майстра', async () => {
+    it("кидає BadRequestException якщо service не прив'язаний до майстра", async () => {
       masterProfilesRepo.findOne.mockResolvedValue(makeMaster());
       vehiclesRepo.findOne.mockResolvedValue(makeVehicle(1));
       servicesRepo.findByIds.mockResolvedValue([makeService(1)]);
@@ -180,8 +180,8 @@ describe('BookingsService', () => {
       masterServicesRepo.find.mockResolvedValue([makeMasterService(1)]);
 
       // Transaction: master locked, but overlapping bookings exist
-      dataSource.transaction.mockImplementation(
-        async (cb: (m: unknown) => unknown) => cb(makeMockManager([makeBooking()], makeMaster())),
+      dataSource.transaction.mockImplementation(async (cb: (m: unknown) => unknown) =>
+        cb(makeMockManager([makeBooking()], makeMaster())),
       );
 
       await expect(service.create(makeUser(), baseDto)).rejects.toThrow(ConflictException);
@@ -251,7 +251,10 @@ describe('BookingsService', () => {
       dataSource.transaction.mockImplementation(async (cb: (m: unknown) => unknown) => {
         const manager = makeMockManager([], makeMaster());
         manager.save.mockImplementation(async (_e: unknown, data: unknown) => {
-          if ((data as { oldStatus?: unknown }).oldStatus !== undefined || (data as { newStatus?: unknown }).newStatus) {
+          if (
+            (data as { oldStatus?: unknown }).oldStatus !== undefined ||
+            (data as { newStatus?: unknown }).newStatus
+          ) {
             if ((data as { newStatus?: BookingStatus }).newStatus === BookingStatus.PENDING) {
               savedHistories.push(data);
             }

@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { MastersService } from './masters.service';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
@@ -9,7 +8,6 @@ import { MasterDayOff } from '../../database/entities/master-day-off.entity';
 import { MasterService as MasterServiceEntity } from '../../database/entities/master-service.entity';
 import { Service } from '../../database/entities/service.entity';
 import { Booking } from '../../database/entities/booking.entity';
-import { BookingStatus } from '../../common/enums/booking-status.enum';
 
 const TODAY_DATE = '2026-12-15'; // Monday (Пн = weekday 0 in app)
 

@@ -43,9 +43,9 @@ export class SlotSuggesterService {
     this.weights = {
       rating: this.configService.get<number>('intelligence.weights.rating') ?? 0.35,
       availability: this.configService.get<number>('intelligence.weights.availability') ?? 0.25,
-      experience: this.configService.get<number>('intelligence.weights.experience') ?? 0.20,
-      load: this.configService.get<number>('intelligence.weights.load') ?? 0.10,
-      specialization: this.configService.get<number>('intelligence.weights.specialization') ?? 0.10,
+      experience: this.configService.get<number>('intelligence.weights.experience') ?? 0.2,
+      load: this.configService.get<number>('intelligence.weights.load') ?? 0.1,
+      specialization: this.configService.get<number>('intelligence.weights.specialization') ?? 0.1,
     };
     this.lookaheadDays = this.configService.get<number>('intelligence.lookaheadDays') ?? 14;
     this.topSlots = this.configService.get<number>('intelligence.topSlots') ?? 5;
@@ -91,8 +91,10 @@ export class SlotSuggesterService {
     masters.forEach((m) => {
       if (m.user) {
         const u = m.user as unknown as Record<string, unknown>;
-        delete u['passwordHash']; delete u['refreshTokenHash'];
-        delete u['emailVerificationToken']; delete u['passwordResetToken'];
+        delete u['passwordHash'];
+        delete u['refreshTokenHash'];
+        delete u['emailVerificationToken'];
+        delete u['passwordResetToken'];
       }
     });
     const masterIds = masters.map((m) => m.id);
@@ -291,7 +293,10 @@ export class SlotSuggesterService {
 
   private computeSpecScore(specialization: string, categoryName: string): number {
     if (!specialization || !categoryName) return 0.5;
-    const keywords = categoryName.toLowerCase().split(/\s+/).filter((w) => w.length > 3);
+    const keywords = categoryName
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length > 3);
     return keywords.some((kw) => specialization.toLowerCase().includes(kw)) ? 1.0 : 0.5;
   }
 

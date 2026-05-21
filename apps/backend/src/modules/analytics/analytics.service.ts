@@ -27,6 +27,7 @@ export class AnalyticsService {
        ORDER BY period ASC`,
       [fmt, from, to],
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return rows.map((r: any) => ({
       period: r.period,
       revenue: parseFloat(r.revenue),
@@ -56,10 +57,14 @@ export class AnalyticsService {
       [from, to],
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return rows.map((r: any) => {
       const total = parseInt(r.totalBookings, 10);
       // 8 working hours * 2 slots/hour = 16 slots per day; 30 days
-      const daysRange = Math.max(1, Math.round((new Date(to).getTime() - new Date(from).getTime()) / 86400000));
+      const daysRange = Math.max(
+        1,
+        Math.round((new Date(to).getTime() - new Date(from).getTime()) / 86400000),
+      );
       const maxPossible = daysRange * 16;
       const loadPercent = Math.min(100, Math.round((total / maxPossible) * 100));
       return {
@@ -91,6 +96,7 @@ export class AnalyticsService {
        LIMIT ?`,
       [limit],
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return rows.map((r: any) => ({
       serviceId: r.serviceId,
       serviceName: r.serviceName,

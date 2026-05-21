@@ -11,13 +11,7 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiQuery,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { MastersService } from './masters.service';
 import { UpdateMasterProfileDto } from './dto/update-master-profile.dto';
 import { SetScheduleDto } from './dto/set-schedule.dto';
@@ -106,10 +100,7 @@ export class MastersController {
   @Roles(Role.MASTER, Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[MASTER/ADMIN] Відкріпити послугу від майстра' })
-  removeService(
-    @CurrentUser() user: User,
-    @Param('serviceId', ParseIntPipe) serviceId: number,
-  ) {
+  removeService(@CurrentUser() user: User, @Param('serviceId', ParseIntPipe) serviceId: number) {
     return this.mastersService.removeService(user.id, serviceId);
   }
 
@@ -141,7 +132,12 @@ export class MastersController {
   @ApiOperation({ summary: '[Auth] Вільні слоти майстра на дату' })
   @ApiQuery({ name: 'date', example: '2026-12-15' })
   @ApiQuery({ name: 'duration', example: 60, type: Number })
-  @ApiQuery({ name: 'vehicleId', required: false, type: Number, description: 'Фільтрує слоти з урахуванням зайнятості авто' })
+  @ApiQuery({
+    name: 'vehicleId',
+    required: false,
+    type: Number,
+    description: 'Фільтрує слоти з урахуванням зайнятості авто',
+  })
   getAvailableSlots(
     @Param('id', ParseIntPipe) id: number,
     @Query('date') date: string,
@@ -161,10 +157,7 @@ export class MastersController {
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[ADMIN] Оновити розклад майстра' })
-  adminSetSchedule(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: SetScheduleDto,
-  ) {
+  adminSetSchedule(@Param('id', ParseIntPipe) id: number, @Body() dto: SetScheduleDto) {
     return this.mastersService.setScheduleForMaster(id, dto.schedule);
   }
 

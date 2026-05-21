@@ -7,10 +7,7 @@ import { NotificationsService } from './notifications.service';
 import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Notification, Booking]),
-    MailModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Notification, Booking]), MailModule],
   controllers: [NotificationsController],
   providers: [NotificationsService],
   exports: [NotificationsService],

@@ -29,4 +29,7 @@ async function main() {
   await ds.destroy();
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

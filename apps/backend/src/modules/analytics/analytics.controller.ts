@@ -17,25 +17,37 @@ export class AnalyticsController {
 
   @Get('summary')
   @ApiOperation({ summary: '[ADMIN] Загальні метрики' })
-  getSummary() { return this.analyticsService.getSummary(); }
+  getSummary() {
+    return this.analyticsService.getSummary();
+  }
 
   @Get('revenue')
   @ApiOperation({ summary: '[ADMIN] Доходи за період' })
-  getRevenue(@Query() dto: RevenueQueryDto) { return this.analyticsService.getRevenue(dto); }
+  getRevenue(@Query() dto: RevenueQueryDto) {
+    return this.analyticsService.getRevenue(dto);
+  }
 
   @Get('master-load')
   @ApiOperation({ summary: '[ADMIN] Завантаженість майстрів' })
-  getMasterLoad(@Query() dto: DateRangeQueryDto) { return this.analyticsService.getMasterLoad(dto); }
+  getMasterLoad(@Query() dto: DateRangeQueryDto) {
+    return this.analyticsService.getMasterLoad(dto);
+  }
 
   @Get('top-services')
   @ApiOperation({ summary: '[ADMIN] Топ послуги' })
-  getTopServices(@Query() dto: TopServicesQueryDto) { return this.analyticsService.getTopServices(dto); }
+  getTopServices(@Query() dto: TopServicesQueryDto) {
+    return this.analyticsService.getTopServices(dto);
+  }
 
   @Get('clients-retention')
   @ApiOperation({ summary: '[ADMIN] Утримання клієнтів' })
-  getClientsRetention() { return this.analyticsService.getClientsRetention(); }
+  getClientsRetention() {
+    return this.analyticsService.getClientsRetention();
+  }
 
   @Get('booking-funnel')
   @ApiOperation({ summary: '[ADMIN] Воронка статусів' })
-  getBookingFunnel() { return this.analyticsService.getBookingFunnel(); }
+  getBookingFunnel() {
+    return this.analyticsService.getBookingFunnel();
+  }
 }

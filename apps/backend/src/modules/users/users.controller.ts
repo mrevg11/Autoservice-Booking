@@ -10,12 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
@@ -88,10 +83,7 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: '[ADMIN] Оновити користувача (роль, блокування)' })
-  adminUpdate(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: AdminUpdateUserDto,
-  ) {
+  adminUpdate(@Param('id', ParseIntPipe) id: number, @Body() dto: AdminUpdateUserDto) {
     return this.usersService.adminUpdate(id, dto);
   }
 

@@ -9,13 +9,7 @@ import {
   HttpStatus,
   UnauthorizedException,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-  ApiCookieAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiCookieAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -87,9 +81,11 @@ export class AuthController {
   @ApiOperation({ summary: 'Оновлення access токена' })
   async refresh(
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) _res: Response,
   ): Promise<{ accessToken: string }> {
-    const token: string | undefined = (req.cookies as Record<string, string | undefined>)[REFRESH_COOKIE];
+    const token: string | undefined = (req.cookies as Record<string, string | undefined>)[
+      REFRESH_COOKIE
+    ];
     if (!token) throw new UnauthorizedException('Відсутній токен оновлення');
     const result = await this.authService.refresh(token);
     return result;
@@ -100,10 +96,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Вихід з системи' })
-  async logout(
-    @CurrentUser() user: User,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async logout(@CurrentUser() user: User, @Res({ passthrough: true }) res: Response) {
     const isProd = process.env['NODE_ENV'] === 'production';
     res.clearCookie(REFRESH_COOKIE, {
       httpOnly: true,

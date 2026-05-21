@@ -33,40 +33,77 @@ const ds = new DataSource({
   logging: false,
   charset: 'utf8mb4',
   entities: [
-    User, ClientProfile, MasterProfile, MasterSchedule, MasterDayOff,
-    ServiceCategory, Service, MasterService, Vehicle,
-    Booking, BookingService, BookingStatusHistory, Review, Notification,
+    User,
+    ClientProfile,
+    MasterProfile,
+    MasterSchedule,
+    MasterDayOff,
+    ServiceCategory,
+    Service,
+    MasterService,
+    Vehicle,
+    Booking,
+    BookingService,
+    BookingStatusHistory,
+    Review,
+    Notification,
   ],
 });
 
 // email → service names they should be able to perform
 const ASSIGNMENTS: Record<string, string[]> = {
   'master.1@demo.com': [
-    'Заміна оливи та фільтра', 'Заміна гальмівних колодок', 'Заміна повітряного фільтра',
-    'Усунення вм\'ятини PDR', 'Полірування кузова', 'Локальне фарбування деталі',
-    'Комп\'ютерна діагностика', 'Діагностика підвіски', 'Перевірка гальмівної системи',
+    'Заміна оливи та фільтра',
+    'Заміна гальмівних колодок',
+    'Заміна повітряного фільтра',
+    "Усунення вм'ятини PDR",
+    'Полірування кузова',
+    'Локальне фарбування деталі',
+    "Комп'ютерна діагностика",
+    'Діагностика підвіски',
+    'Перевірка гальмівної системи',
   ],
   'master.2@demo.com': [
-    'Заміна ременя ГРМ', 'Заміна прокладки головки блоку', 'Чищення паливної системи',
-    'Заміна термостата', 'Заміна оливи та фільтра', 'Заміна свічок запалювання',
+    'Заміна ременя ГРМ',
+    'Заміна прокладки головки блоку',
+    'Чищення паливної системи',
+    'Заміна термостата',
+    'Заміна оливи та фільтра',
+    'Заміна свічок запалювання',
   ],
   'master.3@demo.com': [
-    'Фарбування бампера', 'Локальне фарбування деталі', 'Полірування кузова',
-    'Усунення вм\'ятини PDR', 'Антикорозійна обробка', 'Хімчистка салону',
+    'Фарбування бампера',
+    'Локальне фарбування деталі',
+    'Полірування кузова',
+    "Усунення вм'ятини PDR",
+    'Антикорозійна обробка',
+    'Хімчистка салону',
   ],
   'master.4@demo.com': [
-    'Комп\'ютерна діагностика', 'Діагностика підвіски', 'Діагностика електрики',
-    'Діагностика ходової частини', 'Перевірка гальмівної системи',
-    'Заміна гальмівної рідини', 'Заміна гальмівних колодок',
+    "Комп'ютерна діагностика",
+    'Діагностика підвіски',
+    'Діагностика електрики',
+    'Діагностика ходової частини',
+    'Перевірка гальмівної системи',
+    'Заміна гальмівної рідини',
+    'Заміна гальмівних колодок',
   ],
   'master.5@demo.com': [
-    'Регулювання кутів коліс (розвал-сходження)', 'Балансування коліс', 'Сезонна заміна шин',
-    'Заміна повітряного фільтра', 'Заміна паливного фільтра',
-    'Заміна охолоджувальної рідини', 'Заміна свічок запалювання',
+    'Регулювання кутів коліс (розвал-сходження)',
+    'Балансування коліс',
+    'Сезонна заміна шин',
+    'Заміна повітряного фільтра',
+    'Заміна паливного фільтра',
+    'Заміна охолоджувальної рідини',
+    'Заміна свічок запалювання',
   ],
   'master.6@demo.com': [
-    'Діагностика електрики', 'Комп\'ютерна діагностика', 'Заміна термостата',
-    'Чищення паливної системи', 'Заміна ременя ГРМ', 'Заміна прокладки головки блоку',
+    'Діагностика електрики',
+    "Комп'ютерна діагностика",
+    'Заміна термостата',
+    'Чищення паливної системи',
+    'Заміна ременя ГРМ',
+    'Заміна прокладки головки блоку',
   ],
 };
 
@@ -84,14 +121,23 @@ async function main() {
 
   for (const [email, serviceNames] of Object.entries(ASSIGNMENTS)) {
     const user = await userRepo.findOne({ where: { email } });
-    if (!user) { console.warn(`⚠️  User not found: ${email}`); continue; }
+    if (!user) {
+      console.warn(`⚠️  User not found: ${email}`);
+      continue;
+    }
 
     const masterProfile = await masterProfileRepo.findOne({ where: { user: { id: user.id } } });
-    if (!masterProfile) { console.warn(`⚠️  Master profile not found for: ${email}`); continue; }
+    if (!masterProfile) {
+      console.warn(`⚠️  Master profile not found for: ${email}`);
+      continue;
+    }
 
     for (const name of serviceNames) {
       const service = await serviceRepo.findOne({ where: { name } });
-      if (!service) { console.warn(`⚠️  Service not found: "${name}"`); continue; }
+      if (!service) {
+        console.warn(`⚠️  Service not found: "${name}"`);
+        continue;
+      }
 
       const exists = await masterServiceRepo.findOne({
         where: { master: { id: masterProfile.id }, service: { id: service.id } },
@@ -113,4 +159,7 @@ async function main() {
   await ds.destroy();
 }
 
-main().catch((err) => { console.error(err); process.exit(1); });
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

@@ -28,7 +28,8 @@ export class VehiclesService {
     }
     if (dto.plateNumber) {
       const existing = await this.vehiclesRepo.findOne({ where: { plateNumber: dto.plateNumber } });
-      if (existing) throw new ConflictException('Автомобіль з таким держ. номером вже зареєстровано');
+      if (existing)
+        throw new ConflictException('Автомобіль з таким держ. номером вже зареєстровано');
     }
     const vehicle = this.vehiclesRepo.create({
       ...dto,
@@ -52,8 +53,7 @@ export class VehiclesService {
       relations: ['client'],
     });
     if (!vehicle) throw new NotFoundException('Автомобіль не знайдено');
-    if (vehicle.client.id !== clientId)
-      throw new ForbiddenException('Доступ заборонено');
+    if (vehicle.client.id !== clientId) throw new ForbiddenException('Доступ заборонено');
     return vehicle;
   }
 
@@ -65,8 +65,11 @@ export class VehiclesService {
       if (existing) throw new ConflictException('Автомобіль з таким VIN вже зареєстровано');
     }
     if (dto.plateNumber) {
-      const existing = await this.vehiclesRepo.findOne({ where: { plateNumber: dto.plateNumber, id: Not(id) } });
-      if (existing) throw new ConflictException('Автомобіль з таким держ. номером вже зареєстровано');
+      const existing = await this.vehiclesRepo.findOne({
+        where: { plateNumber: dto.plateNumber, id: Not(id) },
+      });
+      if (existing)
+        throw new ConflictException('Автомобіль з таким держ. номером вже зареєстровано');
     }
     Object.assign(vehicle, dto);
     vehicle.vin = trimmedVin;
@@ -82,7 +85,9 @@ export class VehiclesService {
       },
     });
     if (activeCount > 0) {
-      throw new ConflictException('Неможливо видалити авто з активними записами. Спочатку скасуйте записи.');
+      throw new ConflictException(
+        'Неможливо видалити авто з активними записами. Спочатку скасуйте записи.',
+      );
     }
     // Nullify vehicle FK in all remaining bookings to avoid FK constraint violation
     await this.bookingsRepo

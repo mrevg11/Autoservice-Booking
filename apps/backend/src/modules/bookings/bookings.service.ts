@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, Between, LessThan } from 'typeorm';
+import { Repository, DataSource, LessThan } from 'typeorm';
 import { Booking } from '../../database/entities/booking.entity';
 import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 import { BookingStatusHistory } from '../../database/entities/booking-status-history.entity';
@@ -22,7 +22,7 @@ import { Vehicle } from '../../database/entities/vehicle.entity';
 import { User } from '../../database/entities/user.entity';
 import { BookingStatus } from '../../common/enums/booking-status.enum';
 import { Role } from '../../common/enums/role.enum';
-import { PaginationDto, paginate, PaginatedResult } from '../../common/dto/pagination.dto';
+import { paginate, PaginatedResult } from '../../common/dto/pagination.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { BookingFilterDto } from './dto/booking-filter.dto';
@@ -31,10 +31,7 @@ import { RescheduleBookingDto } from './dto/reschedule-booking.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 
 // Матриця дозволених переходів статусів
-const STATUS_TRANSITIONS: Record<
-  BookingStatus,
-  { allowed: BookingStatus[]; roles: Role[] }
-> = {
+const STATUS_TRANSITIONS: Record<BookingStatus, { allowed: BookingStatus[]; roles: Role[] }> = {
   [BookingStatus.PENDING]: {
     allowed: [BookingStatus.CONFIRMED, BookingStatus.CANCELLED],
     roles: [Role.ADMIN, Role.MASTER],
@@ -75,7 +72,9 @@ export class BookingsService {
     @InjectRepository(BookingPhoto)
     private bookingPhotosRepo: Repository<BookingPhoto>,
     private dataSource: DataSource,
-    @Optional() @Inject(NotificationsService) private notificationsService: NotificationsService | undefined,
+    @Optional()
+    @Inject(NotificationsService)
+    private notificationsService: NotificationsService | undefined,
   ) {}
 
   async create(client: User, dto: CreateBookingDto): Promise<Booking> {
@@ -88,14 +87,14 @@ export class BookingsService {
     const master = await this.masterProfilesRepo.findOne({
       where: { id: dto.masterId },
     });
-    if (!master) throw new NotFoundException("Майстра не знайдено");
+    if (!master) throw new NotFoundException('Майстра не знайдено');
 
     // Validate vehicle belongs to client
     const vehicle = await this.vehiclesRepo.findOne({
       where: { id: dto.vehicleId },
       relations: ['client'],
     });
-    if (!vehicle) throw new NotFoundException("Автомобіль не знайдено");
+    if (!vehicle) throw new NotFoundException('Автомобіль не знайдено');
     if (vehicle.client.id !== client.id)
       throw new ForbiddenException('Цей автомобіль не належить вам');
 
@@ -114,9 +113,7 @@ export class BookingsService {
     });
 
     if (masterServices.length !== dto.serviceIds.length) {
-      throw new BadRequestException(
-        'Одна або кілька послуг не закріплені за цим майстром',
-      );
+      throw new BadRequestException('Одна або кілька послуг не закріплені за цим майстром');
     }
 
     // Calculate totals
@@ -295,17 +292,13 @@ export class BookingsService {
       .where('b.id = :id', { id })
       .getOne();
 
-    if (!booking) throw new NotFoundException("Запис не знайдено");
+    if (!booking) throw new NotFoundException('Запис не знайдено');
     this.checkBookingAccess(booking, user);
     this.stripSensitiveFields([booking]);
     return booking;
   }
 
-  async updateStatus(
-    id: number,
-    user: User,
-    dto: UpdateBookingStatusDto,
-  ): Promise<Booking> {
+  async updateStatus(id: number, user: User, dto: UpdateBookingStatusDto): Promise<Booking> {
     const updatedBooking = await this.dataSource.transaction(async (manager) => {
       const booking = await manager
         .getRepository(Booking)
@@ -350,7 +343,13 @@ export class BookingsService {
     if (this.notificationsService) {
       const bookingWithRelations = await this.bookingsRepo.findOne({
         where: { id },
-        relations: ['client', 'master', 'master.user', 'bookingServices', 'bookingServices.service'],
+        relations: [
+          'client',
+          'master',
+          'master.user',
+          'bookingServices',
+          'bookingServices.service',
+        ],
       });
       if (bookingWithRelations) {
         if (dto.status === BookingStatus.CONFIRMED) {
@@ -383,10 +382,7 @@ export class BookingsService {
         throw new ForbiddenException('Ви можете скасувати лише власні записи');
       }
 
-      if (
-        booking.status !== BookingStatus.PENDING &&
-        booking.status !== BookingStatus.CONFIRMED
-      ) {
+      if (booking.status !== BookingStatus.PENDING && booking.status !== BookingStatus.CONFIRMED) {
         throw new BadRequestException(
           'Скасувати можна лише записи зі статусом PENDING або CONFIRMED',
         );
@@ -439,8 +435,11 @@ export class BookingsService {
             .getOne();
 
           // Skip if already changed by another process
-          if (!current || current.status === BookingStatus.CANCELLED ||
-              current.status === BookingStatus.COMPLETED) {
+          if (
+            !current ||
+            current.status === BookingStatus.CANCELLED ||
+            current.status === BookingStatus.COMPLETED
+          ) {
             return;
           }
 
@@ -459,7 +458,10 @@ export class BookingsService {
           );
         });
       } catch (err) {
-        this.logger.error(`Failed to cancel expired booking #${booking.id}`, err instanceof Error ? err.stack : String(err));
+        this.logger.error(
+          `Failed to cancel expired booking #${booking.id}`,
+          err instanceof Error ? err.stack : String(err),
+        );
       }
     }
   }
@@ -485,10 +487,7 @@ export class BookingsService {
       if (booking.client?.id !== client.id) {
         throw new ForbiddenException('Ви можете змінити лише власні записи');
       }
-      if (
-        booking.status !== BookingStatus.PENDING &&
-        booking.status !== BookingStatus.CONFIRMED
-      ) {
+      if (booking.status !== BookingStatus.PENDING && booking.status !== BookingStatus.CONFIRMED) {
         throw new BadRequestException(
           'Перенести можна лише записи зі статусом PENDING або CONFIRMED',
         );
@@ -538,9 +537,7 @@ export class BookingsService {
           .getMany();
 
         if (vehicleOverlap.length > 0) {
-          throw new ConflictException(
-            'Цей автомобіль вже має запис на обраний час',
-          );
+          throw new ConflictException('Цей автомобіль вже має запис на обраний час');
         }
       }
 
@@ -561,7 +558,14 @@ export class BookingsService {
       if (this.notificationsService) {
         const full = await this.bookingsRepo.findOne({
           where: { id: saved.id },
-          relations: ['client', 'master', 'master.user', 'vehicle', 'bookingServices', 'bookingServices.service'],
+          relations: [
+            'client',
+            'master',
+            'master.user',
+            'vehicle',
+            'bookingServices',
+            'bookingServices.service',
+          ],
         });
         if (full) void this.notificationsService.notifyStatusChanged(full, booking.status);
       }
@@ -583,7 +587,7 @@ export class BookingsService {
       where: { id },
       relations: ['client', 'master', 'master.user'],
     });
-    if (!booking) throw new NotFoundException("Запис не знайдено");
+    if (!booking) throw new NotFoundException('Запис не знайдено');
     this.checkBookingAccess(booking, user);
 
     const history = await this.historyRepo.find({
@@ -680,10 +684,7 @@ export class BookingsService {
     if (user.role === Role.CLIENT && booking.client?.id !== user.id) {
       throw new ForbiddenException('Доступ заборонено');
     }
-    if (
-      user.role === Role.MASTER &&
-      booking.master.user.id !== user.id
-    ) {
+    if (user.role === Role.MASTER && booking.master.user.id !== user.id) {
       throw new ForbiddenException('Доступ заборонено');
     }
   }

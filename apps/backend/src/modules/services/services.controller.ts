@@ -10,12 +10,7 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { ServicesService } from './services.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateServiceDto } from './dto/create-service.dto';
@@ -54,10 +49,7 @@ export class ServicesController {
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[ADMIN] Оновити категорію' })
-  updateCategory(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: Partial<CreateCategoryDto>,
-  ) {
+  updateCategory(@Param('id', ParseIntPipe) id: number, @Body() dto: Partial<CreateCategoryDto>) {
     return this.servicesService.updateCategory(id, dto);
   }
 
@@ -101,10 +93,7 @@ export class ServicesController {
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[ADMIN] Оновити послугу' })
-  updateService(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateServiceDto,
-  ) {
+  updateService(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateServiceDto) {
     return this.servicesService.updateService(id, dto);
   }
 

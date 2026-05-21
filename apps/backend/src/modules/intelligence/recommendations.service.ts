@@ -43,9 +43,9 @@ export class RecommendationsService {
     this.weights = {
       rating: this.configService.get<number>('intelligence.weights.rating') ?? 0.35,
       availability: this.configService.get<number>('intelligence.weights.availability') ?? 0.25,
-      experience: this.configService.get<number>('intelligence.weights.experience') ?? 0.20,
-      load: this.configService.get<number>('intelligence.weights.load') ?? 0.10,
-      specialization: this.configService.get<number>('intelligence.weights.specialization') ?? 0.10,
+      experience: this.configService.get<number>('intelligence.weights.experience') ?? 0.2,
+      load: this.configService.get<number>('intelligence.weights.load') ?? 0.1,
+      specialization: this.configService.get<number>('intelligence.weights.specialization') ?? 0.1,
     };
     this.minDataPoints = this.configService.get<number>('intelligence.minDataPoints') ?? 5;
   }
@@ -126,15 +126,17 @@ export class RecommendationsService {
     for (const master of masters) {
       // Factor 1 (rating): global rating if enough data, else profile rating
       const globalData = globalRatings.get(master.id);
-      const ratingScore = globalData && globalData.count >= this.minDataPoints
-        ? Math.min(globalData.sum / globalData.count / 5, 1)
-        : Math.min(Number(master.rating ?? 0) / 5, 1);
+      const ratingScore =
+        globalData && globalData.count >= this.minDataPoints
+          ? Math.min(globalData.sum / globalData.count / 5, 1)
+          : Math.min(Number(master.rating ?? 0) / 5, 1);
 
       // Factor 2 (availability / collaborative): personal client experience with this master
       const personalData = clientMasterRating.get(master.id);
-      const collaborativeScore = personalData && personalData.count > 0
-        ? Math.min(personalData.count / 5, 1)  // more bookings = higher trust
-        : 0.5;
+      const collaborativeScore =
+        personalData && personalData.count > 0
+          ? Math.min(personalData.count / 5, 1) // more bookings = higher trust
+          : 0.5;
 
       // Factor 3 (experience): years / 10 capped at 1
       const experienceScore = Math.min((master.experienceYears ?? 0) / 10, 1);
@@ -169,7 +171,7 @@ export class RecommendationsService {
           `Рейтинг: ${Math.round(ratingScore * 100)}%`,
           `Особистий досвід: ${Math.round(collaborativeScore * 100)}%`,
           `Досвід роботи: ${Math.round(experienceScore * 100)}%`,
-          `Завантаженість: ${Math.min(100, Math.round(activeCount / 10 * 100))}%`,
+          `Завантаженість: ${Math.min(100, Math.round((activeCount / 10) * 100))}%`,
           `Спеціалізація: ${Math.round(specializationScore * 100)}%`,
         ],
       });
@@ -236,7 +238,10 @@ export class RecommendationsService {
 
   private computeSpecScore(specialization: string, categoryName: string): number {
     if (!specialization || !categoryName) return 0.5;
-    const keywords = categoryName.toLowerCase().split(/\s+/).filter((w) => w.length > 3);
+    const keywords = categoryName
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length > 3);
     return keywords.some((kw) => specialization.toLowerCase().includes(kw)) ? 1.0 : 0.5;
   }
 }

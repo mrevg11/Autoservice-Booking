@@ -18,7 +18,10 @@ export class DurationEstimateMultiResponseDto {
   @ApiProperty({ example: 100, description: 'Сумарна базова тривалість усіх послуг (хв)' })
   totalBaseMinutes!: number;
 
-  @ApiProperty({ example: 132, description: 'Сумарна розрахункова тривалість з урахуванням усіх коефіцієнтів (хв)' })
+  @ApiProperty({
+    example: 132,
+    description: 'Сумарна розрахункова тривалість з урахуванням усіх коефіцієнтів (хв)',
+  })
   totalEstimatedMinutes!: number;
 
   @ApiProperty({ example: 1.2, description: 'Коефіцієнт віку авто [0.95..1.35]' })

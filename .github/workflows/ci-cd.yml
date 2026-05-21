@@ -16,21 +16,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-      - name: Install root dependencies
+      - name: Install dependencies
         run: npm ci
-
-      - name: Install backend dependencies
-        run: npm ci
-        working-directory: apps/backend
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: apps/frontend
 
       - name: Lint backend
-        run: npm run lint
+        run: npx eslint "{src,test}/**/*.ts"
         working-directory: apps/backend
 
       - name: Lint frontend
@@ -77,18 +70,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-      - name: Install root dependencies
+      - name: Install dependencies
         run: npm ci
-
-      - name: Install backend dependencies
-        run: npm ci
-        working-directory: apps/backend
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: apps/frontend
 
       - name: Run backend unit tests with coverage
         run: npm test -- --coverage --coverageDirectory=../../docs/coverage/backend --forceExit
@@ -124,18 +110,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-      - name: Install root dependencies
+      - name: Install dependencies
         run: npm ci
-
-      - name: Install backend dependencies
-        run: npm ci
-        working-directory: apps/backend
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: apps/frontend
 
       - name: Build backend
         run: npm run build

@@ -1,11 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, Not, In } from 'typeorm';
+import { Repository, DataSource, In } from 'typeorm';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
 import { MasterSchedule } from '../../database/entities/master-schedule.entity';
 import { MasterDayOff } from '../../database/entities/master-day-off.entity';
@@ -127,14 +122,15 @@ export class MastersService {
 
     return this.dataSource.transaction(async (manager) => {
       await manager.delete(MasterSchedule, { master: { id: master.id } });
-      const schedules = dtos.map((dto) =>
-        manager.create(MasterSchedule, { ...dto, master }),
-      );
+      const schedules = dtos.map((dto) => manager.create(MasterSchedule, { ...dto, master }));
       return manager.save(MasterSchedule, schedules);
     });
   }
 
-  async setScheduleForMaster(masterId: number, dtos: CreateScheduleDto[]): Promise<MasterSchedule[]> {
+  async setScheduleForMaster(
+    masterId: number,
+    dtos: CreateScheduleDto[],
+  ): Promise<MasterSchedule[]> {
     await this.ensureMasterExists(masterId);
     const master = await this.masterProfilesRepo.findOne({ where: { id: masterId } });
     if (!master) throw new NotFoundException(`Master #${masterId} not found`);
@@ -242,9 +238,15 @@ export class MastersService {
         .getMany();
 
     const [masterBookings, vehicleBookings]: [Booking[], Booking[]] = await Promise.all([
-      dayQuery(this.bookingsRepo.createQueryBuilder('b').where('b.masterId = :masterId', { masterId })),
+      dayQuery(
+        this.bookingsRepo.createQueryBuilder('b').where('b.masterId = :masterId', { masterId }),
+      ),
       vehicleId
-        ? dayQuery(this.bookingsRepo.createQueryBuilder('b').where('b.vehicleId = :vehicleId', { vehicleId }))
+        ? dayQuery(
+            this.bookingsRepo
+              .createQueryBuilder('b')
+              .where('b.vehicleId = :vehicleId', { vehicleId }),
+          )
         : Promise.resolve([]),
     ]);
 
@@ -267,15 +269,19 @@ export class MastersService {
     for (let m = startMin; m + durationMinutes <= endMin; m += 30) {
       const hh = Math.floor(m / 60);
       const mm = m % 60;
-      const slotTime = new Date(`${date}T${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:00`);
+      const slotTime = new Date(
+        `${date}T${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:00`,
+      );
 
       if (slotTime <= now) continue;
 
       const slotEnd = new Date(slotTime.getTime() + durationMinutes * 60_000);
 
       // Slot is free only if BOTH the master AND the vehicle are available
-      if (!isOccupied(masterBookings, slotTime, slotEnd) &&
-          !isOccupied(vehicleBookings, slotTime, slotEnd)) {
+      if (
+        !isOccupied(masterBookings, slotTime, slotEnd) &&
+        !isOccupied(vehicleBookings, slotTime, slotEnd)
+      ) {
         slots.push(`${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`);
       }
     }

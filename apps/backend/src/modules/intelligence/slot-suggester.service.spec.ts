@@ -17,9 +17,9 @@ const mockConfigService = () => ({
     const map: Record<string, unknown> = {
       'intelligence.weights.rating': 0.35,
       'intelligence.weights.availability': 0.25,
-      'intelligence.weights.experience': 0.20,
-      'intelligence.weights.load': 0.10,
-      'intelligence.weights.specialization': 0.10,
+      'intelligence.weights.experience': 0.2,
+      'intelligence.weights.load': 0.1,
+      'intelligence.weights.specialization': 0.1,
       'intelligence.lookaheadDays': 7,
       'intelligence.topSlots': 5,
     };
@@ -101,12 +101,17 @@ describe('SlotSuggesterService', () => {
 
   it('returns slots with 5 reasons each', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: { name: 'ТО' } });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(
-      buildQb([{ master: masterProfile }]),
-    );
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([{ master: masterProfile }]));
 
     const monday = getNextMonday();
-    const schedule = { id: 1, master: masterProfile, weekday: weekday(monday), startTime: '09:00', endTime: '18:00', isActive: true };
+    const schedule = {
+      id: 1,
+      master: masterProfile,
+      weekday: weekday(monday),
+      startTime: '09:00',
+      endTime: '18:00',
+      isActive: true,
+    };
 
     bookingRepo.createQueryBuilder.mockReturnValue(buildQb([]));
     dayOffRepo.createQueryBuilder.mockReturnValue(buildQb([]));
@@ -120,12 +125,17 @@ describe('SlotSuggesterService', () => {
 
   it('respects topSlots limit of 5', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(
-      buildQb([{ master: masterProfile }]),
-    );
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([{ master: masterProfile }]));
 
     const monday = getNextMonday();
-    const schedule = { id: 1, master: masterProfile, weekday: weekday(monday), startTime: '09:00', endTime: '18:00', isActive: true };
+    const schedule = {
+      id: 1,
+      master: masterProfile,
+      weekday: weekday(monday),
+      startTime: '09:00',
+      endTime: '18:00',
+      isActive: true,
+    };
 
     bookingRepo.createQueryBuilder.mockReturnValue(buildQb([]));
     dayOffRepo.createQueryBuilder.mockReturnValue(buildQb([]));
@@ -138,12 +148,17 @@ describe('SlotSuggesterService', () => {
 
   it('skips slots that overlap existing bookings', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(
-      buildQb([{ master: masterProfile }]),
-    );
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([{ master: masterProfile }]));
 
     const monday = getNextMonday();
-    const schedule = { id: 1, master: masterProfile, weekday: weekday(monday), startTime: '09:00', endTime: '10:00', isActive: true };
+    const schedule = {
+      id: 1,
+      master: masterProfile,
+      weekday: weekday(monday),
+      startTime: '09:00',
+      endTime: '10:00',
+      isActive: true,
+    };
 
     // Existing booking that occupies the whole window
     const existingBooking = {
@@ -169,7 +184,14 @@ describe('SlotSuggesterService', () => {
     );
 
     const monday = getNextMonday();
-    const schedule = { id: 1, master: masterProfile, weekday: weekday(monday), startTime: '09:00', endTime: '10:00', isActive: true };
+    const schedule = {
+      id: 1,
+      master: masterProfile,
+      weekday: weekday(monday),
+      startTime: '09:00',
+      endTime: '10:00',
+      isActive: true,
+    };
 
     bookingRepo.createQueryBuilder.mockReturnValue(buildQb([]));
     dayOffRepo.createQueryBuilder.mockReturnValue(buildQb([]));
@@ -186,15 +208,45 @@ describe('SlotSuggesterService', () => {
   it('results are sorted by score descending', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
     const masters = [
-      { master: { id: 1, rating: 5, experienceYears: 10, specialization: null, user: { firstName: 'A', lastName: 'B' } } },
-      { master: { id: 2, rating: 2, experienceYears: 1, specialization: null, user: { firstName: 'C', lastName: 'D' } } },
+      {
+        master: {
+          id: 1,
+          rating: 5,
+          experienceYears: 10,
+          specialization: null,
+          user: { firstName: 'A', lastName: 'B' },
+        },
+      },
+      {
+        master: {
+          id: 2,
+          rating: 2,
+          experienceYears: 1,
+          specialization: null,
+          user: { firstName: 'C', lastName: 'D' },
+        },
+      },
     ];
     masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb(masters));
 
     const monday = getNextMonday();
     const schedules = [
-      { id: 1, master: { id: 1 }, weekday: weekday(monday), startTime: '09:00', endTime: '10:00', isActive: true },
-      { id: 2, master: { id: 2 }, weekday: weekday(monday), startTime: '09:00', endTime: '10:00', isActive: true },
+      {
+        id: 1,
+        master: { id: 1 },
+        weekday: weekday(monday),
+        startTime: '09:00',
+        endTime: '10:00',
+        isActive: true,
+      },
+      {
+        id: 2,
+        master: { id: 2 },
+        weekday: weekday(monday),
+        startTime: '09:00',
+        endTime: '10:00',
+        isActive: true,
+      },
     ];
 
     bookingRepo.createQueryBuilder.mockReturnValue(buildQb([]));
@@ -210,14 +262,24 @@ describe('SlotSuggesterService', () => {
 
   it('skips day-off dates', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(
-      buildQb([{ master: masterProfile }]),
-    );
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([{ master: masterProfile }]));
 
     const monday = getNextMonday();
-    const schedule = { id: 1, master: masterProfile, weekday: weekday(monday), startTime: '09:00', endTime: '18:00', isActive: true };
+    const schedule = {
+      id: 1,
+      master: masterProfile,
+      weekday: weekday(monday),
+      startTime: '09:00',
+      endTime: '18:00',
+      isActive: true,
+    };
 
-    const dayOff = { id: 1, master: masterProfile, date: monday.toISOString().slice(0, 10), reason: null };
+    const dayOff = {
+      id: 1,
+      master: masterProfile,
+      date: monday.toISOString().slice(0, 10),
+      reason: null,
+    };
 
     bookingRepo.createQueryBuilder.mockReturnValue(buildQb([]));
     dayOffRepo.createQueryBuilder.mockReturnValue(buildQb([dayOff]));
@@ -227,7 +289,9 @@ describe('SlotSuggesterService', () => {
     const result = await svc.suggestSlots(1, monday, 40);
 
     // All slots from Monday should be skipped; may still have slots from other days
-    const mondaySlots = result.filter((s) => s.startAt.startsWith(monday.toISOString().slice(0, 10)));
+    const mondaySlots = result.filter((s) =>
+      s.startAt.startsWith(monday.toISOString().slice(0, 10)),
+    );
     expect(mondaySlots).toEqual([]);
   });
 });

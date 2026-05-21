@@ -20,7 +20,7 @@ const mockUser = (overrides: Partial<User> = {}): User =>
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),
     ...overrides,
-  } as User);
+  }) as User;
 
 const mockUsersRepo = () => ({
   findOne: jest.fn(),
@@ -38,7 +38,10 @@ describe('UsersService', () => {
       providers: [
         UsersService,
         { provide: getRepositoryToken(User), useFactory: mockUsersRepo },
-        { provide: getRepositoryToken(MasterProfile), useFactory: () => ({ create: jest.fn(), save: jest.fn() }) },
+        {
+          provide: getRepositoryToken(MasterProfile),
+          useFactory: () => ({ create: jest.fn(), save: jest.fn() }),
+        },
       ],
     }).compile();
 

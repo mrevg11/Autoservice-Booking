@@ -18,9 +18,9 @@ const mockConfigService = () => ({
     const map: Record<string, unknown> = {
       'intelligence.weights.rating': 0.35,
       'intelligence.weights.availability': 0.25,
-      'intelligence.weights.experience': 0.20,
-      'intelligence.weights.load': 0.10,
-      'intelligence.weights.specialization': 0.10,
+      'intelligence.weights.experience': 0.2,
+      'intelligence.weights.load': 0.1,
+      'intelligence.weights.specialization': 0.1,
       'intelligence.minDataPoints': 5,
     };
     return map[key];
@@ -92,9 +92,7 @@ describe('RecommendationsService', () => {
       id: 1,
       category: { name: 'Технічне обслуговування' },
     });
-    masterServiceRepo.createQueryBuilder.mockReturnValue(
-      buildQb([{ master: masterProfile }]),
-    );
+    masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb([{ master: masterProfile }]));
     bookingRepo.createQueryBuilder.mockReturnValue(buildQb([]));
     reviewRepo.createQueryBuilder.mockReturnValue(buildQb([]));
 
@@ -124,8 +122,24 @@ describe('RecommendationsService', () => {
   it('sorts recommendations by score descending', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
     const masters = [
-      { master: { id: 1, rating: 2, experienceYears: 1, specialization: null, user: { firstName: 'A', lastName: 'B' } } },
-      { master: { id: 2, rating: 5, experienceYears: 10, specialization: null, user: { firstName: 'C', lastName: 'D' } } },
+      {
+        master: {
+          id: 1,
+          rating: 2,
+          experienceYears: 1,
+          specialization: null,
+          user: { firstName: 'A', lastName: 'B' },
+        },
+      },
+      {
+        master: {
+          id: 2,
+          rating: 5,
+          experienceYears: 10,
+          specialization: null,
+          user: { firstName: 'C', lastName: 'D' },
+        },
+      },
     ];
     masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb(masters));
     bookingRepo.createQueryBuilder.mockReturnValue(buildQb([]));
@@ -139,7 +153,13 @@ describe('RecommendationsService', () => {
   it('limits results to max 5', async () => {
     serviceRepo.findOne.mockResolvedValue({ id: 1, category: null });
     const masters = Array.from({ length: 10 }, (_, i) => ({
-      master: { id: i + 1, rating: 3, experienceYears: 3, specialization: null, user: { firstName: 'X', lastName: `${i}` } },
+      master: {
+        id: i + 1,
+        rating: 3,
+        experienceYears: 3,
+        specialization: null,
+        user: { firstName: 'X', lastName: `${i}` },
+      },
     }));
     masterServiceRepo.createQueryBuilder.mockReturnValue(buildQb(masters));
     bookingRepo.createQueryBuilder.mockReturnValue(buildQb([]));

@@ -23,8 +23,6 @@ export class AddServiceInterval1747536060000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      'ALTER TABLE `services` DROP COLUMN `recommendedIntervalDays`',
-    );
+    await queryRunner.query('ALTER TABLE `services` DROP COLUMN `recommendedIntervalDays`');
   }
 }

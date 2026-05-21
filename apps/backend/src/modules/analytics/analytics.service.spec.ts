@@ -12,10 +12,7 @@ describe('AnalyticsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AnalyticsService,
-        { provide: DataSource, useFactory: mockDataSource },
-      ],
+      providers: [AnalyticsService, { provide: DataSource, useFactory: mockDataSource }],
     }).compile();
     service = module.get(AnalyticsService);
     ds = module.get(DataSource);
@@ -23,17 +20,22 @@ describe('AnalyticsService', () => {
 
   describe('getRevenue', () => {
     it('returns mapped revenue rows with defaults', async () => {
-      ds.query.mockResolvedValue([
-        { period: '2026-05', revenue: '5000.00', count: '10' },
-      ]);
+      ds.query.mockResolvedValue([{ period: '2026-05', revenue: '5000.00', count: '10' }]);
       const result = await service.getRevenue({});
       expect(result).toEqual([{ period: '2026-05', revenue: 5000, count: 10 }]);
-      expect(ds.query).toHaveBeenCalledWith(expect.stringContaining('DATE_FORMAT'), expect.any(Array));
+      expect(ds.query).toHaveBeenCalledWith(
+        expect.stringContaining('DATE_FORMAT'),
+        expect.any(Array),
+      );
     });
 
     it('uses provided groupBy=day format', async () => {
       ds.query.mockResolvedValue([{ period: '2026-05-14', revenue: '200.50', count: '2' }]);
-      const result = await service.getRevenue({ groupBy: 'day', from: '2026-05-01', to: '2026-05-14' });
+      const result = await service.getRevenue({
+        groupBy: 'day',
+        from: '2026-05-01',
+        to: '2026-05-14',
+      });
       expect(result[0].revenue).toBe(200.5);
       const [fmt] = ds.query.mock.calls[0][1];
       expect(fmt).toBe('%Y-%m-%d');
@@ -82,7 +84,14 @@ describe('AnalyticsService', () => {
 
     it('caps loadPercent at 100', async () => {
       ds.query.mockResolvedValue([
-        { masterId: 1, masterName: 'X', avgRating: '5', totalBookings: '10000', completedBookings: '9000', totalRevenue: '0' },
+        {
+          masterId: 1,
+          masterName: 'X',
+          avgRating: '5',
+          totalBookings: '10000',
+          completedBookings: '9000',
+          totalRevenue: '0',
+        },
       ]);
       const result = await service.getMasterLoad({ from: '2026-05-14', to: '2026-05-15' });
       expect(result[0].loadPercent).toBe(100);
@@ -92,7 +101,13 @@ describe('AnalyticsService', () => {
   describe('getTopServices', () => {
     it('returns mapped service rows', async () => {
       ds.query.mockResolvedValue([
-        { serviceId: 1, serviceName: 'ТО', categoryName: 'Сервіс', bookingCount: '5', revenue: '2500.00' },
+        {
+          serviceId: 1,
+          serviceName: 'ТО',
+          categoryName: 'Сервіс',
+          bookingCount: '5',
+          revenue: '2500.00',
+        },
       ]);
       const result = await service.getTopServices({});
       expect(result[0].serviceId).toBe(1);
@@ -113,7 +128,13 @@ describe('AnalyticsService', () => {
   describe('getClientsRetention', () => {
     it('returns parsed client retention metrics', async () => {
       ds.query.mockResolvedValue([
-        { newClients: '3', returningClients: '7', churnedClients: '1', totalClients: '11', avgBookingsPerClient: '2.5' },
+        {
+          newClients: '3',
+          returningClients: '7',
+          churnedClients: '1',
+          totalClients: '11',
+          avgBookingsPerClient: '2.5',
+        },
       ]);
       const result = await service.getClientsRetention();
       expect(result.newClients).toBe(3);
@@ -123,7 +144,13 @@ describe('AnalyticsService', () => {
 
     it('handles null values with defaults', async () => {
       ds.query.mockResolvedValue([
-        { newClients: null, returningClients: null, churnedClients: null, totalClients: null, avgBookingsPerClient: null },
+        {
+          newClients: null,
+          returningClients: null,
+          churnedClients: null,
+          totalClients: null,
+          avgBookingsPerClient: null,
+        },
       ]);
       const result = await service.getClientsRetention();
       expect(result.newClients).toBe(0);

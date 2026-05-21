@@ -7,13 +7,7 @@ import {
   Optional,
   DefaultValuePipe,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiQuery,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { SlotSuggesterService } from './slot-suggester.service';
 import { RecommendationsService } from './recommendations.service';
 import { DurationPredictorService } from './duration-predictor.service';
@@ -105,8 +99,15 @@ export class IntelligenceController {
   }
 
   @Get('estimate-duration-multi')
-  @ApiOperation({ summary: 'Оцінка сумарної тривалості кількох послуг з урахуванням коефіцієнтів (вік авто, сезон, майстер)' })
-  @ApiQuery({ name: 'serviceIds', description: 'Ідентифікатори послуг через кому', example: '1,2,3' })
+  @ApiOperation({
+    summary:
+      'Оцінка сумарної тривалості кількох послуг з урахуванням коефіцієнтів (вік авто, сезон, майстер)',
+  })
+  @ApiQuery({
+    name: 'serviceIds',
+    description: 'Ідентифікатори послуг через кому',
+    example: '1,2,3',
+  })
   @ApiQuery({ name: 'masterId', required: false, type: Number })
   @ApiQuery({ name: 'vehicleYear', required: false, type: Number })
   @ApiResponse({ status: 200, type: DurationEstimateMultiResponseDto })
