@@ -65,11 +65,9 @@ export class AuthService {
     const profile = this.profilesRepo.create({ user });
     await this.profilesRepo.save(profile);
 
-    await this.mailService.sendEmailVerification(
-      user.email,
-      emailVerificationToken,
-      user.firstName,
-    );
+    this.mailService
+      .sendEmailVerification(user.email, emailVerificationToken, user.firstName)
+      .catch((err) => this.logger.error(`Failed to send verification email: ${err.message}`));
 
     this.logger.log(`New user registered: ${user.email}`);
     return { message: 'Registration successful. Please verify your email.' };
@@ -197,7 +195,9 @@ export class AuthService {
       user.passwordResetExpires = expires;
       await this.usersRepo.save(user);
 
-      await this.mailService.sendPasswordReset(email, token);
+      this.mailService
+        .sendPasswordReset(email, token)
+        .catch((err) => this.logger.error(`Failed to send password reset email: ${err.message}`));
     }
 
     return { message: 'If this email exists, a reset link has been sent.' };
