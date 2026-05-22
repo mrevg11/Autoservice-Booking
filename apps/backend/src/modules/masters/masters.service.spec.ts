@@ -103,12 +103,14 @@ describe('MastersService.getAvailableSlots', () => {
     daysOffRepo.findOne.mockResolvedValue(null);
     schedulesRepo.findOne.mockResolvedValue({ ...monSchedule });
 
+    // futureDate = '2099-06-16' is summer in Kyiv (UTC+3)
+    // 09:00 Kyiv = 06:00 UTC
     const futureQb = {
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
       getMany: jest.fn().mockResolvedValue([
         {
-          scheduledAt: new Date(`${futureDate}T09:00:00`),
+          scheduledAt: new Date(`${futureDate}T06:00:00.000Z`),
           estimatedDurationMinutes: 60,
         },
       ]),
@@ -142,13 +144,13 @@ describe('MastersService.getAvailableSlots', () => {
     const futureDate = '2099-06-16';
     schedulesRepo.findOne.mockResolvedValue({ ...monSchedule });
 
-    // Booking at 10:00 for 120 min → blocks 10:00 and 10:30 slots
+    // Booking at 10:00 Kyiv (UTC+3 in June) = 07:00 UTC, 120 min → blocks 10:00 and 10:30
     const futureQb = {
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
       getMany: jest.fn().mockResolvedValue([
         {
-          scheduledAt: new Date(`${futureDate}T10:00:00`),
+          scheduledAt: new Date(`${futureDate}T07:00:00.000Z`),
           estimatedDurationMinutes: 120,
         },
       ]),
@@ -169,13 +171,13 @@ describe('MastersService.getAvailableSlots', () => {
       endTime: '10:00',
     });
 
-    // One 60-min booking fills the entire 09:00-10:00 window
+    // One 60-min booking at 09:00 Kyiv (UTC+3 in June) = 06:00 UTC, fills 09:00-10:00 window
     const futureQb = {
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
       getMany: jest.fn().mockResolvedValue([
         {
-          scheduledAt: new Date(`${futureDate}T09:00:00`),
+          scheduledAt: new Date(`${futureDate}T06:00:00.000Z`),
           estimatedDurationMinutes: 60,
         },
       ]),
