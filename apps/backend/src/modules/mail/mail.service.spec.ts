@@ -6,20 +6,23 @@ jest.mock('fs', () => ({
   readFileSync: jest.fn().mockReturnValue('{{body}} {{year}}'),
 }));
 
-jest.mock('nodemailer', () => ({
-  createTransport: jest.fn().mockReturnValue({
-    sendMail: jest.fn().mockResolvedValue({ messageId: 'test-id' }),
-  }),
-}));
+jest.mock('@getbrevo/brevo', () => {
+  const sendTransacEmail = jest.fn().mockResolvedValue({ body: { messageId: 'test-id' } });
+  const setApiKey = jest.fn();
+  class TransactionalEmailsApi {
+    setApiKey = setApiKey;
+    sendTransacEmail = sendTransacEmail;
+  }
+  class SendSmtpEmail {}
+  const TransactionalEmailsApiApiKeys = { apiKey: 'apiKey' };
+  return { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys };
+});
 
 const mockConfigService = () => ({
   get: jest.fn((key: string) => {
     const map: Record<string, unknown> = {
-      MAIL_HOST: 'smtp.test.com',
-      MAIL_PORT: 587,
-      MAIL_USER: 'test@test.com',
-      MAIL_PASS: 'pass',
-      MAIL_FROM: 'noreply@test.com',
+      BREVO_API_KEY: 'test-api-key',
+      MAIL_FROM: 'AutoService <noreply@test.com>',
       FRONTEND_URL: 'http://localhost:5173',
     };
     return map[key];

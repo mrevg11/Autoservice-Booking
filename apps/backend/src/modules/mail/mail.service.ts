@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
-import * as nodemailer from 'nodemailer';
+import * as SibApiV3Sdk from '@getbrevo/brevo';
 
 export interface BookingEmailContext {
   bookingId: number;
@@ -31,19 +31,21 @@ export interface StatusChangedContext {
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private transporter: nodemailer.Transporter;
+  private apiInstance: SibApiV3Sdk.TransactionalEmailsApi;
+  private from: string;
+  private fromName: string;
 
   constructor(private config: ConfigService) {
-    const secure = this.config.get<string>('MAIL_SECURE') === 'true';
-    this.transporter = nodemailer.createTransport({
-      host: this.config.get<string>('MAIL_HOST'),
-      port: this.config.get<number>('MAIL_PORT'),
-      secure,
-      auth: {
-        user: this.config.get<string>('MAIL_USER'),
-        pass: this.config.get<string>('MAIL_PASS'),
-      },
-    });
+    const apiKey = this.config.get<string>('BREVO_API_KEY') ?? '';
+    const mailFrom = this.config.get<string>('MAIL_FROM') ?? 'AutoService <noreply@autoservice.com>';
+
+    // Parse "Name <email>" format
+    const match = mailFrom.match(/^(.*?)\s*<(.+)>$/);
+    this.fromName = match ? match[1].trim() : 'AutoService';
+    this.from = match ? match[2].trim() : mailFrom;
+
+    this.apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+    this.apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, apiKey);
   }
 
   async sendEmailVerification(to: string, token: string, firstName = 'Користувачу'): Promise<void> {
@@ -65,12 +67,12 @@ export class MailService {
 
   async sendBookingReminder24h(to: string, context: BookingEmailContext): Promise<void> {
     const html = this.renderTemplate('booking-reminder-24h', context);
-    await this.send(to, '🔔 Нагадування: запис завтра — AutoService', html);
+    await this.send(to, 'Нагадування: запис завтра — AutoService', html);
   }
 
   async sendBookingReminder2h(to: string, context: BookingEmailContext): Promise<void> {
     const html = this.renderTemplate('booking-reminder-2h', context);
-    await this.send(to, '⏰ Запис через 2 години — AutoService', html);
+    await this.send(to, 'Запис через 2 години — AutoService', html);
   }
 
   async sendBookingCancelled(to: string, context: BookingCancelledContext): Promise<void> {
@@ -100,13 +102,14 @@ export class MailService {
 
   private async send(to: string, subject: string, html: string): Promise<void> {
     try {
-      const info = await this.transporter.sendMail({
-        from: this.config.get<string>('MAIL_FROM'),
-        to,
-        subject,
-        html,
-      });
-      this.logger.log(`Email sent to ${to}: ${info.messageId}`);
+      const email = new SibApiV3Sdk.SendSmtpEmail();
+      email.to = [{ email: to }];
+      email.sender = { name: this.fromName, email: this.from };
+      email.subject = subject;
+      email.htmlContent = html;
+
+      const result = await this.apiInstance.sendTransacEmail(email);
+      this.logger.log(`Email sent to ${to}: ${JSON.stringify(result.body)}`);
     } catch (error) {
       this.logger.error(`Failed to send email to ${to}`, error);
     }
