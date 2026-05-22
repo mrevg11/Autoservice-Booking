@@ -26,7 +26,9 @@ export class RegisterDto {
   @IsString()
   @MinLength(2, { message: 'Прізвище має містити мінімум 2 символи' })
   @MaxLength(20, { message: 'Прізвище не може перевищувати 20 символів' })
-  @Matches(/^[a-zA-Zа-яА-ЯіІїЇєЄґҐʼ']+$/, { message: 'Прізвище може містити лише літери та апостроф' })
+  @Matches(/^[a-zA-Zа-яА-ЯіІїЇєЄґҐʼ']+$/, {
+    message: 'Прізвище може містити лише літери та апостроф',
+  })
   lastName: string;
 
   @ApiProperty({ example: '+380991234567' })
