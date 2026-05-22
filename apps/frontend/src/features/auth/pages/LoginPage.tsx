@@ -15,7 +15,13 @@ export default function LoginPage() {
     setError('');
     loginMutation.mutate(
       { email, password },
-      { onError: () => setError('Невірний email або пароль') },
+      {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (err: any) => {
+          const msg = err?.response?.data?.message;
+          setError(typeof msg === 'string' ? msg : 'Невірний email або пароль');
+        },
+      },
     );
   };
 
