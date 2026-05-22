@@ -86,33 +86,40 @@ export class UsersService {
 
   async adminUpdate(id: number, dto: AdminUpdateUserDto): Promise<UserResponseDto> {
     const user = await this.findOneOrFail(id);
+    const wasBlocked = user.isBlocked;
     Object.assign(user, dto);
     await this.usersRepo.save(user);
+
+    if (dto.isBlocked && !wasBlocked) {
+      await this.bookingsRepo.update(
+        {
+          client: { id },
+          status: In([BookingStatus.PENDING, BookingStatus.CONFIRMED, BookingStatus.IN_PROGRESS]),
+        },
+        { status: BookingStatus.CANCELLED },
+      );
+    }
+
     return toUserResponse(user);
   }
 
   async remove(id: number): Promise<{ message: string }> {
-    const user = await this.findOneOrFail(id);
+    await this.findOneOrFail(id);
 
-    // Cancel active bookings so the DB cascade can proceed
-    await this.bookingsRepo.update(
-      { client: { id }, status: In([BookingStatus.PENDING, BookingStatus.CONFIRMED]) },
-      { status: BookingStatus.CANCELLED },
-    );
+    // Delete all client bookings (cascades: booking_services, photos, status_history, reviews)
+    await this.bookingsRepo
+      .createQueryBuilder()
+      .delete()
+      .from(Booking)
+      .where('clientId = :id', { id })
+      .execute();
 
-    // Nullify vehicle ref on all this user's bookings (covers vehicles being deleted by CASCADE below)
-    const vehicles = await this.vehiclesRepo.find({ where: { client: { id } } });
-    if (vehicles.length > 0) {
-      const vehicleIds = vehicles.map((v) => v.id);
-      await this.bookingsRepo
-        .createQueryBuilder()
-        .update(Booking)
-        .set({ vehicle: null })
-        .where('vehicleId IN (:...ids)', { ids: vehicleIds })
-        .execute();
-    }
+    // Delete vehicles (booking.vehicle SET NULL handled by DB)
+    await this.vehiclesRepo.delete({ client: { id } });
 
-    await this.usersRepo.remove(user);
+    // Delete user — DB CASCADE handles client_profile, master_profile, notifications
+    await this.usersRepo.delete(id);
+
     return { message: `User ${id} deleted` };
   }
 
