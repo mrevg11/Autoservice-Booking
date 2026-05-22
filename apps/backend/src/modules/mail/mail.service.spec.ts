@@ -6,17 +6,15 @@ jest.mock('fs', () => ({
   readFileSync: jest.fn().mockReturnValue('{{body}} {{year}}'),
 }));
 
-jest.mock('@getbrevo/brevo', () => {
-  const sendTransacEmail = jest.fn().mockResolvedValue({ body: { messageId: 'test-id' } });
-  const setApiKey = jest.fn();
-  class TransactionalEmailsApi {
-    setApiKey = setApiKey;
-    sendTransacEmail = sendTransacEmail;
-  }
-  class SendSmtpEmail {}
-  const TransactionalEmailsApiApiKeys = { apiKey: 'apiKey' };
-  return { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys };
-});
+const mockSendTransacEmail = jest.fn().mockResolvedValue({});
+
+jest.mock('@getbrevo/brevo', () => ({
+  BrevoClient: jest.fn().mockImplementation(() => ({
+    transactionalEmails: {
+      sendTransacEmail: mockSendTransacEmail,
+    },
+  })),
+}));
 
 const mockConfigService = () => ({
   get: jest.fn((key: string) => {

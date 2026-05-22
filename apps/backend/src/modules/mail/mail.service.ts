@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
-import * as SibApiV3Sdk from '@getbrevo/brevo';
+import { BrevoClient } from '@getbrevo/brevo';
 
 export interface BookingEmailContext {
   bookingId: number;
@@ -31,21 +31,20 @@ export interface StatusChangedContext {
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private apiInstance: SibApiV3Sdk.TransactionalEmailsApi;
+  private client: BrevoClient;
   private from: string;
   private fromName: string;
 
   constructor(private config: ConfigService) {
     const apiKey = this.config.get<string>('BREVO_API_KEY') ?? '';
-    const mailFrom = this.config.get<string>('MAIL_FROM') ?? 'AutoService <noreply@autoservice.com>';
+    const mailFrom =
+      this.config.get<string>('MAIL_FROM') ?? 'AutoService <noreply@autoservice.com>';
 
-    // Parse "Name <email>" format
     const match = mailFrom.match(/^(.*?)\s*<(.+)>$/);
     this.fromName = match ? match[1].trim() : 'AutoService';
     this.from = match ? match[2].trim() : mailFrom;
 
-    this.apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-    this.apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, apiKey);
+    this.client = new BrevoClient({ apiKey });
   }
 
   async sendEmailVerification(to: string, token: string, firstName = 'Користувачу'): Promise<void> {
@@ -102,14 +101,13 @@ export class MailService {
 
   private async send(to: string, subject: string, html: string): Promise<void> {
     try {
-      const email = new SibApiV3Sdk.SendSmtpEmail();
-      email.to = [{ email: to }];
-      email.sender = { name: this.fromName, email: this.from };
-      email.subject = subject;
-      email.htmlContent = html;
-
-      const result = await this.apiInstance.sendTransacEmail(email);
-      this.logger.log(`Email sent to ${to}: ${JSON.stringify(result.body)}`);
+      await this.client.transactionalEmails.sendTransacEmail({
+        to: [{ email: to }],
+        sender: { name: this.fromName, email: this.from },
+        subject,
+        htmlContent: html,
+      });
+      this.logger.log(`Email sent to ${to}`);
     } catch (error) {
       this.logger.error(`Failed to send email to ${to}`, error);
     }
