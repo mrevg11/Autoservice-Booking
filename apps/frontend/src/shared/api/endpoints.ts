@@ -366,6 +366,8 @@ export const adminUsersApi = {
   remove: (id: number) => api.delete(`/users/${id}`),
   createMaster: (data: CreateMasterPayload) =>
     api.post<{ message: string }>('/users/create-master', data),
+  resendVerification: (id: number) =>
+    api.post<{ message: string }>(`/users/${id}/resend-verification`),
 };
 
 // ─── Admin / Services ─────────────────────────────────────────────────────────

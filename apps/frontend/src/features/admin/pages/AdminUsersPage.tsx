@@ -97,6 +97,12 @@ export default function AdminUsersPage() {
     onError: () => toast('Помилка', 'error'),
   });
 
+  const resendMutation = useMutation({
+    mutationFn: (id: number) => adminUsersApi.resendVerification(id),
+    onSuccess: () => toast('Лист верифікації надіслано', 'success'),
+    onError: () => toast('Помилка надсилання', 'error'),
+  });
+
   const deleteMutation = useMutation({
     mutationFn: (id: number) => adminUsersApi.remove(id),
     onSuccess: () => { toast('Видалено', 'success'); setDeleteId(null); qc.invalidateQueries({ queryKey: ['admin-users'] }); },
@@ -174,6 +180,14 @@ export default function AdminUsersPage() {
                       >
                         👁 Деталі
                       </button>
+                      {!u.emailVerified && (
+                        <button
+                          onClick={() => resendMutation.mutate(u.id)}
+                          className="px-2 py-1 text-xs rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors whitespace-nowrap"
+                        >
+                          ✉ Верифікація
+                        </button>
+                      )}
                       <button
                         onClick={() => blockMutation.mutate({ id: u.id, isBlocked: !u.isBlocked })}
                         className={`px-2 py-1 text-xs rounded-lg font-medium transition-colors whitespace-nowrap ${u.isBlocked ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'}`}

@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { User } from '../../database/entities/user.entity';
 import { MasterProfile } from '../../database/entities/master-profile.entity';
 import { MasterSchedule } from '../../database/entities/master-schedule.entity';
@@ -14,6 +15,7 @@ import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 import { UserResponseDto, toUserResponse } from './dto/user-response.dto';
 import { PaginationDto, paginate, PaginatedResult } from '../../common/dto/pagination.dto';
 import { RegisterDto } from '../auth/dto/register.dto';
+import { MailService } from '../mail/mail.service';
 
 const SALT_ROUNDS = 12;
 
@@ -25,6 +27,7 @@ export class UsersService {
     @InjectRepository(MasterSchedule) private schedulesRepo: Repository<MasterSchedule>,
     @InjectRepository(Booking) private bookingsRepo: Repository<Booking>,
     @InjectRepository(Vehicle) private vehiclesRepo: Repository<Vehicle>,
+    private mailService: MailService,
   ) {}
 
   async getMe(userId: number): Promise<UserResponseDto> {
@@ -142,6 +145,24 @@ export class UsersService {
     await this.schedulesRepo.save(defaultSchedule);
 
     return { message: 'Master account created successfully.' };
+  }
+
+  async resendVerificationEmail(id: number): Promise<{ message: string }> {
+    const user = await this.findOneOrFail(id);
+    if (user.emailVerified) throw new BadRequestException('Email вже верифіковано');
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date();
+    expires.setHours(expires.getHours() + 24);
+    user.emailVerificationToken = token;
+    user.emailVerificationExpires = expires;
+    await this.usersRepo.save(user);
+
+    this.mailService
+      .sendEmailVerification(user.email, token, user.firstName)
+      .catch(() => undefined);
+
+    return { message: 'Лист верифікації надіслано' };
   }
 
   private async findOneOrFail(id: number): Promise<User> {

@@ -9,6 +9,8 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
@@ -85,6 +87,15 @@ export class UsersController {
   @ApiOperation({ summary: '[ADMIN] Оновити користувача (роль, блокування)' })
   adminUpdate(@Param('id', ParseIntPipe) id: number, @Body() dto: AdminUpdateUserDto) {
     return this.usersService.adminUpdate(id, dto);
+  }
+
+  @Post(':id/resend-verification')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '[ADMIN] Повторно надіслати лист верифікації' })
+  resendVerification(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.resendVerificationEmail(id);
   }
 
   @Delete(':id')
