@@ -10,7 +10,10 @@ import { Vehicle } from '../../database/entities/vehicle.entity';
 import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, MasterProfile, MasterSchedule, Booking, Vehicle]), MailModule],
+  imports: [
+    TypeOrmModule.forFeature([User, MasterProfile, MasterSchedule, Booking, Vehicle]),
+    MailModule,
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],
