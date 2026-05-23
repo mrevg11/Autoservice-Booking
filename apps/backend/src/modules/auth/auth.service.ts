@@ -43,7 +43,8 @@ export class AuthService {
     if (existing) throw new ConflictException('Цей email вже зареєстровано');
 
     const passwordHash = await bcrypt.hash(dto.password, SALT_ROUNDS);
-    const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const emailVerificationToken = crypto.createHash('sha256').update(rawToken).digest('hex');
     const emailVerificationExpires = new Date();
     emailVerificationExpires.setHours(
       emailVerificationExpires.getHours() + EMAIL_VERIFY_EXPIRES_HOURS,
@@ -66,7 +67,7 @@ export class AuthService {
     await this.profilesRepo.save(profile);
 
     this.mailService
-      .sendEmailVerification(user.email, emailVerificationToken, user.firstName)
+      .sendEmailVerification(user.email, rawToken, user.firstName)
       .catch((err) => this.logger.error(`Failed to send verification email: ${err.message}`));
 
     this.logger.log(`New user registered: ${user.email}`);
@@ -97,8 +98,9 @@ export class AuthService {
   }
 
   async verifyEmail(token: string): Promise<{ message: string }> {
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
     const user = await this.usersRepo.findOne({
-      where: { emailVerificationToken: token },
+      where: { emailVerificationToken: tokenHash },
     });
     if (!user) throw new BadRequestException('Недійсний або прострочений токен підтвердження');
 
@@ -187,16 +189,16 @@ export class AuthService {
 
     // Завжди повертаємо однакову відповідь — захист від user enumeration
     if (user) {
-      const token = crypto.randomBytes(32).toString('hex');
+      const rawToken = crypto.randomBytes(32).toString('hex');
       const expires = new Date();
       expires.setHours(expires.getHours() + RESET_EXPIRES_HOURS);
 
-      user.passwordResetToken = token;
+      user.passwordResetToken = crypto.createHash('sha256').update(rawToken).digest('hex');
       user.passwordResetExpires = expires;
       await this.usersRepo.save(user);
 
       this.mailService
-        .sendPasswordReset(email, token)
+        .sendPasswordReset(email, rawToken)
         .catch((err) => this.logger.error(`Failed to send password reset email: ${err.message}`));
     }
 
@@ -204,8 +206,9 @@ export class AuthService {
   }
 
   async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
     const user = await this.usersRepo.findOne({
-      where: { passwordResetToken: token },
+      where: { passwordResetToken: tokenHash },
     });
 
     if (!user || !user.passwordResetExpires || user.passwordResetExpires < new Date()) {

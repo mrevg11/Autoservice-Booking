@@ -7,6 +7,10 @@
     "dev:frontend": "npm --workspace=apps/frontend run dev",
     "build": "npm --workspaces run build",
     "lint": "npm --workspaces run lint",
-    "test": "npm --workspaces run test"
+    "test": "npm --workspaces run test",
+    "load-test:auth": "k6 run load-tests/01-auth-load.js",
+    "load-test:booking": "k6 run load-tests/02-booking-load.js",
+    "load-test:analytics": "k6 run load-tests/03-analytics-load.js",
+    "load-test:all": "k6 run load-tests/01-auth-load.js && k6 run load-tests/02-booking-load.js && k6 run load-tests/03-analytics-load.js"
   }
 }

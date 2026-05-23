@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, LessThan } from 'typeorm';
+import { Repository, DataSource, LessThan, In } from 'typeorm';
 import { Booking } from '../../database/entities/booking.entity';
 import { BookingService as BookingServiceEntity } from '../../database/entities/booking-service.entity';
 import { BookingStatusHistory } from '../../database/entities/booking-status-history.entity';
@@ -99,7 +99,7 @@ export class BookingsService {
       throw new ForbiddenException('Цей автомобіль не належить вам');
 
     // Validate services and master assignments
-    const services = await this.servicesRepo.findByIds(dto.serviceIds);
+    const services = await this.servicesRepo.find({ where: { id: In(dto.serviceIds) } });
     if (services.length !== dto.serviceIds.length) {
       throw new NotFoundException('Одну або кілька послуг не знайдено');
     }

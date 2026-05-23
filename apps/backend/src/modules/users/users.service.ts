@@ -163,15 +163,15 @@ export class UsersService {
     const user = await this.findOneOrFail(id);
     if (user.emailVerified) throw new BadRequestException('Email вже верифіковано');
 
-    const token = crypto.randomBytes(32).toString('hex');
+    const rawToken = crypto.randomBytes(32).toString('hex');
     const expires = new Date();
     expires.setHours(expires.getHours() + 24);
-    user.emailVerificationToken = token;
+    user.emailVerificationToken = crypto.createHash('sha256').update(rawToken).digest('hex');
     user.emailVerificationExpires = expires;
     await this.usersRepo.save(user);
 
     this.mailService
-      .sendEmailVerification(user.email, token, user.firstName)
+      .sendEmailVerification(user.email, rawToken, user.firstName)
       .catch(() => undefined);
 
     return { message: 'Лист верифікації надіслано' };
