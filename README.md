@@ -6,16 +6,7 @@
 
 ## 🚀 Demo
 
-- **Frontend:** https://autoservice-frontend.onrender.com
-- **Backend API:** https://autoservice-api.onrender.com/api/v1
-- **Swagger:** https://autoservice-api.onrender.com/api/v1/docs
-
-### Тестові акаунти
-| Роль | Email | Пароль |
-|------|-------|--------|
-| Клієнт | client@demo.com | DemoPass123! |
-| Майстер | master@demo.com | DemoPass123! |
-| Адмін | admin@demo.com | DemoPass123! |
+- **Frontend:** https://autoservice-frontend-kkyf.onrender.com
 
 ## 📋 Стек технологій
 
