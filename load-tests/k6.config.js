@@ -1,11 +1,11 @@
 // Базова конфігурація k6 для навантажувального тестування
 // Документація: https://k6.io/docs/
 
-export const BASE_URL = __ENV.BASE_URL || 'https://autoservice-booking.onrender.com/api/v1';
+export const BASE_URL = __ENV.BASE_URL || 'https://autoservice-api-3l53.onrender.com/api/v1';
 
 // Тестові облікові дані (demo-акаунти)
 export const CLIENT_CREDENTIALS = {
-  email: __ENV.CLIENT_EMAIL || 'client@demo.com',
+  email: __ENV.CLIENT_EMAIL || 'client.1@demo.com',
   password: __ENV.CLIENT_PASSWORD || 'DemoPass123!',
 };
 
