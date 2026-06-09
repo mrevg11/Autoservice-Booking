@@ -35,16 +35,16 @@ default   [   4% ] 004/100 VUs  0m06.0s/2m30.0s
 running (0m07.0s), 005/100 VUs, 0 complete and 0 interrupted iterations
 default   [   5% ] 005/100 VUs  0m07.0s/2m30.0s
 
-running (0m08.0s), 006/100 VUs, 0 complete and 0 interrupted iterations
+running (0m08.0s), 006/100 VUs, 1 complete and 0 interrupted iterations
 default   [   5% ] 006/100 VUs  0m08.0s/2m30.0s
 
-running (0m09.0s), 006/100 VUs, 0 complete and 0 interrupted iterations
+running (0m09.0s), 006/100 VUs, 1 complete and 0 interrupted iterations
 default   [   6% ] 006/100 VUs  0m09.0s/2m30.0s
 
-running (0m10.0s), 007/100 VUs, 0 complete and 0 interrupted iterations
+running (0m10.0s), 007/100 VUs, 1 complete and 0 interrupted iterations
 default   [   7% ] 007/100 VUs  0m10.0s/2m30.0s
 
-running (0m11.0s), 007/100 VUs, 0 complete and 0 interrupted iterations
+running (0m11.0s), 007/100 VUs, 1 complete and 0 interrupted iterations
 default   [   7% ] 007/100 VUs  0m11.0s/2m30.0s
 
 running (0m12.0s), 008/100 VUs, 1 complete and 0 interrupted iterations
@@ -56,7 +56,7 @@ default   [   9% ] 009/100 VUs  0m13.0s/2m30.0s
 running (0m14.0s), 009/100 VUs, 1 complete and 0 interrupted iterations
 default   [   9% ] 009/100 VUs  0m14.0s/2m30.0s
 
-running (0m15.0s), 010/100 VUs, 2 complete and 0 interrupted iterations
+running (0m15.0s), 010/100 VUs, 1 complete and 0 interrupted iterations
 default   [  10% ] 010/100 VUs  0m15.0s/2m30.0s
 
 running (0m16.0s), 011/100 VUs, 2 complete and 0 interrupted iterations
@@ -95,61 +95,61 @@ default   [  17% ] 017/100 VUs  0m26.0s/2m30.0s
 running (0m27.0s), 018/100 VUs, 2 complete and 0 interrupted iterations
 default   [  18% ] 018/100 VUs  0m27.0s/2m30.0s
 
-running (0m28.0s), 018/100 VUs, 2 complete and 0 interrupted iterations
+running (0m28.0s), 018/100 VUs, 3 complete and 0 interrupted iterations
 default   [  19% ] 018/100 VUs  0m28.0s/2m30.0s
 
-running (0m29.0s), 019/100 VUs, 2 complete and 0 interrupted iterations
+running (0m29.0s), 019/100 VUs, 3 complete and 0 interrupted iterations
 default   [  19% ] 019/100 VUs  0m29.0s/2m30.0s
 
-running (0m30.0s), 019/100 VUs, 2 complete and 0 interrupted iterations
+running (0m30.0s), 019/100 VUs, 4 complete and 0 interrupted iterations
 default   [  20% ] 019/100 VUs  0m30.0s/2m30.0s
 
-running (0m31.0s), 020/100 VUs, 3 complete and 0 interrupted iterations
+running (0m31.0s), 020/100 VUs, 4 complete and 0 interrupted iterations
 default   [  21% ] 020/100 VUs  0m31.0s/2m30.0s
 
-running (0m32.0s), 020/100 VUs, 3 complete and 0 interrupted iterations
+running (0m32.0s), 020/100 VUs, 4 complete and 0 interrupted iterations
 default   [  21% ] 020/100 VUs  0m32.0s/2m30.0s
 
-running (0m33.0s), 021/100 VUs, 3 complete and 0 interrupted iterations
+running (0m33.0s), 021/100 VUs, 4 complete and 0 interrupted iterations
 default   [  22% ] 021/100 VUs  0m33.0s/2m30.0s
 
-running (0m34.0s), 021/100 VUs, 3 complete and 0 interrupted iterations
+running (0m34.0s), 021/100 VUs, 5 complete and 0 interrupted iterations
 default   [  23% ] 021/100 VUs  0m34.0s/2m30.0s
 
-running (0m35.0s), 022/100 VUs, 3 complete and 0 interrupted iterations
+running (0m35.0s), 022/100 VUs, 5 complete and 0 interrupted iterations
 default   [  23% ] 022/100 VUs  0m35.0s/2m30.0s
 
-running (0m36.0s), 022/100 VUs, 3 complete and 0 interrupted iterations
+running (0m36.0s), 022/100 VUs, 5 complete and 0 interrupted iterations
 default   [  24% ] 022/100 VUs  0m36.0s/2m30.0s
 
-running (0m37.0s), 023/100 VUs, 4 complete and 0 interrupted iterations
+running (0m37.0s), 023/100 VUs, 5 complete and 0 interrupted iterations
 default   [  25% ] 023/100 VUs  0m37.0s/2m30.0s
 
-running (0m38.0s), 023/100 VUs, 4 complete and 0 interrupted iterations
+running (0m38.0s), 023/100 VUs, 5 complete and 0 interrupted iterations
 default   [  25% ] 023/100 VUs  0m38.0s/2m30.0s
 
-running (0m39.0s), 024/100 VUs, 4 complete and 0 interrupted iterations
+running (0m39.0s), 024/100 VUs, 5 complete and 0 interrupted iterations
 default   [  26% ] 024/100 VUs  0m39.0s/2m30.0s
 
-running (0m40.0s), 024/100 VUs, 4 complete and 0 interrupted iterations
+running (0m40.0s), 024/100 VUs, 5 complete and 0 interrupted iterations
 default   [  27% ] 024/100 VUs  0m40.0s/2m30.0s
 
-running (0m41.0s), 025/100 VUs, 4 complete and 0 interrupted iterations
+running (0m41.0s), 025/100 VUs, 5 complete and 0 interrupted iterations
 default   [  27% ] 025/100 VUs  0m41.0s/2m30.0s
 
-running (0m42.0s), 025/100 VUs, 4 complete and 0 interrupted iterations
+running (0m42.0s), 025/100 VUs, 5 complete and 0 interrupted iterations
 default   [  28% ] 025/100 VUs  0m42.0s/2m30.0s
 
 running (0m43.0s), 026/100 VUs, 5 complete and 0 interrupted iterations
 default   [  29% ] 026/100 VUs  0m43.0s/2m30.0s
 
-running (0m44.0s), 026/100 VUs, 5 complete and 0 interrupted iterations
+running (0m44.0s), 026/100 VUs, 6 complete and 0 interrupted iterations
 default   [  29% ] 026/100 VUs  0m44.0s/2m30.0s
 
-running (0m45.0s), 027/100 VUs, 5 complete and 0 interrupted iterations
+running (0m45.0s), 027/100 VUs, 6 complete and 0 interrupted iterations
 default   [  30% ] 027/100 VUs  0m45.0s/2m30.0s
 
-running (0m46.0s), 027/100 VUs, 5 complete and 0 interrupted iterations
+running (0m46.0s), 027/100 VUs, 6 complete and 0 interrupted iterations
 default   [  31% ] 027/100 VUs  0m46.0s/2m30.0s
 
 running (0m47.0s), 028/100 VUs, 6 complete and 0 interrupted iterations
@@ -161,49 +161,49 @@ default   [  32% ] 028/100 VUs  0m48.0s/2m30.0s
 running (0m49.0s), 029/100 VUs, 6 complete and 0 interrupted iterations
 default   [  33% ] 029/100 VUs  0m49.0s/2m30.0s
 
-running (0m50.0s), 029/100 VUs, 7 complete and 0 interrupted iterations
+running (0m50.0s), 029/100 VUs, 6 complete and 0 interrupted iterations
 default   [  33% ] 029/100 VUs  0m50.0s/2m30.0s
 
-running (0m51.0s), 030/100 VUs, 7 complete and 0 interrupted iterations
+running (0m51.0s), 030/100 VUs, 6 complete and 0 interrupted iterations
 default   [  34% ] 030/100 VUs  0m51.0s/2m30.0s
 
-running (0m52.0s), 030/100 VUs, 7 complete and 0 interrupted iterations
+running (0m52.0s), 030/100 VUs, 6 complete and 0 interrupted iterations
 default   [  35% ] 030/100 VUs  0m52.0s/2m30.0s
 
-running (0m53.0s), 031/100 VUs, 7 complete and 0 interrupted iterations
+running (0m53.0s), 031/100 VUs, 6 complete and 0 interrupted iterations
 default   [  35% ] 031/100 VUs  0m53.0s/2m30.0s
 
-running (0m54.0s), 031/100 VUs, 7 complete and 0 interrupted iterations
+running (0m54.0s), 031/100 VUs, 6 complete and 0 interrupted iterations
 default   [  36% ] 031/100 VUs  0m54.0s/2m30.0s
 
-running (0m55.0s), 032/100 VUs, 7 complete and 0 interrupted iterations
+running (0m55.0s), 032/100 VUs, 6 complete and 0 interrupted iterations
 default   [  37% ] 032/100 VUs  0m55.0s/2m30.0s
 
-running (0m56.0s), 032/100 VUs, 8 complete and 0 interrupted iterations
+running (0m56.0s), 032/100 VUs, 7 complete and 0 interrupted iterations
 default   [  37% ] 032/100 VUs  0m56.0s/2m30.0s
 
-running (0m57.0s), 033/100 VUs, 8 complete and 0 interrupted iterations
+running (0m57.0s), 033/100 VUs, 7 complete and 0 interrupted iterations
 default   [  38% ] 033/100 VUs  0m57.0s/2m30.0s
 
-running (0m58.0s), 033/100 VUs, 8 complete and 0 interrupted iterations
+running (0m58.0s), 033/100 VUs, 7 complete and 0 interrupted iterations
 default   [  39% ] 033/100 VUs  0m58.0s/2m30.0s
 
-running (0m59.0s), 034/100 VUs, 8 complete and 0 interrupted iterations
+running (0m59.0s), 034/100 VUs, 7 complete and 0 interrupted iterations
 default   [  39% ] 034/100 VUs  0m59.0s/2m30.0s
 
-running (1m00.0s), 034/100 VUs, 8 complete and 0 interrupted iterations
+running (1m00.0s), 034/100 VUs, 7 complete and 0 interrupted iterations
 default   [  40% ] 034/100 VUs  1m00.0s/2m30.0s
 
 running (1m01.0s), 035/100 VUs, 8 complete and 0 interrupted iterations
 default   [  41% ] 035/100 VUs  1m01.0s/2m30.0s
 
-running (1m02.0s), 035/100 VUs, 9 complete and 0 interrupted iterations
+running (1m02.0s), 035/100 VUs, 8 complete and 0 interrupted iterations
 default   [  41% ] 035/100 VUs  1m02.0s/2m30.0s
 
-running (1m03.0s), 036/100 VUs, 9 complete and 0 interrupted iterations
+running (1m03.0s), 036/100 VUs, 8 complete and 0 interrupted iterations
 default   [  42% ] 036/100 VUs  1m03.0s/2m30.0s
 
-running (1m04.0s), 036/100 VUs, 9 complete and 0 interrupted iterations
+running (1m04.0s), 036/100 VUs, 8 complete and 0 interrupted iterations
 default   [  43% ] 036/100 VUs  1m04.0s/2m30.0s
 
 running (1m05.0s), 037/100 VUs, 9 complete and 0 interrupted iterations
@@ -218,16 +218,16 @@ default   [  45% ] 038/100 VUs  1m07.0s/2m30.0s
 running (1m08.0s), 038/100 VUs, 10 complete and 0 interrupted iterations
 default   [  45% ] 038/100 VUs  1m08.0s/2m30.0s
 
-running (1m09.0s), 039/100 VUs, 11 complete and 0 interrupted iterations
+running (1m09.0s), 039/100 VUs, 10 complete and 0 interrupted iterations
 default   [  46% ] 039/100 VUs  1m09.0s/2m30.0s
 
-running (1m10.0s), 039/100 VUs, 11 complete and 0 interrupted iterations
+running (1m10.0s), 039/100 VUs, 10 complete and 0 interrupted iterations
 default   [  47% ] 039/100 VUs  1m10.0s/2m30.0s
 
-running (1m11.0s), 040/100 VUs, 11 complete and 0 interrupted iterations
+running (1m11.0s), 040/100 VUs, 10 complete and 0 interrupted iterations
 default   [  47% ] 040/100 VUs  1m11.0s/2m30.0s
 
-running (1m12.0s), 040/100 VUs, 11 complete and 0 interrupted iterations
+running (1m12.0s), 040/100 VUs, 10 complete and 0 interrupted iterations
 default   [  48% ] 040/100 VUs  1m12.0s/2m30.0s
 
 running (1m13.0s), 041/100 VUs, 11 complete and 0 interrupted iterations
@@ -238,410 +238,411 @@ default   [  49% ] 041/100 VUs  1m14.0s/2m30.0s
 
 running (1m15.0s), 042/100 VUs, 11 complete and 0 interrupted iterations
 default   [  50% ] 042/100 VUs  1m15.0s/2m30.0s
+time="2026-06-09T22:52:34+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:35+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m16.0s), 042/100 VUs, 12 complete and 0 interrupted iterations
+running (1m16.0s), 042/100 VUs, 11 complete and 0 interrupted iterations
 default   [  51% ] 042/100 VUs  1m16.0s/2m30.0s
 
 running (1m17.0s), 043/100 VUs, 13 complete and 0 interrupted iterations
 default   [  51% ] 043/100 VUs  1m17.0s/2m30.0s
-time="2026-06-09T22:16:44+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:36+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m18.0s), 043/100 VUs, 13 complete and 0 interrupted iterations
 default   [  52% ] 043/100 VUs  1m18.0s/2m30.0s
-time="2026-06-09T22:16:46+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:38+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m19.0s), 044/100 VUs, 14 complete and 0 interrupted iterations
 default   [  53% ] 044/100 VUs  1m19.0s/2m30.0s
 
 running (1m20.0s), 044/100 VUs, 15 complete and 0 interrupted iterations
 default   [  53% ] 044/100 VUs  1m20.0s/2m30.0s
-time="2026-06-09T22:16:47+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:40+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m21.0s), 045/100 VUs, 15 complete and 0 interrupted iterations
 default   [  54% ] 045/100 VUs  1m21.0s/2m30.0s
 
 running (1m22.0s), 045/100 VUs, 16 complete and 0 interrupted iterations
 default   [  55% ] 045/100 VUs  1m22.0s/2m30.0s
-time="2026-06-09T22:16:49+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:41+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m23.0s), 046/100 VUs, 16 complete and 0 interrupted iterations
 default   [  55% ] 046/100 VUs  1m23.0s/2m30.0s
-time="2026-06-09T22:16:50+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:43+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m24.0s), 046/100 VUs, 17 complete and 0 interrupted iterations
 default   [  56% ] 046/100 VUs  1m24.0s/2m30.0s
 
 running (1m25.0s), 047/100 VUs, 18 complete and 0 interrupted iterations
 default   [  57% ] 047/100 VUs  1m25.0s/2m30.0s
-time="2026-06-09T22:16:52+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:44+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m26.0s), 047/100 VUs, 18 complete and 0 interrupted iterations
 default   [  57% ] 047/100 VUs  1m26.0s/2m30.0s
-time="2026-06-09T22:16:54+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:46+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m27.0s), 048/100 VUs, 19 complete and 0 interrupted iterations
 default   [  58% ] 048/100 VUs  1m27.0s/2m30.0s
+time="2026-06-09T22:52:46+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m28.0s), 048/100 VUs, 20 complete and 0 interrupted iterations
 default   [  59% ] 048/100 VUs  1m28.0s/2m30.0s
-time="2026-06-09T22:16:55+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:47+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m29.0s), 049/100 VUs, 20 complete and 0 interrupted iterations
+running (1m29.0s), 049/100 VUs, 21 complete and 0 interrupted iterations
 default   [  59% ] 049/100 VUs  1m29.0s/2m30.0s
+time="2026-06-09T22:52:49+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m30.0s), 049/100 VUs, 21 complete and 0 interrupted iterations
+running (1m30.0s), 049/100 VUs, 22 complete and 0 interrupted iterations
 default   [  60% ] 049/100 VUs  1m30.0s/2m30.0s
-time="2026-06-09T22:16:57+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:16:57+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:49+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m31.0s), 051/100 VUs, 21 complete and 0 interrupted iterations
+running (1m31.0s), 051/100 VUs, 23 complete and 0 interrupted iterations
 default   [  61% ] 051/100 VUs  1m31.0s/2m30.0s
 
-running (1m32.0s), 053/100 VUs, 23 complete and 0 interrupted iterations
+running (1m32.0s), 053/100 VUs, 24 complete and 0 interrupted iterations
 default   [  61% ] 053/100 VUs  1m32.0s/2m30.0s
-time="2026-06-09T22:16:59+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:51+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m33.0s), 054/100 VUs, 23 complete and 0 interrupted iterations
+running (1m33.0s), 054/100 VUs, 24 complete and 0 interrupted iterations
 default   [  62% ] 054/100 VUs  1m33.0s/2m30.0s
+time="2026-06-09T22:52:53+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m34.0s), 056/100 VUs, 24 complete and 0 interrupted iterations
+running (1m34.0s), 056/100 VUs, 25 complete and 0 interrupted iterations
 default   [  63% ] 056/100 VUs  1m34.0s/2m30.0s
-time="2026-06-09T22:17:01+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:53+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m35.0s), 058/100 VUs, 24 complete and 0 interrupted iterations
+running (1m35.0s), 058/100 VUs, 26 complete and 0 interrupted iterations
 default   [  63% ] 058/100 VUs  1m35.0s/2m30.0s
 
-running (1m36.0s), 059/100 VUs, 25 complete and 0 interrupted iterations
+running (1m36.0s), 059/100 VUs, 27 complete and 0 interrupted iterations
 default   [  64% ] 059/100 VUs  1m36.0s/2m30.0s
-time="2026-06-09T22:17:03+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:03+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:55+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m37.0s), 061/100 VUs, 25 complete and 0 interrupted iterations
+running (1m37.0s), 061/100 VUs, 27 complete and 0 interrupted iterations
 default   [  65% ] 061/100 VUs  1m37.0s/2m30.0s
 
-running (1m38.0s), 063/100 VUs, 27 complete and 0 interrupted iterations
+running (1m38.0s), 063/100 VUs, 28 complete and 0 interrupted iterations
 default   [  65% ] 063/100 VUs  1m38.0s/2m30.0s
-time="2026-06-09T22:17:05+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:57+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m39.0s), 064/100 VUs, 27 complete and 0 interrupted iterations
+running (1m39.0s), 064/100 VUs, 28 complete and 0 interrupted iterations
 default   [  66% ] 064/100 VUs  1m39.0s/2m30.0s
 
-running (1m40.0s), 066/100 VUs, 28 complete and 0 interrupted iterations
+running (1m40.0s), 066/100 VUs, 29 complete and 0 interrupted iterations
 default   [  67% ] 066/100 VUs  1m40.0s/2m30.0s
-time="2026-06-09T22:17:07+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:52:59+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m41.0s), 068/100 VUs, 28 complete and 0 interrupted iterations
+running (1m41.0s), 068/100 VUs, 29 complete and 0 interrupted iterations
 default   [  67% ] 068/100 VUs  1m41.0s/2m30.0s
 
-running (1m42.0s), 069/100 VUs, 29 complete and 0 interrupted iterations
+running (1m42.0s), 069/100 VUs, 30 complete and 0 interrupted iterations
 default   [  68% ] 069/100 VUs  1m42.0s/2m30.0s
-time="2026-06-09T22:17:09+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:10+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:01+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m43.0s), 071/100 VUs, 29 complete and 0 interrupted iterations
+running (1m43.0s), 071/100 VUs, 30 complete and 0 interrupted iterations
 default   [  69% ] 071/100 VUs  1m43.0s/2m30.0s
+time="2026-06-09T22:53:03+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m44.0s), 073/100 VUs, 31 complete and 0 interrupted iterations
 default   [  69% ] 073/100 VUs  1m44.0s/2m30.0s
-time="2026-06-09T22:17:11+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:03+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m45.0s), 074/100 VUs, 31 complete and 0 interrupted iterations
+running (1m45.0s), 074/100 VUs, 32 complete and 0 interrupted iterations
 default   [  70% ] 074/100 VUs  1m45.0s/2m30.0s
 
-running (1m46.0s), 076/100 VUs, 32 complete and 0 interrupted iterations
+running (1m46.0s), 076/100 VUs, 33 complete and 0 interrupted iterations
 default   [  71% ] 076/100 VUs  1m46.0s/2m30.0s
-time="2026-06-09T22:17:13+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:13+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:05+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m47.0s), 078/100 VUs, 32 complete and 0 interrupted iterations
+running (1m47.0s), 078/100 VUs, 33 complete and 0 interrupted iterations
 default   [  71% ] 078/100 VUs  1m47.0s/2m30.0s
 
 running (1m48.0s), 079/100 VUs, 34 complete and 0 interrupted iterations
 default   [  72% ] 079/100 VUs  1m48.0s/2m30.0s
-time="2026-06-09T22:17:15+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:07+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m49.0s), 081/100 VUs, 34 complete and 0 interrupted iterations
 default   [  73% ] 081/100 VUs  1m49.0s/2m30.0s
-time="2026-06-09T22:17:16+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (1m50.0s), 083/100 VUs, 35 complete and 0 interrupted iterations
 default   [  73% ] 083/100 VUs  1m50.0s/2m30.0s
-time="2026-06-09T22:17:17+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:09+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m51.0s), 084/100 VUs, 36 complete and 0 interrupted iterations
+running (1m51.0s), 084/100 VUs, 35 complete and 0 interrupted iterations
 default   [  74% ] 084/100 VUs  1m51.0s/2m30.0s
 
-running (1m52.0s), 086/100 VUs, 37 complete and 0 interrupted iterations
+running (1m52.0s), 086/100 VUs, 36 complete and 0 interrupted iterations
 default   [  75% ] 086/100 VUs  1m52.0s/2m30.0s
-time="2026-06-09T22:17:19+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:11+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m53.0s), 088/100 VUs, 37 complete and 0 interrupted iterations
+running (1m53.0s), 088/100 VUs, 36 complete and 0 interrupted iterations
 default   [  75% ] 088/100 VUs  1m53.0s/2m30.0s
 
-running (1m54.0s), 089/100 VUs, 38 complete and 0 interrupted iterations
+running (1m54.0s), 089/100 VUs, 37 complete and 0 interrupted iterations
 default   [  76% ] 089/100 VUs  1m54.0s/2m30.0s
-time="2026-06-09T22:17:21+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:13+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m55.0s), 091/100 VUs, 38 complete and 0 interrupted iterations
+running (1m55.0s), 091/100 VUs, 37 complete and 0 interrupted iterations
 default   [  77% ] 091/100 VUs  1m55.0s/2m30.0s
-time="2026-06-09T22:17:22+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:14+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m56.0s), 093/100 VUs, 39 complete and 0 interrupted iterations
+running (1m56.0s), 093/100 VUs, 38 complete and 0 interrupted iterations
 default   [  77% ] 093/100 VUs  1m56.0s/2m30.0s
-time="2026-06-09T22:17:23+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:15+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m57.0s), 094/100 VUs, 40 complete and 0 interrupted iterations
+running (1m57.0s), 094/100 VUs, 39 complete and 0 interrupted iterations
 default   [  78% ] 094/100 VUs  1m57.0s/2m30.0s
 
-running (1m58.0s), 096/100 VUs, 41 complete and 0 interrupted iterations
+running (1m58.0s), 096/100 VUs, 40 complete and 0 interrupted iterations
 default   [  79% ] 096/100 VUs  1m58.0s/2m30.0s
-time="2026-06-09T22:17:25+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:17+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (1m59.0s), 098/100 VUs, 41 complete and 0 interrupted iterations
+running (1m59.0s), 098/100 VUs, 40 complete and 0 interrupted iterations
 default   [  79% ] 098/100 VUs  1m59.0s/2m30.0s
 
-running (2m00.0s), 099/100 VUs, 42 complete and 0 interrupted iterations
+running (2m00.0s), 099/100 VUs, 41 complete and 0 interrupted iterations
 default   [  80% ] 099/100 VUs  2m00.0s/2m30.0s
-time="2026-06-09T22:17:27+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:19+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:20+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m01.0s), 100/100 VUs, 42 complete and 0 interrupted iterations
+running (2m01.0s), 100/100 VUs, 41 complete and 0 interrupted iterations
 default   [  81% ] 100/100 VUs  2m01.0s/2m30.0s
-time="2026-06-09T22:17:28+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m02.0s), 100/100 VUs, 43 complete and 0 interrupted iterations
 default   [  81% ] 100/100 VUs  2m02.0s/2m30.0s
-time="2026-06-09T22:17:29+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:21+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m03.0s), 100/100 VUs, 44 complete and 0 interrupted iterations
+running (2m03.0s), 100/100 VUs, 43 complete and 0 interrupted iterations
 default   [  82% ] 100/100 VUs  2m03.0s/2m30.0s
 
-running (2m04.0s), 100/100 VUs, 45 complete and 0 interrupted iterations
+running (2m04.0s), 100/100 VUs, 44 complete and 0 interrupted iterations
 default   [  83% ] 100/100 VUs  2m04.0s/2m30.0s
-time="2026-06-09T22:17:31+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:23+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:24+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m05.0s), 100/100 VUs, 45 complete and 0 interrupted iterations
+running (2m05.0s), 100/100 VUs, 44 complete and 0 interrupted iterations
 default   [  83% ] 100/100 VUs  2m05.0s/2m30.0s
 
 running (2m06.0s), 100/100 VUs, 46 complete and 0 interrupted iterations
 default   [  84% ] 100/100 VUs  2m06.0s/2m30.0s
-time="2026-06-09T22:17:33+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:25+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m07.0s), 100/100 VUs, 46 complete and 0 interrupted iterations
 default   [  85% ] 100/100 VUs  2m07.0s/2m30.0s
-time="2026-06-09T22:17:34+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:27+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m08.0s), 100/100 VUs, 47 complete and 0 interrupted iterations
 default   [  85% ] 100/100 VUs  2m08.0s/2m30.0s
-time="2026-06-09T22:17:35+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:35+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:27+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m09.0s), 100/100 VUs, 48 complete and 0 interrupted iterations
 default   [  86% ] 100/100 VUs  2m09.0s/2m30.0s
 
-running (2m10.0s), 100/100 VUs, 50 complete and 0 interrupted iterations
+running (2m10.0s), 100/100 VUs, 49 complete and 0 interrupted iterations
 default   [  87% ] 100/100 VUs  2m10.0s/2m30.0s
-time="2026-06-09T22:17:37+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:29+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m11.0s), 100/100 VUs, 50 complete and 0 interrupted iterations
+running (2m11.0s), 100/100 VUs, 49 complete and 0 interrupted iterations
 default   [  87% ] 100/100 VUs  2m11.0s/2m30.0s
 
-running (2m12.0s), 100/100 VUs, 51 complete and 0 interrupted iterations
+running (2m12.0s), 100/100 VUs, 50 complete and 0 interrupted iterations
 default   [  88% ] 100/100 VUs  2m12.0s/2m30.0s
-time="2026-06-09T22:17:39+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:31+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:31+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m13.0s), 100/100 VUs, 51 complete and 0 interrupted iterations
+running (2m13.0s), 100/100 VUs, 50 complete and 0 interrupted iterations
 default   [  89% ] 100/100 VUs  2m13.0s/2m30.0s
 
 running (2m14.0s), 100/100 VUs, 52 complete and 0 interrupted iterations
 default   [  89% ] 100/100 VUs  2m14.0s/2m30.0s
-time="2026-06-09T22:17:41+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:33+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m15.0s), 100/100 VUs, 52 complete and 0 interrupted iterations
 default   [  90% ] 100/100 VUs  2m15.0s/2m30.0s
-time="2026-06-09T22:17:42+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m16.0s), 100/100 VUs, 53 complete and 0 interrupted iterations
 default   [  91% ] 100/100 VUs  2m16.0s/2m30.0s
-time="2026-06-09T22:17:43+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:43+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:35+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:35+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:36+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m17.0s), 100/100 VUs, 54 complete and 0 interrupted iterations
+running (2m17.0s), 100/100 VUs, 53 complete and 0 interrupted iterations
 default   [  91% ] 100/100 VUs  2m17.0s/2m30.0s
 
 running (2m18.0s), 100/100 VUs, 56 complete and 0 interrupted iterations
 default   [  92% ] 100/100 VUs  2m18.0s/2m30.0s
-time="2026-06-09T22:17:45+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:45+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:37+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:37+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m19.0s), 100/100 VUs, 56 complete and 0 interrupted iterations
 default   [  93% ] 100/100 VUs  2m19.0s/2m30.0s
-time="2026-06-09T22:17:47+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:39+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m20.0s), 099/100 VUs, 58 complete and 0 interrupted iterations
 default   [  93% ] 099/100 VUs  2m20.0s/2m30.0s
-time="2026-06-09T22:17:47+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:39+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m21.0s), 099/100 VUs, 59 complete and 0 interrupted iterations
 default   [  94% ] 099/100 VUs  2m21.0s/2m30.0s
-time="2026-06-09T22:17:48+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:41+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m22.0s), 098/100 VUs, 60 complete and 0 interrupted iterations
 default   [  95% ] 098/100 VUs  2m22.0s/2m30.0s
-time="2026-06-09T22:17:49+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:41+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m23.0s), 098/100 VUs, 61 complete and 0 interrupted iterations
 default   [  95% ] 098/100 VUs  2m23.0s/2m30.0s
-time="2026-06-09T22:17:50+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:42+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m24.0s), 097/100 VUs, 62 complete and 0 interrupted iterations
 default   [  96% ] 097/100 VUs  2m24.0s/2m30.0s
-time="2026-06-09T22:17:51+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:51+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:43+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:44+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m25.0s), 097/100 VUs, 63 complete and 0 interrupted iterations
 default   [  97% ] 097/100 VUs  2m25.0s/2m30.0s
 
 running (2m26.0s), 095/100 VUs, 65 complete and 0 interrupted iterations
 default   [  97% ] 095/100 VUs  2m26.0s/2m30.0s
-time="2026-06-09T22:17:53+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:53+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:45+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:45+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m27.0s), 095/100 VUs, 65 complete and 0 interrupted iterations
 default   [  98% ] 095/100 VUs  2m27.0s/2m30.0s
-time="2026-06-09T22:17:55+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:47+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m28.0s), 093/100 VUs, 67 complete and 0 interrupted iterations
 default   [  99% ] 093/100 VUs  2m28.0s/2m30.0s
-time="2026-06-09T22:17:55+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:47+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:47+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
 running (2m29.0s), 092/100 VUs, 68 complete and 0 interrupted iterations
 default   [  99% ] 092/100 VUs  2m29.0s/2m30.0s
-time="2026-06-09T22:17:56+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:48+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m30.0s), 091/100 VUs, 69 complete and 0 interrupted iterations
+running (2m30.0s), 091/100 VUs, 70 complete and 0 interrupted iterations
 default   [ 100% ] 091/100 VUs  2m30.0s/2m30.0s
-time="2026-06-09T22:17:57+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:57+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:49+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:50+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:50+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m31.0s), 087/100 VUs, 70 complete and 3 interrupted iterations
+running (2m31.0s), 087/100 VUs, 71 complete and 3 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:17:58+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:58+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:58+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:17:59+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:50+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:50+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:51+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m32.0s), 082/100 VUs, 72 complete and 6 interrupted iterations
+running (2m32.0s), 081/100 VUs, 74 complete and 6 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:17:59+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:51+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m33.0s), 075/100 VUs, 76 complete and 9 interrupted iterations
+running (2m33.0s), 075/100 VUs, 77 complete and 9 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:00+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:00+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:00+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:52+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:52+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:53+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m34.0s), 070/100 VUs, 77 complete and 13 interrupted iterations
+running (2m34.0s), 070/100 VUs, 78 complete and 13 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:01+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:02+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:53+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:54+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:54+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m35.0s), 064/100 VUs, 80 complete and 16 interrupted iterations
+running (2m35.0s), 064/100 VUs, 81 complete and 16 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:02+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:02+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:54+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:55+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m36.0s), 059/100 VUs, 82 complete and 19 interrupted iterations
+running (2m36.0s), 058/100 VUs, 84 complete and 19 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:03+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:03+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:55+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:56+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m37.0s), 053/100 VUs, 84 complete and 23 interrupted iterations
+running (2m37.0s), 052/100 VUs, 86 complete and 23 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:04+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:04+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:04+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:05+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:56+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:56+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:57+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m38.0s), 048/100 VUs, 86 complete and 26 interrupted iterations
+running (2m38.0s), 047/100 VUs, 88 complete and 26 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:05+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:57+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m39.0s), 041/100 VUs, 90 complete and 29 interrupted iterations
+running (2m39.0s), 041/100 VUs, 91 complete and 29 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:06+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:06+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:06+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:58+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:58+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:53:59+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m40.0s), 036/100 VUs, 91 complete and 33 interrupted iterations
-default ↓ [ 100% ] 091/100 VUs  2m30s
-
-running (2m41.0s), 032/100 VUs, 93 complete and 35 interrupted iterations
-default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:08+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-
-running (2m42.0s), 032/100 VUs, 93 complete and 35 interrupted iterations
+running (2m40.0s), 036/100 VUs, 92 complete and 33 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
 
-running (2m43.0s), 031/100 VUs, 94 complete and 35 interrupted iterations
+running (2m41.0s), 032/100 VUs, 94 complete and 35 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:10+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:11+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:54:00+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m44.0s), 031/100 VUs, 94 complete and 35 interrupted iterations
-default ↓ [ 100% ] 091/100 VUs  2m30s
-
-running (2m45.0s), 029/100 VUs, 96 complete and 35 interrupted iterations
-default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:12+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-
-running (2m46.0s), 029/100 VUs, 96 complete and 35 interrupted iterations
+running (2m42.0s), 032/100 VUs, 94 complete and 35 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
 
-running (2m47.0s), 028/100 VUs, 97 complete and 35 interrupted iterations
+running (2m43.0s), 031/100 VUs, 95 complete and 35 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:14+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-time="2026-06-09T22:18:14+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:54:02+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m48.0s), 026/100 VUs, 97 complete and 37 interrupted iterations
+running (2m44.0s), 031/100 VUs, 95 complete and 35 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
+time="2026-06-09T22:54:04+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m49.0s), 020/100 VUs, 99 complete and 41 interrupted iterations
+running (2m45.0s), 030/100 VUs, 96 complete and 35 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:16+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+time="2026-06-09T22:54:04+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
 
-running (2m50.0s), 017/100 VUs, 99 complete and 44 interrupted iterations
-default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:17+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-
-running (2m51.0s), 013/100 VUs, 100 complete and 47 interrupted iterations
-default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:18+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-
-running (2m52.0s), 010/100 VUs, 101 complete and 49 interrupted iterations
+running (2m46.0s), 029/100 VUs, 97 complete and 35 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
 
-running (2m53.0s), 010/100 VUs, 101 complete and 49 interrupted iterations
+running (2m47.0s), 028/100 VUs, 98 complete and 35 interrupted iterations
+default ↓ [ 100% ] 091/100 VUs  2m30s
+time="2026-06-09T22:54:06+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+
+running (2m48.0s), 026/100 VUs, 98 complete and 37 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
 
-running (2m54.0s), 010/100 VUs, 101 complete and 49 interrupted iterations
+running (2m49.0s), 021/100 VUs, 99 complete and 41 interrupted iterations
+default ↓ [ 100% ] 091/100 VUs  2m30s
+time="2026-06-09T22:54:08+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+
+running (2m50.0s), 018/100 VUs, 99 complete and 44 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
 
-running (2m55.0s), 010/100 VUs, 101 complete and 49 interrupted iterations
+running (2m51.0s), 014/100 VUs, 100 complete and 47 interrupted iterations
+default ↓ [ 100% ] 091/100 VUs  2m30s
+time="2026-06-09T22:54:10+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+
+running (2m52.0s), 012/100 VUs, 100 complete and 49 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
 
-running (2m56.0s), 009/100 VUs, 101 complete and 50 interrupted iterations
-default ↓ [ 100% ] 091/100 VUs  2m30s
-time="2026-06-09T22:18:23+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
-
-running (2m57.0s), 006/100 VUs, 101 complete and 53 interrupted iterations
+running (2m53.0s), 012/100 VUs, 100 complete and 49 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
 
-running (2m58.0s), 001/100 VUs, 102 complete and 57 interrupted iterations
+running (2m54.0s), 012/100 VUs, 100 complete and 49 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
 
-running (2m59.0s), 001/100 VUs, 102 complete and 57 interrupted iterations
+running (2m55.0s), 012/100 VUs, 100 complete and 49 interrupted iterations
 default ↓ [ 100% ] 091/100 VUs  2m30s
 
-running (2m59.7s), 000/100 VUs, 102 complete and 58 interrupted iterations
+running (2m56.0s), 011/100 VUs, 100 complete and 50 interrupted iterations
+default ↓ [ 100% ] 091/100 VUs  2m30s
+time="2026-06-09T22:54:15+03:00" level=warning msg="Request Failed" error="Post \"https://autoservice-api-3l53.onrender.com/api/v1/auth/login\": request timeout"
+
+running (2m57.0s), 008/100 VUs, 100 complete and 53 interrupted iterations
+default ↓ [ 100% ] 091/100 VUs  2m30s
+
+running (2m58.0s), 004/100 VUs, 101 complete and 56 interrupted iterations
+default ↓ [ 100% ] 091/100 VUs  2m30s
+
+running (2m59.0s), 002/100 VUs, 101 complete and 58 interrupted iterations
+default ↓ [ 100% ] 091/100 VUs  2m30s
+
+running (2m59.7s), 000/100 VUs, 101 complete and 60 interrupted iterations
 default ✓ [ 100% ] 000/100 VUs  2m30s
-time="2026-06-09T22:18:27+03:00" level=error msg="thresholds on metrics 'http_req_duration, http_req_failed, login_duration, login_errors' have been crossed"
+time="2026-06-09T22:54:19+03:00" level=error msg="thresholds on metrics 'http_req_duration, http_req_failed, login_duration, login_errors' have been crossed"
