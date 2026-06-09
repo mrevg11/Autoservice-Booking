@@ -8,6 +8,7 @@ import { MasterSchedule } from '../../database/entities/master-schedule.entity';
 import { Booking } from '../../database/entities/booking.entity';
 import { Vehicle } from '../../database/entities/vehicle.entity';
 import { Role } from '../../common/enums/role.enum';
+import { MailService } from '../mail/mail.service';
 
 const mockUser = (overrides: Partial<User> = {}): User =>
   ({
@@ -30,6 +31,7 @@ const mockUsersRepo = () => ({
   findAndCount: jest.fn(),
   save: jest.fn(),
   remove: jest.fn(),
+  delete: jest.fn().mockResolvedValue(undefined),
 });
 
 describe('UsersService', () => {
@@ -51,6 +53,12 @@ describe('UsersService', () => {
           useFactory: () => ({
             find: jest.fn().mockResolvedValue([]),
             update: jest.fn().mockResolvedValue(undefined),
+            createQueryBuilder: jest.fn().mockReturnValue({
+              delete: jest.fn().mockReturnThis(),
+              from: jest.fn().mockReturnThis(),
+              where: jest.fn().mockReturnThis(),
+              execute: jest.fn().mockResolvedValue(undefined),
+            }),
           }),
         },
         {
@@ -59,6 +67,10 @@ describe('UsersService', () => {
             find: jest.fn().mockResolvedValue([]),
             delete: jest.fn().mockResolvedValue(undefined),
           }),
+        },
+        {
+          provide: MailService,
+          useValue: { sendEmailVerification: jest.fn().mockResolvedValue(undefined) },
         },
       ],
     }).compile();
@@ -112,7 +124,7 @@ describe('UsersService', () => {
 
     const result = await service.remove(1);
 
-    expect(usersRepo.remove).toHaveBeenCalled();
+    expect(usersRepo.delete).toHaveBeenCalledWith(1);
     expect(result.message).toContain('1');
   });
 

@@ -165,14 +165,14 @@ describe('BookingsService', () => {
     it('кидає NotFoundException якщо service не знайдено', async () => {
       masterProfilesRepo.findOne.mockResolvedValue(makeMaster());
       vehiclesRepo.findOne.mockResolvedValue(makeVehicle(1));
-      servicesRepo.findByIds.mockResolvedValue([]); // порожньо
+      servicesRepo.find.mockResolvedValue([]); // порожньо
       await expect(service.create(makeUser(), baseDto)).rejects.toThrow(NotFoundException);
     });
 
     it("кидає BadRequestException якщо service не прив'язаний до майстра", async () => {
       masterProfilesRepo.findOne.mockResolvedValue(makeMaster());
       vehiclesRepo.findOne.mockResolvedValue(makeVehicle(1));
-      servicesRepo.findByIds.mockResolvedValue([makeService(1)]);
+      servicesRepo.find.mockResolvedValue([makeService(1)]);
       masterServicesRepo.find.mockResolvedValue([]); // нема прив'язки
       await expect(service.create(makeUser(), baseDto)).rejects.toThrow(BadRequestException);
     });
@@ -180,7 +180,7 @@ describe('BookingsService', () => {
     it('кидає ConflictException при overlapping booking', async () => {
       masterProfilesRepo.findOne.mockResolvedValue(makeMaster());
       vehiclesRepo.findOne.mockResolvedValue(makeVehicle(1));
-      servicesRepo.findByIds.mockResolvedValue([makeService(1)]);
+      servicesRepo.find.mockResolvedValue([makeService(1)]);
       masterServicesRepo.find.mockResolvedValue([makeMasterService(1)]);
 
       // Transaction: master locked, but overlapping bookings exist
@@ -197,7 +197,7 @@ describe('BookingsService', () => {
 
       masterProfilesRepo.findOne.mockResolvedValue(makeMaster());
       vehiclesRepo.findOne.mockResolvedValue(makeVehicle(1));
-      servicesRepo.findByIds.mockResolvedValue([svc]);
+      servicesRepo.find.mockResolvedValue([svc]);
       masterServicesRepo.find.mockResolvedValue([{ ...ms, service: svc }]);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -224,7 +224,7 @@ describe('BookingsService', () => {
 
       masterProfilesRepo.findOne.mockResolvedValue(makeMaster());
       vehiclesRepo.findOne.mockResolvedValue(makeVehicle(1));
-      servicesRepo.findByIds.mockResolvedValue([svc]);
+      servicesRepo.find.mockResolvedValue([svc]);
       masterServicesRepo.find.mockResolvedValue([{ ...ms, service: svc }]);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -248,7 +248,7 @@ describe('BookingsService', () => {
     it('зберігає BookingStatusHistory з oldStatus=null', async () => {
       masterProfilesRepo.findOne.mockResolvedValue(makeMaster());
       vehiclesRepo.findOne.mockResolvedValue(makeVehicle(1));
-      servicesRepo.findByIds.mockResolvedValue([makeService(1)]);
+      servicesRepo.find.mockResolvedValue([makeService(1)]);
       masterServicesRepo.find.mockResolvedValue([makeMasterService(1)]);
 
       const savedHistories: unknown[] = [];
