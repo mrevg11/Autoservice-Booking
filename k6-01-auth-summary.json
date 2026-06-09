@@ -1,0 +1,167 @@
+{
+    "metrics": {
+        "checks": {
+            "passes": 26,
+            "fails": 286,
+            "value": 0.08333333333333333
+        },
+        "login_errors": {
+            "passes": 104,
+            "fails": 0,
+            "thresholds": {
+                "rate<0.05": true
+            },
+            "value": 1
+        },
+        "http_req_failed": {
+            "passes": 91,
+            "fails": 13,
+            "thresholds": {
+                "rate<0.01": true
+            },
+            "value": 0.875
+        },
+        "vus_max": {
+            "max": 100,
+            "value": 100,
+            "min": 100
+        },
+        "http_reqs": {
+            "count": 104,
+            "rate": 0.5787406095600718
+        },
+        "data_sent": {
+            "count": 203661,
+            "rate": 1133.335493111671
+        },
+        "data_received": {
+            "count": 447021,
+            "rate": 2487.588519482239
+        },
+        "http_req_receiving": {
+            "max": 4.4446,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.042736538461538465,
+            "min": 0,
+            "med": 0
+        },
+        "http_req_sending": {
+            "p(90)": 0.5615100000000001,
+            "p(95)": 0.6576349999999997,
+            "avg": 0.33864038461538476,
+            "min": 0,
+            "med": 0.3036,
+            "max": 2.7744
+        },
+        "http_req_waiting": {
+            "avg": 57352.524687500016,
+            "min": 8721.4823,
+            "med": 59954.01875,
+            "max": 60000.7975,
+            "p(90)": 60000.470819999995,
+            "p(95)": 60000.60948
+        },
+        "iteration_duration": {
+            "max": 61009.7253,
+            "p(90)": 61001.99618,
+            "p(95)": 61002.242965,
+            "avg": 58359.272567647065,
+            "min": 10964.156,
+            "med": 61001.33165
+        },
+        "iterations": {
+            "count": 102,
+            "rate": 0.5676109824531473
+        },
+        "http_req_tls_handshaking": {
+            "med": 35.60815,
+            "max": 265.9068,
+            "p(90)": 43.311840000000004,
+            "p(95)": 59.49696999999991,
+            "avg": 28.01800673076923,
+            "min": 0
+        },
+        "vus": {
+            "min": 1,
+            "max": 100,
+            "value": 1
+        },
+        "http_req_duration": {
+            "med": 59954.2389,
+            "max": 60000.9338,
+            "p(90)": 60000.75452,
+            "p(95)": 60000.813989999995,
+            "avg": 57352.90606442308,
+            "min": 8722.1779,
+            "thresholds": {
+                "p(95)<500": true
+            }
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 39054.77447692308,
+            "min": 8722.1779,
+            "med": 38821.424,
+            "max": 59545.3049,
+            "p(90)": 58484.54894,
+            "p(95)": 59363.36624
+        },
+        "login_duration": {
+            "p(90)": 60000.75452,
+            "p(95)": 60000.813989999995,
+            "avg": 57352.90606442308,
+            "min": 8722.1779,
+            "med": 59954.2389,
+            "max": 60000.9338,
+            "thresholds": {
+                "p(95)<500": true,
+                "p(99)<1000": true
+            }
+        },
+        "http_req_connecting": {
+            "avg": 26.639314423076932,
+            "min": 0,
+            "med": 9.5001,
+            "max": 1020.1419,
+            "p(90)": 12.95565,
+            "p(95)": 13.56691
+        },
+        "http_req_blocked": {
+            "avg": 56.00378269230772,
+            "min": 0,
+            "med": 46.127750000000006,
+            "max": 1213.0415,
+            "p(90)": 54.77447,
+            "p(95)": 80.10282999999995
+        }
+    },
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "login status 200": {
+                    "name": "login status 200",
+                    "path": "::login status 200",
+                    "id": "a9f04e9f501317c68a9f824e04811bea",
+                    "passes": 13,
+                    "fails": 91
+                },
+                "has accessToken": {
+                    "name": "has accessToken",
+                    "path": "::has accessToken",
+                    "id": "d3650ac1e188eea08737b11de2933398",
+                    "passes": 13,
+                    "fails": 91
+                },
+                "response time < 500ms": {
+                    "name": "response time < 500ms",
+                    "path": "::response time < 500ms",
+                    "id": "3e02485a995423a591645f4eee6c60eb",
+                    "passes": 0,
+                    "fails": 104
+                }
+            },
+        "name": "",
+        "path": ""
+    }
+}
