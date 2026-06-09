@@ -6,27 +6,27 @@
 [7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mD:/Diplom.Project/autoservice-booking/apps/frontend[39m
 [2m      Coverage enabled with [22m[33mv8[39m
 
- [32m✓[39m src/shared/components/ConfirmDialog.spec.tsx [2m ([22m[2m7 tests[22m[2m)[22m[90m 157[2mms[22m[39m
- [32m✓[39m src/shared/components/Toast.spec.tsx [2m ([22m[2m6 tests[22m[2m)[22m[90m 185[2mms[22m[39m
+ [32m✓[39m src/shared/components/Toast.spec.tsx [2m ([22m[2m6 tests[22m[2m)[22m[90m 182[2mms[22m[39m
+ [32m✓[39m src/shared/components/ConfirmDialog.spec.tsx [2m ([22m[2m7 tests[22m[2m)[22m[90m 183[2mms[22m[39m
 [90mstderr[2m | src/shared/components/ProtectedRoute.spec.tsx[2m > [22m[2mProtectedRoute[2m > [22m[2mredirects to /login when not authenticated[22m[39m
 ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
- [32m✓[39m src/shared/components/ProtectedRoute.spec.tsx [2m ([22m[2m4 tests[22m[2m)[22m[90m 122[2mms[22m[39m
- [32m✓[39m src/shared/components/ui/Pagination.spec.tsx [2m ([22m[2m6 tests[22m[2m)[22m[90m 174[2mms[22m[39m
- [32m✓[39m src/shared/components/ui/Input.spec.tsx [2m ([22m[2m7 tests[22m[2m)[22m[90m 162[2mms[22m[39m
- [32m✓[39m src/shared/components/ui/Button.spec.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 711[2mms[22m[39m
- [32m✓[39m src/shared/components/ui/PhoneInput.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[90m 153[2mms[22m[39m
- [32m✓[39m src/shared/components/ui/TimeSlotPicker.spec.tsx [2m ([22m[2m4 tests[22m[2m)[22m[90m 126[2mms[22m[39m
- [32m✓[39m src/shared/components/ui/StarRating.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[33m 1167[2mms[22m[39m
- [32m✓[39m src/shared/components/ui/Badge.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[90m 108[2mms[22m[39m
- [32m✓[39m src/shared/components/ui/EmptyState.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[33m 415[2mms[22m[39m
- [32m✓[39m src/shared/components/ui/DatePicker.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[90m 100[2mms[22m[39m
+ [32m✓[39m src/shared/components/ProtectedRoute.spec.tsx [2m ([22m[2m4 tests[22m[2m)[22m[90m 128[2mms[22m[39m
+ [32m✓[39m src/shared/components/ui/Pagination.spec.tsx [2m ([22m[2m6 tests[22m[2m)[22m[90m 178[2mms[22m[39m
+ [32m✓[39m src/shared/components/ui/Input.spec.tsx [2m ([22m[2m7 tests[22m[2m)[22m[90m 192[2mms[22m[39m
+ [32m✓[39m src/shared/components/ui/Button.spec.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 715[2mms[22m[39m
+ [32m✓[39m src/shared/components/ui/PhoneInput.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[90m 161[2mms[22m[39m
+ [32m✓[39m src/shared/components/ui/TimeSlotPicker.spec.tsx [2m ([22m[2m4 tests[22m[2m)[22m[90m 136[2mms[22m[39m
+ [32m✓[39m src/shared/components/ui/StarRating.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[33m 1055[2mms[22m[39m
+ [32m✓[39m src/shared/components/ui/Badge.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[90m 113[2mms[22m[39m
+ [32m✓[39m src/shared/components/ui/EmptyState.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[33m 408[2mms[22m[39m
+ [32m✓[39m src/shared/components/ui/DatePicker.spec.tsx [2m ([22m[2m5 tests[22m[2m)[22m[33m 303[2mms[22m[39m
 
 [2m Test Files [22m [1m[32m12 passed[39m[22m[90m (12)[39m
 [2m      Tests [22m [1m[32m66 passed[39m[22m[90m (66)[39m
-[2m   Start at [22m 22:50:23
-[2m   Duration [22m 23.26s[2m (transform 1.36s, setup 4.62s, collect 13.28s, tests 3.58s, environment 28.05s, prepare 7.48s)[22m
+[2m   Start at [22m 00:12:14
+[2m   Duration [22m 25.42s[2m (transform 1.46s, setup 5.23s, collect 15.23s, tests 3.75s, environment 33.96s, prepare 6.97s)[22m
 
 [34m % [39m[2mCoverage report from [22m[33mv8[39m
 -------------------|---------|----------|---------|---------|-------------------

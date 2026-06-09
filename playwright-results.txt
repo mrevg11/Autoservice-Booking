@@ -1,51 +1,36 @@
 
 Running 27 tests using 2 workers
 
-  x   1 [chromium] › e2e\01-auth.spec.ts:4:3 › Authentication › register → success message (13.8s)
-  x   2 [chromium] › e2e\02-booking-flow.spec.ts:5:3 › Booking Flow › client creates booking via wizard (18.6s)
-  x   3 [chromium] › e2e\01-auth.spec.ts:4:3 › Authentication › register → success message (retry #1) (10.9s)
-  x   4 [chromium] › e2e\02-booking-flow.spec.ts:5:3 › Booking Flow › client creates booking via wizard (retry #1) (15.7s)
-  x   5 [chromium] › e2e\01-auth.spec.ts:21:3 › Authentication › login as client → redirect to dashboard (15.7s)
-  x   6 [chromium] › e2e\02-booking-flow.spec.ts:53:3 › Booking Flow › client can view bookings list (15.8s)
-  x   7 [chromium] › e2e\01-auth.spec.ts:21:3 › Authentication › login as client → redirect to dashboard (retry #1) (15.7s)
-  ok  9 [chromium] › e2e\01-auth.spec.ts:29:3 › Authentication › wrong password → stays on login (2.8s)
-  ok 10 [chromium] › e2e\01-auth.spec.ts:38:3 › Authentication › protected route redirects to login when not authenticated (550ms)
-  x   8 [chromium] › e2e\02-booking-flow.spec.ts:53:3 › Booking Flow › client can view bookings list (retry #1) (15.7s)
-  x  11 [chromium] › e2e\01-auth.spec.ts:43:3 › Authentication › wrong role redirects to unauthorized (15.5s)
-  x  12 [chromium] › e2e\02-booking-flow.spec.ts:61:3 › Booking Flow › client can cancel PENDING booking if any (15.8s)
-  x  13 [chromium] › e2e\01-auth.spec.ts:43:3 › Authentication › wrong role redirects to unauthorized (retry #1) (15.7s)
-  x  14 [chromium] › e2e\02-booking-flow.spec.ts:61:3 › Booking Flow › client can cancel PENDING booking if any (retry #1) (15.8s)
-  x  15 [chromium] › e2e\03-master-flow.spec.ts:5:3 › Master Flow › master sees dashboard (15.7s)
-  x  16 [chromium] › e2e\02-booking-flow.spec.ts:79:3 › Booking Flow › smart booking page loads (15.9s)
-  x  17 [chromium] › e2e\03-master-flow.spec.ts:5:3 › Master Flow › master sees dashboard (retry #1) (15.7s)
-  x  18 [chromium] › e2e\02-booking-flow.spec.ts:79:3 › Booking Flow › smart booking page loads (retry #1) (15.8s)
-  ok 20 [chromium] › e2e\04-admin-analytics.spec.ts:5:3 › Admin Analytics › admin sees dashboard (5.1s)
-  x  19 [chromium] › e2e\03-master-flow.spec.ts:11:3 › Master Flow › master views bookings list (15.7s)
-  ok 21 [chromium] › e2e\04-admin-analytics.spec.ts:11:3 › Admin Analytics › admin dashboard shows summary cards (7.7s)
-  ok 23 [chromium] › e2e\04-admin-analytics.spec.ts:28:3 › Admin Analytics › admin analytics page loads (5.0s)
-  ok 24 [chromium] › e2e\04-admin-analytics.spec.ts:34:3 › Admin Analytics › admin analytics revenue filter works (7.7s)
-  x  22 [chromium] › e2e\03-master-flow.spec.ts:11:3 › Master Flow › master views bookings list (retry #1) (16.0s)
-  x  25 [chromium] › e2e\04-admin-analytics.spec.ts:44:3 › Admin Analytics › non-admin cannot access admin routes (15.6s)
-  x  26 [chromium] › e2e\03-master-flow.spec.ts:17:3 › Master Flow › master confirms booking if any PENDING (15.8s)
-  x  27 [chromium] › e2e\04-admin-analytics.spec.ts:44:3 › Admin Analytics › non-admin cannot access admin routes (retry #1) (15.9s)
-  x  28 [chromium] › e2e\03-master-flow.spec.ts:17:3 › Master Flow › master confirms booking if any PENDING (retry #1) (15.7s)
-  ok 29 [chromium] › e2e\04-admin-analytics.spec.ts:50:3 › Admin Analytics › admin users page loads (5.1s)
-  ok 31 [chromium] › e2e\04-admin-analytics.spec.ts:56:3 › Admin Analytics › admin services page loads (4.9s)
-  ok 32 [chromium] › e2e\04-admin-analytics.spec.ts:62:3 › Admin Analytics › admin masters page loads (4.8s)
-  x  30 [chromium] › e2e\03-master-flow.spec.ts:35:3 › Master Flow › master schedule page loads (15.7s)
-  x  33 [chromium] › e2e\05-review-flow.spec.ts:5:3 › Review Flow › client can view completed booking details (15.6s)
-  x  34 [chromium] › e2e\03-master-flow.spec.ts:35:3 › Master Flow › master schedule page loads (retry #1) (15.8s)
-  x  35 [chromium] › e2e\05-review-flow.spec.ts:5:3 › Review Flow › client can view completed booking details (retry #1) (15.7s)
-  x  36 [chromium] › e2e\03-master-flow.spec.ts:41:3 › Master Flow › master profile page loads (15.7s)
-  x  37 [chromium] › e2e\05-review-flow.spec.ts:24:3 › Review Flow › client leaves review for completed booking if available (15.8s)
-  x  38 [chromium] › e2e\03-master-flow.spec.ts:41:3 › Master Flow › master profile page loads (retry #1) (15.8s)
-  x  39 [chromium] › e2e\05-review-flow.spec.ts:24:3 › Review Flow › client leaves review for completed booking if available (retry #1) (15.8s)
-  x  40 [chromium] › e2e\05-review-flow.spec.ts:59:3 › Review Flow › vehicle management page loads for client (15.7s)
-  x  41 [chromium] › e2e\05-review-flow.spec.ts:59:3 › Review Flow › vehicle management page loads for client (retry #1) (15.7s)
-  x  42 [chromium] › e2e\05-review-flow.spec.ts:65:3 › Review Flow › client recommendations page loads (15.8s)
-  x  43 [chromium] › e2e\05-review-flow.spec.ts:65:3 › Review Flow › client recommendations page loads (retry #1) (15.7s)
-  x  44 [chromium] › e2e\05-review-flow.spec.ts:71:3 › Review Flow › client profile page loads (15.7s)
-  x  45 [chromium] › e2e\05-review-flow.spec.ts:71:3 › Review Flow › client profile page loads (retry #1) (15.9s)
+  ok  2 [chromium] › e2e\02-booking-flow.spec.ts:5:3 › Booking Flow › client creates booking via wizard (2.1s)
+  ok  3 [chromium] › e2e\02-booking-flow.spec.ts:53:3 › Booking Flow › client can view bookings list (1.7s)
+  ok  4 [chromium] › e2e\02-booking-flow.spec.ts:61:3 › Booking Flow › client can cancel PENDING booking if any (1.7s)
+  ok  5 [chromium] › e2e\02-booking-flow.spec.ts:79:3 › Booking Flow › smart booking page loads (1.8s)
+  x   6 [chromium] › e2e\03-master-flow.spec.ts:5:3 › Master Flow › master sees dashboard (1.7s)
+  x   1 [chromium] › e2e\01-auth.spec.ts:4:3 › Authentication › register → success message (11.5s)
+  x   7 [chromium] › e2e\03-master-flow.spec.ts:5:3 › Master Flow › master sees dashboard (retry #1) (3.0s)
+  ok  9 [chromium] › e2e\03-master-flow.spec.ts:11:3 › Master Flow › master views bookings list (1.8s)
+  ok 10 [chromium] › e2e\03-master-flow.spec.ts:17:3 › Master Flow › master confirms booking if any PENDING (1.7s)
+  x  11 [chromium] › e2e\03-master-flow.spec.ts:35:3 › Master Flow › master schedule page loads (1.8s)
+  x  12 [chromium] › e2e\03-master-flow.spec.ts:35:3 › Master Flow › master schedule page loads (retry #1) (2.6s)
+  x   8 [chromium] › e2e\01-auth.spec.ts:4:3 › Authentication › register → success message (retry #1) (11.9s)
+  ok 13 [chromium] › e2e\03-master-flow.spec.ts:41:3 › Master Flow › master profile page loads (2.2s)
+  ok 14 [chromium] › e2e\01-auth.spec.ts:21:3 › Authentication › login as client → redirect to dashboard (2.7s)
+  ok 15 [chromium] › e2e\04-admin-analytics.spec.ts:5:3 › Admin Analytics › admin sees dashboard (2.2s)
+  ok 16 [chromium] › e2e\01-auth.spec.ts:29:3 › Authentication › wrong password → stays on login (3.0s)
+  ok 18 [chromium] › e2e\01-auth.spec.ts:38:3 › Authentication › protected route redirects to login when not authenticated (936ms)
+  ok 19 [chromium] › e2e\01-auth.spec.ts:43:3 › Authentication › wrong role redirects to unauthorized (1.8s)
+  ok 17 [chromium] › e2e\04-admin-analytics.spec.ts:11:3 › Admin Analytics › admin dashboard shows summary cards (4.6s)
+  ok 20 [chromium] › e2e\05-review-flow.spec.ts:5:3 › Review Flow › client can view completed booking details (1.9s)
+  ok 21 [chromium] › e2e\04-admin-analytics.spec.ts:28:3 › Admin Analytics › admin analytics page loads (2.2s)
+  ok 22 [chromium] › e2e\05-review-flow.spec.ts:24:3 › Review Flow › client leaves review for completed booking if available (2.2s)
+  ok 24 [chromium] › e2e\05-review-flow.spec.ts:59:3 › Review Flow › vehicle management page loads for client (1.9s)
+  ok 23 [chromium] › e2e\04-admin-analytics.spec.ts:34:3 › Admin Analytics › admin analytics revenue filter works (5.3s)
+  ok 25 [chromium] › e2e\05-review-flow.spec.ts:65:3 › Review Flow › client recommendations page loads (1.8s)
+  ok 26 [chromium] › e2e\04-admin-analytics.spec.ts:44:3 › Admin Analytics › non-admin cannot access admin routes (2.0s)
+  ok 27 [chromium] › e2e\05-review-flow.spec.ts:71:3 › Review Flow › client profile page loads (2.0s)
+  ok 28 [chromium] › e2e\04-admin-analytics.spec.ts:50:3 › Admin Analytics › admin users page loads (1.7s)
+  ok 29 [chromium] › e2e\04-admin-analytics.spec.ts:56:3 › Admin Analytics › admin services page loads (1.7s)
+  ok 30 [chromium] › e2e\04-admin-analytics.spec.ts:62:3 › Admin Analytics › admin masters page loads (1.8s)
 
 
   1) [chromium] › e2e\01-auth.spec.ts:4:3 › Authentication › register → success message ────────────
@@ -70,6 +55,10 @@ Running 27 tests using 2 workers
       20 |
       21 |   test('login as client → redirect to dashboard', async ({ page }) => {
         at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\01-auth.spec.ts:18:88
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\01-auth-Authentication-register-→-success-message-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
 
     Error Context: test-results\01-auth-Authentication-register-→-success-message-chromium\error-context.md
 
@@ -96,721 +85,162 @@ Running 27 tests using 2 workers
       21 |   test('login as client → redirect to dashboard', async ({ page }) => {
         at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\01-auth.spec.ts:18:88
 
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\01-auth-Authentication-register-→-success-message-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
     Error Context: test-results\01-auth-Authentication-register-→-success-message-chromium-retry1\error-context.md
 
-  2) [chromium] › e2e\01-auth.spec.ts:21:3 › Authentication › login as client → redirect to dashboard 
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\01-auth-Authentication-register-→-success-message-chromium-retry1\trace.zip
+    Usage:
 
-    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+        npx playwright show-trace test-results\01-auth-Authentication-register-→-success-message-chromium-retry1\trace.zip
 
-    Expected pattern: [32m/\/client\/dashboard/[39m
-    Received string:  [31m"https://autoservice-frontend-kkyf.onrender.com/login"[39m
-    Timeout: 15000ms
+    ────────────────────────────────────────────────────────────────────────────────────────────────
 
-    Call log:
-    [2m  - Expect "toHaveURL" with timeout 15000ms[22m
-    [2m    33 × unexpected value "https://autoservice-frontend-kkyf.onrender.com/login"[22m
+  2) [chromium] › e2e\03-master-flow.spec.ts:5:3 › Master Flow › master sees dashboard ─────────────
 
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
 
-      24 |     await page.fill('[data-testid="password-input"]', 'DemoPass123!');
-      25 |     await page.click('[data-testid="login-button"]');
-    > 26 |     await expect(page).toHaveURL(/\/client\/dashboard/, { timeout: 15000 });
-         |                        ^
-      27 |   });
-      28 |
-      29 |   test('wrong password → stays on login', async ({ page }) => {
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\01-auth.spec.ts:26:24
-
-    Error Context: test-results\01-auth-Authentication-log-18996-ent-→-redirect-to-dashboard-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
-
-    Expected pattern: [32m/\/client\/dashboard/[39m
-    Received string:  [31m"https://autoservice-frontend-kkyf.onrender.com/login"[39m
-    Timeout: 15000ms
+    Locator: locator('h1').or(locator('h2'))
+    Expected: visible
+    Error: strict mode violation: locator('h1').or(locator('h2')) resolved to 2 elements:
+        1) <h1 class="text-2xl font-extrabold mb-1">Доброго ранку, Test! 🔧</h1> aka getByRole('heading', { name: 'Доброго ранку, Test! 🔧' })
+        2) <h2 class="text-lg font-bold text-slate-900">Записи на сьогодні</h2> aka getByRole('heading', { name: 'Записи на сьогодні' })
 
     Call log:
-    [2m  - Expect "toHaveURL" with timeout 15000ms[22m
-    [2m    33 × unexpected value "https://autoservice-frontend-kkyf.onrender.com/login"[22m
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for locator('h1').or(locator('h2'))[22m
 
 
-      24 |     await page.fill('[data-testid="password-input"]', 'DemoPass123!');
-      25 |     await page.click('[data-testid="login-button"]');
-    > 26 |     await expect(page).toHaveURL(/\/client\/dashboard/, { timeout: 15000 });
-         |                        ^
-      27 |   });
-      28 |
-      29 |   test('wrong password → stays on login', async ({ page }) => {
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\01-auth.spec.ts:26:24
+       6 |     await loginAs(page, 'master');
+       7 |     await expect(page).toHaveURL(/\/master\/dashboard/);
+    >  8 |     await expect(page.locator('h1').or(page.locator('h2'))).toBeVisible({ timeout: 10000 });
+         |                                                             ^
+       9 |   });
+      10 |
+      11 |   test('master views bookings list', async ({ page }) => {
+        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:8:61
 
-    Error Context: test-results\01-auth-Authentication-log-18996-ent-→-redirect-to-dashboard-chromium-retry1\error-context.md
-
-  3) [chromium] › e2e\01-auth.spec.ts:43:3 › Authentication › wrong role redirects to unauthorized ─
-
-    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
-
-    Expected pattern: [32m/\/master\/dashboard/[39m
-    Received string:  [31m"https://autoservice-frontend-kkyf.onrender.com/login"[39m
-    Timeout: 15000ms
-
-    Call log:
-    [2m  - Expect "toHaveURL" with timeout 15000ms[22m
-    [2m    33 × unexpected value "https://autoservice-frontend-kkyf.onrender.com/login"[22m
-
-
-      46 |     await page.fill('[data-testid="password-input"]', 'DemoPass123!');
-      47 |     await page.click('[data-testid="login-button"]');
-    > 48 |     await expect(page).toHaveURL(/\/master\/dashboard/, { timeout: 15000 });
-         |                        ^
-      49 |
-      50 |     await page.goto('/client/dashboard');
-      51 |     await expect(page).toHaveURL('/unauthorized', { timeout: 5000 });
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\01-auth.spec.ts:48:24
-
-    Error Context: test-results\01-auth-Authentication-wrong-role-redirects-to-unauthorized-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
-
-    Expected pattern: [32m/\/master\/dashboard/[39m
-    Received string:  [31m"https://autoservice-frontend-kkyf.onrender.com/login"[39m
-    Timeout: 15000ms
-
-    Call log:
-    [2m  - Expect "toHaveURL" with timeout 15000ms[22m
-    [2m    33 × unexpected value "https://autoservice-frontend-kkyf.onrender.com/login"[22m
-
-
-      46 |     await page.fill('[data-testid="password-input"]', 'DemoPass123!');
-      47 |     await page.click('[data-testid="login-button"]');
-    > 48 |     await expect(page).toHaveURL(/\/master\/dashboard/, { timeout: 15000 });
-         |                        ^
-      49 |
-      50 |     await page.goto('/client/dashboard');
-      51 |     await expect(page).toHaveURL('/unauthorized', { timeout: 5000 });
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\01-auth.spec.ts:48:24
-
-    Error Context: test-results\01-auth-Authentication-wrong-role-redirects-to-unauthorized-chromium-retry1\error-context.md
-
-  4) [chromium] › e2e\02-booking-flow.spec.ts:5:3 › Booking Flow › client creates booking via wizard 
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\02-booking-flow.spec.ts:6:5
-
-    Error Context: test-results\02-booking-flow-Booking-Fl-0f8ae--creates-booking-via-wizard-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\02-booking-flow.spec.ts:6:5
-
-    Error Context: test-results\02-booking-flow-Booking-Fl-0f8ae--creates-booking-via-wizard-chromium-retry1\error-context.md
-
-  5) [chromium] › e2e\02-booking-flow.spec.ts:53:3 › Booking Flow › client can view bookings list ──
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\02-booking-flow.spec.ts:54:5
-
-    Error Context: test-results\02-booking-flow-Booking-Flow-client-can-view-bookings-list-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\02-booking-flow.spec.ts:54:5
-
-    Error Context: test-results\02-booking-flow-Booking-Flow-client-can-view-bookings-list-chromium-retry1\error-context.md
-
-  6) [chromium] › e2e\02-booking-flow.spec.ts:61:3 › Booking Flow › client can cancel PENDING booking if any 
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\02-booking-flow.spec.ts:62:5
-
-    Error Context: test-results\02-booking-flow-Booking-Fl-cc092-ncel-PENDING-booking-if-any-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\02-booking-flow.spec.ts:62:5
-
-    Error Context: test-results\02-booking-flow-Booking-Fl-cc092-ncel-PENDING-booking-if-any-chromium-retry1\error-context.md
-
-  7) [chromium] › e2e\02-booking-flow.spec.ts:79:3 › Booking Flow › smart booking page loads ───────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\02-booking-flow.spec.ts:80:5
-
-    Error Context: test-results\02-booking-flow-Booking-Flow-smart-booking-page-loads-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\02-booking-flow.spec.ts:80:5
-
-    Error Context: test-results\02-booking-flow-Booking-Flow-smart-booking-page-loads-chromium-retry1\error-context.md
-
-  8) [chromium] › e2e\03-master-flow.spec.ts:5:3 › Master Flow › master sees dashboard ─────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:6:5
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\03-master-flow-Master-Flow-master-sees-dashboard-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
 
     Error Context: test-results\03-master-flow-Master-Flow-master-sees-dashboard-chromium\error-context.md
 
     Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
 
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
 
-       at helpers\auth.helper.ts:15
+    Locator: locator('h1').or(locator('h2'))
+    Expected: visible
+    Error: strict mode violation: locator('h1').or(locator('h2')) resolved to 2 elements:
+        1) <h1 class="text-2xl font-extrabold mb-1">Доброго ранку, Test! 🔧</h1> aka getByRole('heading', { name: 'Доброго ранку, Test! 🔧' })
+        2) <h2 class="text-lg font-bold text-slate-900">Записи на сьогодні</h2> aka getByRole('heading', { name: 'Записи на сьогодні' })
 
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:6:5
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for locator('h1').or(locator('h2'))[22m
+
+
+       6 |     await loginAs(page, 'master');
+       7 |     await expect(page).toHaveURL(/\/master\/dashboard/);
+    >  8 |     await expect(page.locator('h1').or(page.locator('h2'))).toBeVisible({ timeout: 10000 });
+         |                                                             ^
+       9 |   });
+      10 |
+      11 |   test('master views bookings list', async ({ page }) => {
+        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:8:61
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\03-master-flow-Master-Flow-master-sees-dashboard-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
 
     Error Context: test-results\03-master-flow-Master-Flow-master-sees-dashboard-chromium-retry1\error-context.md
 
-  9) [chromium] › e2e\03-master-flow.spec.ts:11:3 › Master Flow › master views bookings list ───────
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\03-master-flow-Master-Flow-master-sees-dashboard-chromium-retry1\trace.zip
+    Usage:
 
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
+        npx playwright show-trace test-results\03-master-flow-Master-Flow-master-sees-dashboard-chromium-retry1\trace.zip
 
-       at helpers\auth.helper.ts:15
+    ────────────────────────────────────────────────────────────────────────────────────────────────
 
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:12:5
+  3) [chromium] › e2e\03-master-flow.spec.ts:35:3 › Master Flow › master schedule page loads ───────
 
-    Error Context: test-results\03-master-flow-Master-Flow-master-views-bookings-list-chromium\error-context.md
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
 
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+    Locator: locator('h1').or(locator('h2'))
+    Expected: visible
+    Error: strict mode violation: locator('h1').or(locator('h2')) resolved to 4 elements:
+        1) <h1 class="text-2xl font-bold text-slate-900">Мій розклад</h1> aka getByRole('heading', { name: 'Мій розклад' })
+        2) <h2 class="font-semibold text-slate-900 mb-4">Робочі дні і години</h2> aka getByRole('heading', { name: 'Робочі дні і години' })
+        3) <h2 class="font-semibold text-slate-900 mb-4">Додати вихідний день</h2> aka getByRole('heading', { name: 'Додати вихідний день' })
+        4) <h2 class="font-semibold text-slate-900 mb-4">Заплановані вихідні дні</h2> aka getByRole('heading', { name: 'Заплановані вихідні дні' })
 
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for locator('h1').or(locator('h2'))[22m
 
-       at helpers\auth.helper.ts:15
 
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:12:5
+      36 |     await loginAs(page, 'master');
+      37 |     await page.goto('/master/schedule');
+    > 38 |     await expect(page.locator('h1').or(page.locator('h2'))).toBeVisible({ timeout: 10000 });
+         |                                                             ^
+      39 |   });
+      40 |
+      41 |   test('master profile page loads', async ({ page }) => {
+        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:38:61
 
-    Error Context: test-results\03-master-flow-Master-Flow-master-views-bookings-list-chromium-retry1\error-context.md
-
-  10) [chromium] › e2e\03-master-flow.spec.ts:17:3 › Master Flow › master confirms booking if any PENDING 
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:18:5
-
-    Error Context: test-results\03-master-flow-Master-Flow-34560-irms-booking-if-any-PENDING-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:18:5
-
-    Error Context: test-results\03-master-flow-Master-Flow-34560-irms-booking-if-any-PENDING-chromium-retry1\error-context.md
-
-  11) [chromium] › e2e\03-master-flow.spec.ts:35:3 › Master Flow › master schedule page loads ──────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:36:5
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\03-master-flow-Master-Flow-master-schedule-page-loads-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
 
     Error Context: test-results\03-master-flow-Master-Flow-master-schedule-page-loads-chromium\error-context.md
 
     Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
 
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
 
-       at helpers\auth.helper.ts:15
+    Locator: locator('h1').or(locator('h2'))
+    Expected: visible
+    Error: strict mode violation: locator('h1').or(locator('h2')) resolved to 4 elements:
+        1) <h1 class="text-2xl font-bold text-slate-900">Мій розклад</h1> aka getByRole('heading', { name: 'Мій розклад' })
+        2) <h2 class="font-semibold text-slate-900 mb-4">Робочі дні і години</h2> aka getByRole('heading', { name: 'Робочі дні і години' })
+        3) <h2 class="font-semibold text-slate-900 mb-4">Додати вихідний день</h2> aka getByRole('heading', { name: 'Додати вихідний день' })
+        4) <h2 class="font-semibold text-slate-900 mb-4">Заплановані вихідні дні</h2> aka getByRole('heading', { name: 'Заплановані вихідні дні' })
 
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:36:5
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for locator('h1').or(locator('h2'))[22m
+
+
+      36 |     await loginAs(page, 'master');
+      37 |     await page.goto('/master/schedule');
+    > 38 |     await expect(page.locator('h1').or(page.locator('h2'))).toBeVisible({ timeout: 10000 });
+         |                                                             ^
+      39 |   });
+      40 |
+      41 |   test('master profile page loads', async ({ page }) => {
+        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:38:61
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\03-master-flow-Master-Flow-master-schedule-page-loads-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
 
     Error Context: test-results\03-master-flow-Master-Flow-master-schedule-page-loads-chromium-retry1\error-context.md
 
-  12) [chromium] › e2e\03-master-flow.spec.ts:41:3 › Master Flow › master profile page loads ───────
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\03-master-flow-Master-Flow-master-schedule-page-loads-chromium-retry1\trace.zip
+    Usage:
 
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
+        npx playwright show-trace test-results\03-master-flow-Master-Flow-master-schedule-page-loads-chromium-retry1\trace.zip
 
-       at helpers\auth.helper.ts:15
+    ────────────────────────────────────────────────────────────────────────────────────────────────
 
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:42:5
-
-    Error Context: test-results\03-master-flow-Master-Flow-master-profile-page-loads-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\03-master-flow.spec.ts:42:5
-
-    Error Context: test-results\03-master-flow-Master-Flow-master-profile-page-loads-chromium-retry1\error-context.md
-
-  13) [chromium] › e2e\04-admin-analytics.spec.ts:44:3 › Admin Analytics › non-admin cannot access admin routes 
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\04-admin-analytics.spec.ts:45:5
-
-    Error Context: test-results\04-admin-analytics-Admin-A-3a8a0--cannot-access-admin-routes-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\04-admin-analytics.spec.ts:45:5
-
-    Error Context: test-results\04-admin-analytics-Admin-A-3a8a0--cannot-access-admin-routes-chromium-retry1\error-context.md
-
-  14) [chromium] › e2e\05-review-flow.spec.ts:5:3 › Review Flow › client can view completed booking details 
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:6:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-13e5f-w-completed-booking-details-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:6:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-13e5f-w-completed-booking-details-chromium-retry1\error-context.md
-
-  15) [chromium] › e2e\05-review-flow.spec.ts:24:3 › Review Flow › client leaves review for completed booking if available 
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:25:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-7299a-pleted-booking-if-available-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:25:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-7299a-pleted-booking-if-available-chromium-retry1\error-context.md
-
-  16) [chromium] › e2e\05-review-flow.spec.ts:59:3 › Review Flow › vehicle management page loads for client 
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:60:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-c7a27-ement-page-loads-for-client-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:60:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-c7a27-ement-page-loads-for-client-chromium-retry1\error-context.md
-
-  17) [chromium] › e2e\05-review-flow.spec.ts:65:3 › Review Flow › client recommendations page loads 
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:66:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-client-recommendations-page-loads-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:66:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-client-recommendations-page-loads-chromium-retry1\error-context.md
-
-  18) [chromium] › e2e\05-review-flow.spec.ts:71:3 › Review Flow › client profile page loads ───────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:72:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-client-profile-page-loads-chromium\error-context.md
-
-    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
-
-    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
-    =========================== logs ===========================
-    waiting for navigation until "load"
-    ============================================================
-
-       at helpers\auth.helper.ts:15
-
-      13 |   await page.fill('[data-testid="password-input"]', password);
-      14 |   await page.click('[data-testid="login-button"]');
-    > 15 |   await page.waitForURL(/\/(client|master|admin)\/dashboard/, { timeout: 15000 });
-         |              ^
-      16 | }
-      17 |
-        at loginAs (D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\helpers\auth.helper.ts:15:14)
-        at D:\Diplom.Project\autoservice-booking\apps\frontend\e2e\05-review-flow.spec.ts:72:5
-
-    Error Context: test-results\05-review-flow-Review-Flow-client-profile-page-loads-chromium-retry1\error-context.md
-
-  18 failed
+  3 failed
     [chromium] › e2e\01-auth.spec.ts:4:3 › Authentication › register → success message ─────────────
-    [chromium] › e2e\01-auth.spec.ts:21:3 › Authentication › login as client → redirect to dashboard 
-    [chromium] › e2e\01-auth.spec.ts:43:3 › Authentication › wrong role redirects to unauthorized ──
-    [chromium] › e2e\02-booking-flow.spec.ts:5:3 › Booking Flow › client creates booking via wizard 
-    [chromium] › e2e\02-booking-flow.spec.ts:53:3 › Booking Flow › client can view bookings list ───
-    [chromium] › e2e\02-booking-flow.spec.ts:61:3 › Booking Flow › client can cancel PENDING booking if any 
-    [chromium] › e2e\02-booking-flow.spec.ts:79:3 › Booking Flow › smart booking page loads ────────
     [chromium] › e2e\03-master-flow.spec.ts:5:3 › Master Flow › master sees dashboard ──────────────
-    [chromium] › e2e\03-master-flow.spec.ts:11:3 › Master Flow › master views bookings list ────────
-    [chromium] › e2e\03-master-flow.spec.ts:17:3 › Master Flow › master confirms booking if any PENDING 
     [chromium] › e2e\03-master-flow.spec.ts:35:3 › Master Flow › master schedule page loads ────────
-    [chromium] › e2e\03-master-flow.spec.ts:41:3 › Master Flow › master profile page loads ─────────
-    [chromium] › e2e\04-admin-analytics.spec.ts:44:3 › Admin Analytics › non-admin cannot access admin routes 
-    [chromium] › e2e\05-review-flow.spec.ts:5:3 › Review Flow › client can view completed booking details 
-    [chromium] › e2e\05-review-flow.spec.ts:24:3 › Review Flow › client leaves review for completed booking if available 
-    [chromium] › e2e\05-review-flow.spec.ts:59:3 › Review Flow › vehicle management page loads for client 
-    [chromium] › e2e\05-review-flow.spec.ts:65:3 › Review Flow › client recommendations page loads ─
-    [chromium] › e2e\05-review-flow.spec.ts:71:3 › Review Flow › client profile page loads ─────────
-  9 passed (6.5m)
+  24 passed (54.2s)
