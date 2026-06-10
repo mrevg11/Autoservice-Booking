@@ -46,7 +46,6 @@ test.describe('Booking Flow', () => {
       await confirmBtn.click();
     }
 
-    // Success message or booking page
     await expect(page.locator('body')).toContainText(/запис|booking|створено/i, { timeout: 10000 });
   });
 
@@ -54,8 +53,7 @@ test.describe('Booking Flow', () => {
     await loginAs(page, 'client');
     await page.goto('/client/bookings');
     await expect(page).toHaveURL('/client/bookings');
-    // Page loads without error
-    await expect(page.locator('h1').or(page.locator('h2'))).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('client can cancel PENDING booking if any', async ({ page }) => {
@@ -70,9 +68,7 @@ test.describe('Booking Flow', () => {
       await pendingBooking.locator('button:has-text("Скасувати")').click();
       await page.click('button:has-text("Підтвердити")');
       await page.waitForTimeout(1000);
-      // Status should change or booking removed
     }
-    // Test passes if no PENDING bookings or successful cancel
     expect(true).toBe(true);
   });
 

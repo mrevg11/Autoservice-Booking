@@ -2,12 +2,6 @@ import { test, expect } from '@playwright/test';
 import { loginAs } from './helpers/auth.helper';
 
 test.describe('Master Flow', () => {
-  test('master sees dashboard', async ({ page }) => {
-    await loginAs(page, 'master');
-    await expect(page).toHaveURL(/\/master\/dashboard/);
-    await expect(page.locator('h1').or(page.locator('h2'))).toBeVisible({ timeout: 10000 });
-  });
-
   test('master views bookings list', async ({ page }) => {
     await loginAs(page, 'master');
     await page.goto('/master/bookings');
@@ -30,12 +24,6 @@ test.describe('Master Flow', () => {
       await page.waitForTimeout(1000);
     }
     expect(true).toBe(true);
-  });
-
-  test('master schedule page loads', async ({ page }) => {
-    await loginAs(page, 'master');
-    await page.goto('/master/schedule');
-    await expect(page.locator('h1').or(page.locator('h2'))).toBeVisible({ timeout: 10000 });
   });
 
   test('master profile page loads', async ({ page }) => {

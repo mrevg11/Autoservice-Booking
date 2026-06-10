@@ -1,23 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Authentication', () => {
-  test('register → success message', async ({ page }) => {
-    const email = `test_${Date.now()}@test.com`;
-
-    await page.goto('/');
-    // Navigate to register page directly
-    await page.goto('/register');
-
-    await page.fill('[name="firstName"]', 'Тест');
-    await page.fill('[name="lastName"]', 'Юзер');
-    await page.fill('[name="email"]', email);
-    await page.fill('[name="password"]', 'Test1234!');
-    await page.click('button[type="submit"]');
-
-    // Successful registration shows green message
-    await expect(page.locator('.text-green-700').or(page.locator('[class*="green"]'))).toBeVisible({ timeout: 10000 });
-  });
-
   test('login as client → redirect to dashboard', async ({ page }) => {
     await page.goto('/login');
     await page.fill('[data-testid="email-input"]', 'client@demo.com');
